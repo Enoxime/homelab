@@ -1,0 +1,31 @@
+---
+- name: "Generate cloud-init files"
+  hosts: "reverseproxy"
+  connection: local
+  tags: generate_files
+  roles:
+    - cloud-init
+
+- name: "Setting up reverseproxy"
+  become: yes
+  hosts:
+    - "reverseproxy"
+  tags: setting_up
+  roles:
+    - security
+    - hostname
+    - base
+    - hosts
+    - sshd_config
+    - logrotate
+    - fail2ban
+    - ufw
+
+- name: "Reverse proxy"
+  become: yes
+  hosts:
+    - "reverseproxy"
+  tags: proxy
+  roles:
+    - ssl-certificate
+    - reverse-proxy

@@ -1,0 +1,30 @@
+apiVersion: ceph.rook.io/v1
+kind: CephCluster
+metadata:
+  name: rook-ceph
+  namespace: rook-ceph
+spec:
+  cephVersion:
+    image: "{{ k3s.config.rook.ceph.version }}"
+    allowUnsupported: false
+  dataDirHostPath: /var/lib/rook
+  skipUpgradeChecks: false
+  dashboard:
+    enabled: true
+  monitoring:
+    enabled: true
+    rulesNamespace: "rook-ceph"
+  mon:
+    count: 1
+    allowMultiplePerNode: false
+  storage:
+    useAllNodes: {{ k3s.config.rook.ceph.use_all_nodes | bool }}
+    nodes:
+    {% for node in k3s.config.rook.ceph.nodes -%}
+    - name: "{{ node.name }}"
+      useAllDevices: false
+      devices:
+      {% for dev in node.devices -%}
+      - name: "{{ dev.name }}"
+      {% endfor %}
+    {% endfor %}

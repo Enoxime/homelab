@@ -1,0 +1,10 @@
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "storage-driver": "{{ docker_config.storage_driver }}",
+  "dns": [{% for ns in docker_config.dns %}"{{ ns }}"{% if not loop.last %}, {% endif %}{% endfor %}],
+  "log-driver": "{{ docker_config.log.driver }}",
+  "log-opts": {
+    "max-size": "{{ docker_config.log.opts.max_size }}",
+    "max-file":"{{ docker_config.log.opts.max_file }}"
+  }
+}

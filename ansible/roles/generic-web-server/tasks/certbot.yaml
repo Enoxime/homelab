@@ -1,0 +1,41 @@
+---
+- name: "Check if certificate already exists"
+  ansible.builtin.stat:
+    path: "/etc/letsencrypt/live/{{ service.main_domain_name }}/fullchain.pem"
+  register: cert_exists
+  when:
+    - service.main_domain_name is defined
+
+- name: "Generate certificate"
+  ansible.builtin.command: |
+    certbot \
+      --nginx \
+      --agree-tos \
+      --email {{ generic_web_server.config.certbot.email }} \
+      --test-cert \
+      -n \
+      --no-redirect \
+      --cert-name {{ service.main_domain_name }} \
+      -d {{ service.main_domain_name }} \
+      {% if service.domain_names is defined %}{% for domain in service.domain_names %}-d {{ domain }} {% endfor %}{% endif %}
+  when:
+    - cert_exists is defined
+    - not cert_exists.stat.exists
+    - service.ssl.test is defined
+    - service.ssl.test
+
+- name: "Generate certificate"
+  ansible.builtin.command: |
+    certbot \
+      --nginx \
+      --agree-tos \
+      --email {{ generic_web_server.config.certbot.email }} \
+      -n \
+      --no-redirect \
+      --cert-name {{ service.main_domain_name }} \
+      -d {{ service.main_domain_name }} \
+      {% if service.domain_names is defined %}{% for domain in service.domain_names %}-d {{ domain }} {% endfor %}{% endif %}
+  when:
+    - cert_exists is defined
+    - not cert_exists.stat.exists
+    - not service.ssl.test is defined or not service.ssl.test

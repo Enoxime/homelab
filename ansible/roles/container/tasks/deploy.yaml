@@ -1,0 +1,26 @@
+---
+- name: Retrieve container facts
+  community.docker.docker_container_info:
+    name: "{{ item.name }}"
+  register: container_fact
+
+- name: Docker deployment
+  community.docker.docker_container:
+    capabilities:     "{{ item.capabilities   | default(omit) }}"
+    command:          "{{ item.command        | default(omit) }}"
+    dns_servers:      "{{ item.dns_servers    | default(omit) }}"
+    entrypoint:       "{{ item.entrypoint     | default(omit) }}"
+    env:              "{{ item.env            | default(omit) }}"
+    exposed_ports:    "{{ item.exposed_ports  | default(omit) }}"
+    hostname:         "{{ item.hostname       | default(omit) }}"
+    image:            "{{ item.image }}"
+    labels:           "{{ item.labels         | default(omit) }}"
+    name:             "{{ item.name }}"
+    networks:         "{{ item.networks       | default(omit) }}"
+    published_ports:  "{{ item.ports          | default(omit) }}"
+    privileged:       "{{ item.privileged     | default(omit) }}"
+    restart:          "{{ item.restart        | default(docker_default.restart) }}"
+    restart_policy:   "{{ item.restart_policy | default(docker_default.restart_policy) }}"
+    state:            "{{ item.state          | default(omit) }}"
+    volumes:          "{{ item.volumes        | default(omit) }}"
+    volumes_from:     "{{ item.volumes_from   | default(omit) }}"

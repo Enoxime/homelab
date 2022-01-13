@@ -1,0 +1,37 @@
+---
+- name: "Create CA key"
+  community.crypto.openssl_privatekey:
+    backup: "{{ certificates.config.backup | default(certificate.config.backup) }}"
+    curve: "{{ certificates.ca.curve | default(certificate.ca.curve, true) }}"
+    group: "{{ certificates.config.group | default(certificate.group) }}"
+    mode: "400"
+    owner: "{{ certificates.config.owner | default(certificate.owner) }}"
+    passphrase: "{{ certificates.ca.passphrase | default(omit) }}"
+    path: "{{ certificates.config.path | default(certificate.config.path) }}/{{ certificates.ca.name | default(certificate.ca.name) }}.ca.key"
+    size: "{{ certificates.ca.size | default(certificate.ca.size) }}"
+    type: "{{ certificates.ca.type | default(certificate.ca.type) }}"
+
+- name: "Generate CA CSR"
+  community.crypto.openssl_csr:
+    backup: "{{ certificates.config.backup | default(certificate.config.backup) }}"
+    common_name: "{{ certificates.ca.name | default(certificate.ca.name) }}"
+    country_name: "{{ certificates.config.country_name | default(certificate.config.country_name) }}"
+    group: "{{ certificates.config.group | default(certificate.group) }}"
+    mode: "400"
+    owner: "{{ certificates.config.owner | default(certificate.owner) }}"
+    path: "{{ certificates.config.path | default(certificate.config.path) }}/{{ certificates.ca.name | default(certificate.ca.name) }}.ca.csr"
+    privatekey_passphrase: "{{ certificates.ca.passphrase | default(omit) }}"
+    privatekey_path: "{{ certificates.config.path | default(certificate.config.path) }}/{{ certificates.ca.name | default(certificate.ca.name) }}.ca.key"
+
+- name: "Sign the CA CSR"
+  community.crypto.x509_certificate:
+    backup: "{{ certificates.config.backup | default(certificate.config.backup) }}"
+    csr_path: "{{ certificates.config.path | default(certificate.config.path) }}/{{ certificates.ca.name | default(certificate.ca.name) }}.ca.csr"
+    group: "{{ certificates.config.group | default(certificate.group) }}"
+    mode: "400"
+    owner: "{{ certificates.config.owner | default(certificate.owner) }}"
+    path: "{{ certificates.config.path | default(certificate.config.path) }}/{{ certificates.ca.name | default(certificate.ca.name) }}.ca.crt"
+    privatekey_passphrase: "{{ certificates.ca.passphrase | default(omit) }}"
+    privatekey_path: "{{ certificates.config.path | default(certificate.config.path) }}/{{ certificates.ca.name | default(certificate.ca.name) }}.ca.key"
+    provider: "selfsigned"
+    selfsigned_not_after: "+3650d"

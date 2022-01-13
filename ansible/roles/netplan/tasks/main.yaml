@@ -1,0 +1,17 @@
+---
+- name: "Retrieve netplan config file"
+  command: "cat {{ netplan.path | default(netplan_default.path) }}/{{ netplan.file | default(netplan_default.file) }}"
+  register: config_file_temp
+
+- name: "Registering the content"
+  set_fact:
+    config_file: "{{ config_file_temp.stdout | from_yaml }}"
+
+- name: "[netplan] - Generate config file"
+  ansible.builtin.template:
+    backup: yes
+    dest: "{{ netplan.path | default(netplan_default.path) }}/{{ netplan.file | default(netplan_default.file) }}"
+    src: "netplan_config.yaml"
+
+- name: "[netplan] - Apply modifications"
+  ansible.builtin.command: "netplan apply"

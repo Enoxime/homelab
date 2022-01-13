@@ -1,0 +1,43 @@
+---
+- name: "Install and setup base"
+  hosts: nas
+  become: yes
+  tags: base
+  roles:
+    - security
+    - base
+    - hosts
+    - apc
+    - netplan
+    - sshd_config
+    - fail2ban
+    - ufw
+
+- name: "Setup disks"
+  hosts: nas
+  become: yes
+  tags: zfs
+  roles:
+    - zfs
+
+- name: "nfs"
+  hosts: nas
+  become: yes
+  tags: nfs
+  roles:
+    - nfs
+
+- name: "Install and setup containers"
+  hosts: nas
+  become: yes
+  tags: container
+  roles:
+    - docker
+    - container
+
+- name: "Setup services for k3s"
+  hosts: nas
+  become: yes
+  tags: services
+  roles:
+    - postgres-init

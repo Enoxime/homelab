@@ -1,0 +1,110 @@
+---
+k3s_nodes:
+  vars:
+    tmp_size: "512M"
+
+    user_data:
+      users:
+        - name: k3s
+          primary_group: users
+          shell: "/bin/bash"
+          sudo: "ALL=(ALL) NOPASSWD:ALL"
+          groups:
+            - users
+            - adm
+            - netdev
+          ssh_keys:
+            - "{{ k3s_ssh_key }}"
+      pkg_update: yes
+      pkg_upgrade: yes
+      power_state:
+        mode: "reboot"
+    network_config:
+      ethernet:
+        dhcp4: no
+        addresses:
+          - "{{ network.zone.home.hosts[inventory_hostname].k8s | ansible.netcommon.ipaddr('host') }}"
+        gateway4: "{{ network.zones.home.lans.k8s.gateway }}"
+        nameservers: "{{ [network.zones.home.lans.k8s.gateway, network.nameservers.block_malware] | flatten }}"
+
+    hosts_file:
+        - ip: "127.0.0.1"
+          names:
+            - "{{ inventory_hostname }}"
+            - "{{ inventory_hostname }}.k3s.lan"
+
+
+    sshd_config:
+      permit_root_login: "no"
+      password_authentication: "no"
+      x11_forwarding: "no"
+
+
+    fail2ban_config:
+      ignore_ip: "{{ fail2ban_config_template.ignore_ip }}"
+      bantime: "{{ fail2ban_config_template.bantime }}"
+      findtime: "{{ fail2ban_config_template.findtime }}"
+      maxretry: "{{ fail2ban_config_template.maxretry }}"
+      jails:
+        "{{ fail2ban_config_template.jails }}"
+
+
+    ufw_ipv6: "no"
+    ufw_default_input_policy: DROP
+    ufw_default_output_policy: ACCEPT
+    ufw_default_forward_policy: ACCEPT
+    ufw_default_application_policy: SKIP
+    ufw_logging: "off"
+    ufw_state: "enabled"
+
+    ufw_rules:
+      - comment: "Allow NTP sync"
+        to_port: "123"
+        direction: "out"
+        proto: "udp"
+        rule: "allow"
+
+      - comment: "Allow ssh from Lab"
+        from_ip: "{{ network.zones.home.lans.lab.cidr }}"
+        to_port: "22"
+        direction: "in"
+        proto: "tcp"
+        rule: "allow"
+
+      - comment: "Allow ssh from k8s"
+        from_ip: "{{ network.zones.home.lans.k8s.cidr }}"
+        to_port: "22"
+        direction: "in"
+        proto: "tcp"
+        rule: "allow"
+
+      - comment: "Allow k8s to k8s in"
+        from_ip: "{{ network.zones.home.lans.k8s.cidr }}"
+        direction: "in"
+        rule: "allow"
+
+      - comment: "Allow k8s to k8s out"
+        to_ip: "{{ network.zones.home.lans.k8s.cidr }}"
+        direction: "out"
+        rule: "allow"
+
+      - comment: "Allow access to Kubernetes API server"
+        from_ip: "{{ network.zones.home.lans.k8s.cidr }}"
+        to_port: "6443"
+        direction: "in"
+        proto: "tcp"
+        rule: "allow"
+
+      - comment: "kubelet API"
+        from_ip: "{{ network.zones.home.lans.k8s.cidr }}"
+        to_port: "10250"
+        direction: "in"
+        proto: "tcp"
+        rule: "allow"
+
+      - comment: "Allow NodePort Services"
+        from_ip: "{{ network.zones.home.lans.k8s.cidr }}"
+        to_port: "30000:32767"
+        direction: "in"
+        proto: "tcp"
+        rule: "allow"

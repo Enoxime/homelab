@@ -1,0 +1,16 @@
+---
+- name: "[Vault] - Add repository key"
+  ansible.builtin.apt_key:
+    url: "https://apt.releases.hashicorp.com/gpg"
+    state: "present"
+
+- name: "[Vault] - Add repository"
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64] https://apt.releases.hashicorp.com bionic main"
+    state: "present"
+
+- name: "[Vault] - Install binary"
+  ansible.builtin.apt:
+    name:
+      - "vault"
+    state: present

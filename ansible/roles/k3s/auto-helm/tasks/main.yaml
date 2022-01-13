@@ -1,0 +1,37 @@
+---
+- name: "Create the directory"
+  ansible.builtin.file:
+    group: "root"
+    mode: "600"
+    owner: "root"
+    path: "{{ config_directory_path }}/{{ item.name }}"
+    recurse: yes
+    state: directory
+  loop: "{{ auto_helm }}"
+
+- name: "[{{ item.name }}] - Add {{ item.name }} repository"
+  kubernetes.core.helm_repository:
+    repo_name: "{{ item.repo_name }}"
+    repo_state: "present"
+    repo_url: "{{ item.repo_url }}"
+  loop: "{{ auto_helm }}"
+
+- name: "[{{ item.name }}] - Generate {{ item.name }}-values.yaml"
+  ansible.builtin.template:
+    dest: "{{ config_directory_path }}/{{ item.name }}/{{ item.name }}-values.yaml"
+    src: "values.yaml"
+  loop: "{{ auto_helm }}"
+
+- name: "[{{ item.name }}] - Install and setup Consul"
+  kubernetes.core.helm:
+    chart_ref: "{{ item.chart_ref }}"
+    create_namespace: yes
+    kubeconfig: "/etc/rancher/k3s/k3s.yaml"
+    release_name: "{{ item.name }}"
+    release_namespace: "{{ item.name }}"
+    update_repo_cache: yes
+    values_files:
+      - "{{ config_directory_path }}/{{ item.name }}/{{ item.name }}-values.yaml"
+    wait: yes
+    wait_timeout: "15m"
+  loop: "{{ auto_helm }}"

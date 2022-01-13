@@ -1,0 +1,68 @@
+network:
+  version: 2
+{% if config_file.network.ethernets is defined or netplan.ethernets is defined %}
+
+  ethernets:
+{%  if config_file.network.ethernets is defined %}
+{%    for key, value in config_file.network.ethernets.items() %}
+    {{ key }}:
+{%      if netplan.ethernets[key] is defined %}
+      {{ netplan.ethernets[key] | to_nice_yaml(indent=2) | indent(6) }}
+{%      else %}
+      {{ value | to_nice_yaml(indent=2) | indent(6) }}
+{%      endif %}
+{%    endfor %}
+{%  endif %}
+{%  if netplan.ethernets is defined %}
+{%    for key, value in netplan.ethernets.items() %}
+{%      if not config_file.network.ethernets[key] is defined %}
+    {{ key }}:
+      {{ value | to_nice_yaml(indent=2) | indent(6) }}
+{%      endif %}
+{%    endfor %}
+{%  endif %}
+{% endif %}
+{% if config_file.network.vlans is defined or netplan.vlans is defined %}
+
+  vlans:
+{%  if config_file.network.vlans is defined %}
+{%    for key, value in config_file.network.vlans.items() %}
+    "{{ key }}":
+{%      if netplan.vlans[key] is defined %}
+      {{ netplan.vlans[key] | to_nice_yaml(indent=2) | indent(6) }}
+{%      else %}
+      {{ value | to_nice_yaml(indent=2) | indent(6) }}
+{%      endif %}
+{%    endfor %}
+{%  endif %}
+{%  if netplan.vlans is defined %}
+{%    for key, value in netplan.vlans.items() %}
+{%      if not config_file.network.vlans[key] is defined %}
+    "{{ key }}":
+      {{ value | to_nice_yaml(indent=2) | indent(6) }}
+{%      endif %}
+{%    endfor %}
+{%  endif %}
+{% endif %}
+{% if config_file.network.wifis is defined or netplan.wifis is defined %}
+
+  wifis:
+{%  if config_file.network.wifis is defined %}
+{%    for key, value in config_file.network.wifis.items() %}
+    {{ key }}:
+{%      if netplan.wifis[key] is defined %}
+      {{ netplan.wifis[key] | to_nice_yaml(indent=2) | indent(6) }}
+{%      else %}
+      {{ value | to_nice_yaml(indent=2) | indent(6) }}
+{%      endif %}
+{%    endfor %}
+{%  endif %}
+{%  if netplan.wifis is defined %}
+{%    for key, value in netplan.wifis.items() %}
+{%      if not config_file.network.wifis[key] is defined %}
+    {{ key }}:
+      {{ value | to_nice_yaml(indent=2) | indent(6) }}
+{%      endif %}
+{%    endfor %}
+{%  endif %}
+{% endif %}

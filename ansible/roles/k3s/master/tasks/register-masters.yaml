@@ -1,0 +1,26 @@
+---
+- name: "Initialize cluster with the first master node"
+  ansible.builtin.shell: |
+    set -o pipefail
+
+    curl -sfL https://get.k3s.io | sh -s - \
+    server \
+      --disable traefik \
+      --disable local-storage \
+      --disable servicelb \
+      --disable-cloud-controller \
+      --resolv-conf {{ config_directory_path }}/resolv.conf \
+      --write-kubeconfig-mode 600 \
+      --node-external-ip {{ item.ip }} \
+      --bind-address {{ item.ip }} \
+      --https-listen-port {{ item.port }} \
+      --tls-san {{ item.ip }} \
+      --tls-san k3s.lan \
+      --flannel-backend=wireguard \
+      --kubelet-arg authentication-token-webhook=true \
+      --kubelet-arg authorization-mode=Webhook \
+      --server https://{{ k3s.masters[0].ip }}:{{ k3s.masters[0].port }} \
+      --token "{{ lookup('file', '/tmp/master_cluster_node_token') }}"
+  loop: "{{ k3s.masters }}"
+  when:
+    - item.host == inventory_hostname

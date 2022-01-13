@@ -1,0 +1,13 @@
+---
+- name: "Create a k3s config directory"
+  ansible.builtin.file:
+    group: "root"
+    mode: "600"
+    owner: "root"
+    path: "{{ config_directory_path }}"
+    recurse: yes
+    state: directory
+
+- name: "[Consul] - include consul installation"
+  ansible.builtin.include_tasks: "consul.yaml"
+  when: k3s.config.consul is defined

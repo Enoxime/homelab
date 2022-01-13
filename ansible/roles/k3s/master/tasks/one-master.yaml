@@ -1,0 +1,23 @@
+---
+- name: "Set the server"
+  ansible.builtin.shell: |
+    set -o pipefail
+
+    curl -sfL https://get.k3s.io | sh -s - \
+    server \
+      --disable traefik \
+      --disable local-storage \
+      --disable servicelb \
+      --disable-cloud-controller \
+      --resolv-conf {{ config_directory_path }}/resolv.conf \
+      --write-kubeconfig-mode 600 \
+      --node-external-ip {{ k3s.config.cluster.ip }} \
+      --bind-address {{ k3s.config.cluster.ip }} \
+      --https-listen-port {{ k3s.config.cluster.port }} \
+      --tls-san {{ k3s.config.cluster.ip }} \
+      --tls-san k3s.lan \
+      --flannel-backend=wireguard \
+      --kubelet-arg authentication-token-webhook=true \
+      --kubelet-arg authorization-mode=Webhook
+  args:
+    creates: "/etc/rancher/k3s/k3s.yaml"

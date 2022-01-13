@@ -1,0 +1,72 @@
+options {
+  directory "/var/cache/bind";
+
+  // If there is a firewall between you and nameservers you want
+  // to talk to, you may need to fix the firewall to allow multiple
+  // ports to talk.  See http://www.kb.cert.org/vuls/id/800113
+
+  // If your ISP provided one or more IP addresses for stable
+  // nameservers, you probably want to use them as forwarders.
+  // Uncomment the following block, and insert the addresses replacing
+  // the all-0's placeholder.
+
+  // forwarders {
+  // 	0.0.0.0;
+  // };
+{% if bind9.options.forwarders is defined %}
+  forwarders {
+{%    for fw in bind9.options.forwarders %}
+    {{ fw }};
+{%    endfor %}
+  };
+{% endif %}
+
+{% if bind9.options.listens is defined %}
+  listen-on {
+{%    for listen in bind9.options.listens %}
+    {{ listen }};
+{%    endfor %}
+  };
+{% endif %}
+
+{% if bind9.options.allows is defined %}
+  allow-query {
+{%    for allow in bind9.options.allows %}
+    {{ allow }};
+{%    endfor %}
+  };
+{% else %}
+  allow-query { any; };
+{% endif %}
+
+  // hide version number and hostname from clients for security reasons.
+  version none;
+  hostname none;
+
+  // Limit DoS attack
+  rate-limit {
+    responses-per-second 10;
+    exempt-clients { 127.0.0.1; ::1; };
+  };
+
+  // disable recursion on authoritative DNS server.
+  //recursion no;
+
+  // IPs to witch the server will reply to recursive queries (when it need to contact other severs to get the response). This must never contain any public IP.
+  allow-recursion { 127.0.0.1; ::1; };
+
+  // enable the query log
+  querylog yes;
+
+  // disallow zone transfer
+  allow-transfer { none; };
+
+  //========================================================================
+  // If BIND logs error messages about the root key being expired,
+  // you will need to update your keys.  See https://www.isc.org/bind-keys
+  //========================================================================
+  dnssec-validation auto;
+
+  //listen-on-v6 { any; };
+  listen-on-v6 { none; };
+};

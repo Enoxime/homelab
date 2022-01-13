@@ -1,0 +1,40 @@
+---
+- name: "Install nfs server"
+  ansible.builtin.apt:
+    name: nfs-kernel-server
+    state: present
+
+- name: "Create export directory"
+  ansible.builtin.file:
+    path: "/export"
+    state: directory
+    mode: "0755"
+
+- name: "Create nfs filesystem and mountpoint"
+  ansible.builtin.include_tasks: create_nfs.yaml
+  loop: "{{ nfs }}"
+  loop_control:
+    loop_var: iter_create
+  when:
+    - iter_create.state == "present"
+    - iter_create.bind is defined
+    - iter_create.bind
+
+- name: "Remove nfs mountpoint and filesystem"
+  ansible.builtin.include_tasks: remove_nfs.yaml
+  loop: "{{ nfs }}"
+  loop_control:
+    loop_var: iter_delete
+  when:
+    - iter_delete.state == "absent"
+    - iter_delete.bind is defined
+    - iter_delete.bind
+
+- name: "copy /etc/exports"
+  ansible.builtin.template:
+    mode: "644"
+    src: "exports"
+    dest: "/etc/exports"
+    owner: "root"
+    group: "root"
+  notify: Restart nfs service

@@ -1,0 +1,95 @@
+---
+- name: "Swap modification when swap is up"
+  block:
+    - name: "Turn swap to off"
+      ansible.builtin.command: "swapoff -a"
+
+    - name: "Disable swap permanently"
+      ansible.posix.mount:
+        name: "{{ item }}"
+        fstype: "swap"
+        state: "absent"
+      loop:
+        - "swap"
+        - "none"
+  when:
+    - ansible_swaptotal_mb > 0
+
+- name: "Generate module file list that need to be loaded"
+  ansible.builtin.copy:
+    content: |
+      overlay
+      br_netfilter
+    dest: "/etc/modules-load.d/containerd.conf"
+    mode: "644"
+
+- name: "Generate module file list that need to be blacklisted"
+  ansible.builtin.copy:
+    content: |
+      # DCCP is unlikely to be needed, has had multiple serious
+      # vulnerabilities, and is not well-maintained.
+      blacklist dccp
+
+      # SCTP is not used in most Kubernetes clusters, and has also had
+      # vulnerabilities in the past.
+      blacklist sctp
+    dest: "/etc/modules-load.d/containerd-blacklist.conf"
+    mode: "644"
+
+- name: "Ensure modules are loaded"
+  community.general.modprobe:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - "overlay"
+    - "br_netfilter"
+
+- name: "Ensure net.bridge.bridge-nf-call-iptables is set to 1"
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    reload: yes
+    state: present
+    sysctl_file: "/etc/sysctl.d/99-kubernetes-cri.conf"
+    sysctl_set: yes
+    value: "1"
+  loop:
+    - "net.ipv4.ip_forward"
+    - "net.bridge.bridge-nf-call-iptables"
+    - "net.bridge.bridge-nf-call-ip6tables"
+
+- name: "Ensure base is installed"
+  ansible.builtin.apt:
+    name:
+      - "apt-transport-https"
+      - "containerd"
+      - "curl"
+      - "jq"
+      - "nfs-common"
+      - "python3-pip"
+      - "unzip"
+      - "wireguard"
+    state: present
+    update_cache: yes
+
+- name: "Ensure base python packages is installed"
+  ansible.builtin.pip:
+    executable: "/usr/bin/pip3"
+    name:
+      - "openshift"
+    state: "present"
+
+- name: "In case of Raspberri pi, enable cpu container and memory isolation"
+  ansible.builtin.lineinfile:
+    backrefs: yes
+    path: "/boot/firmware/cmdline.txt"
+    regexp: '^(cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory )?(.*)'
+    line: 'cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory \2'
+  register: cmdline
+  when: ansible_machine == "aarch64"
+
+- name: "Reboot to apply modification"
+  ansible.builtin.reboot:
+    reboot_timeout: 300
+  when:
+    - ansible_machine == "aarch64"
+    - cmdline.changed

@@ -1,0 +1,8 @@
+---
+docker_pckg_dependencies:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gnupg
+  - lsb-release
+  - software-properties-common

@@ -1,0 +1,10 @@
+---
+- name: "[Vault] - Unseal vault-{{ item }}"
+  kubernetes.core.k8s_exec:
+    command: "vault operator unseal {{ unseal_key }}"
+    kubeconfig: "/etc/rancher/k3s/k3s.yaml"
+    namespace: "vault"
+    pod: "vault-{{ item }}"
+  loop: "{{ vault_init.stdout | from_json | community.general.json_query('unseal_keys_b64') }}"
+  loop_control:
+    loop_var: unseal_key

@@ -1,0 +1,39 @@
+---
+- name: "Create DB user"
+  community.postgresql.postgresql_user:
+    login_host: "{{ postgres_init.user.login_host }}"
+    login_password: "{{ postgres_init.user.login_password }}"
+    login_user: "{{ postgres_init.user.login_user }}"
+    name: "{{ item.username }}"
+    password: "{{ item.password }}"
+    port: "{{ postgres_init.user.port | default('5432') }}"
+    state: "{{ item.state | default('present') }}"
+  loop: "{{ postgres_init.user.users }}"
+  when:
+    - postgres_init.user is defined
+
+- name: "Create DB"
+  community.postgresql.postgresql_db:
+    encoding: "UTF-8"
+    login_host: "{{ postgres_init.db.login_host }}"
+    login_password: "{{ postgres_init.db.login_password }}"
+    login_user: "{{ postgres_init.db.login_user }}"
+    name: "{{ item.name }}"
+    owner: "{{ item.owner }}"
+    port: "{{ postgres_init.db.port | default('5432') }}"
+    state: "{{ item.state | default('present') }}"
+  loop: "{{ postgres_init.db.dbs }}"
+  when:
+    - postgres_init.db is defined
+
+- name: "Insert query"
+  community.postgresql.postgresql_query:
+    db: "{{ item.db }}"
+    login_host: "{{ postgres_init.query.login_host }}"
+    login_password: "{{ postgres_init.query.login_password }}"
+    login_user: "{{ postgres_init.query.login_user }}"
+    port: "{{ postgres_init.query.port | default('5432') }}"
+    query: "{{ item.query }}"
+  loop: "{{ postgres_init.query.queries }}"
+  when:
+    - postgres_init.query is defined

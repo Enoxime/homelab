@@ -1,0 +1,18 @@
+---
+- name: "Add personnal config"
+  ansible.builtin.blockinfile:
+    backup: yes
+    block: |
+      {{ item.ip }}{% for name in item.names %} {{ name }}{% endfor %}
+    group: "root"
+    marker: "# {mark} Managed by Ansible - Personnal config"
+    mode: "0644"
+    owner: "root"
+    path: "/etc/hosts"
+    state: "present"
+  loop: "{{ hosts_file }}"
+  when:
+    - hosts_file is defined
+
+# - name: Someone who cares
+...

@@ -1,0 +1,50 @@
+---
+- name: "Install packages"
+  ansible.builtin.apt:
+    name:
+      - "ca-certificates"
+      - "openssl"
+    state: present
+
+- name: "Create certificates main directory"
+  ansible.builtin.file:
+    group: "{{ certificates.config.group | default(certificate.group) }}"
+    mode: "700"
+    owner: "{{ certificates.config.owner | default(certificate.owner) }}"
+    path: "{{ certificates.config.path | default(certificate.config.path) }}"
+    recurse: yes
+    state: directory
+
+- name: "Check if the CA exists"
+  ansible.builtin.stat:
+    path: "{{ certificates.config.path | default(certificate.config.path) }}/{{ certificates.ca.name | default(certificate.ca.name) }}.ca.crt"
+  register: ca_exists
+
+- name: "Check if the CA is outdated"
+  community.crypto.x509_certificate_info:
+    path: "{{ certificates.config.path | default(certificate.config.path) }}/{{ certificates.ca.name | default(certificate.ca.name) }}.ca.crt"
+  register: certificate_validity_check
+  when: ca_exists.stat.exists
+
+- name: "Create CA bundle"
+  ansible.builtin.include_tasks: "ca_bundle.yaml"
+  when:
+    - not ca_exists.stat.exists or (certificate_validity_check is defined and certificate_validity_check.expired)
+
+- name: "Create certificates directories"
+  ansible.builtin.file:
+    group: "{{ certificates.config.group | default(certificate.group) }}"
+    mode: "700"
+    owner: "{{ certificates.config.owner | default(certificate.owner) }}"
+    path: "{{ certificates.config.path | default(certificate.config.path) }}/{{ cert.name | default(certificate.config.name) }}"
+    recurse: yes
+    state: directory
+  loop: "{{ certificates.certs }}"
+  loop_control:
+    loop_var: cert
+
+- name: "Create certificate bundle"
+  ansible.builtin.include_tasks: "crt_bundle.yaml"
+  loop: "{{ certificates.certs }}"
+  loop_control:
+    loop_var: cert

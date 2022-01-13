@@ -1,0 +1,23 @@
+---
+certificate:
+  owner: "root"
+  group: "root"
+  ca:
+    curve: "secp256r1"
+    name: "ca"
+    size: 4096
+    type: "X25519"
+  config:
+    backup: yes
+    path: "/root/cert"
+    name: "default"
+    country_name: "CA"
+    organization_name: "Home"
+    organizational_unit_name: "HM"
+    state_or_province_name: "QC"
+  private_key:
+    curve: "secp256r1"
+    size: 4096
+    type: "X25519"
+  common_name: "nas.lan"
+  subject_alt_name: "DNS:nas.lan"

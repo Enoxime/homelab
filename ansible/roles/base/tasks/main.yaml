@@ -1,0 +1,68 @@
+---
+- name: "Set timezone to {{ timezone }}"
+  community.general.timezone:
+    name: "{{ timezone }}"
+  when:
+    - timezone is defined
+
+- name: "Update package manager"
+  ansible.builtin.apt:
+    autoclean: yes
+    autoremove: yes
+    update_cache: yes
+    cache_valid_time: 86400
+
+- name: "Install base packages"
+  ansible.builtin.apt:
+    name:
+      - htop
+      - iotop
+      - python3-pip
+      - screen
+      - tree
+      - vim
+    state: present
+
+- name: "Install packages"
+  ansible.builtin.apt:
+    name: "{{ packages_list }}"
+    state: present
+  when:
+    - packages_list is defined
+
+- name: "Install python packages"
+  ansible.builtin.pip:
+    executable: pip3
+    name: "{{ python_packages }}"
+  when:
+    - python_packages is defined
+
+- name: "Deactivate DNSStubListener from systemd-resolved"
+  ansible.builtin.lineinfile:
+    backrefs: yes
+    path: "/etc/systemd/resolved.conf"
+    regexp: '^#?DNSStubListener=yes'
+    line: 'DNSStubListener=no'
+  when:
+    - dns_53 is defined
+    - dns_53
+
+- name: "Set default dns service for systemd-resolved"
+  ansible.builtin.lineinfile:
+    backrefs: yes
+    path: "/etc/systemd/resolved.conf"
+    regexp: '^#?DNS='
+    line: 'DNS={{ dns_53 }}'
+  when:
+    - dns_53 is defined
+    - dns_53
+
+- name: "Set sytemd-resolved default generated conf"
+  ansible.builtin.file:
+    path: "/etc/resolv.conf"
+    src: "/run/systemd/resolve/resolv.conf"
+    state: "link"
+  when:
+    - dns_53 is defined
+    - dns_53
+  notify: "Reload systemd-resolved"

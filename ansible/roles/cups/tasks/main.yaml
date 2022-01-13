@@ -1,0 +1,41 @@
+---
+- name: "Install CUPS"
+  ansible.builtin.apt:
+    name:
+      - avahi-daemon
+      - cups
+      - samba
+      - ghostscript
+      - gsfonts
+      - foomatic-db
+      - openprinting-ppds
+    state: present
+
+- name: "Add user to cups admin group"
+  ansible.builtin.user:
+    append: yes
+    create_home: no
+    groups:
+      - lpadmin
+    name: "{{ cups.user }}"
+    password: "{{ cups.password }}"
+    shell: "/usr/sbin/nologin"
+
+- name: "Setup CUPS config file"
+  ansible.builtin.template:
+    dest: "/etc/cups/cupsd.conf"
+    src: "cupsd.conf"
+
+# - name: "Setup avahi-daemon config file"
+#   ansible.builtin.template:
+#     dest: "/etc/avahi/avahi-daemon.conf"
+#     src: "avahi-daemon.conf"
+
+- name: "Enable and start avahi-daemon"
+  ansible.builtin.shell: "systemctl enable avahi-daemon.service && systemctl restart avahi-daemon.service"
+
+- name: "Enable and restart cups service"
+  ansible.builtin.service:
+    enabled: yes
+    name: cups.service
+    state: restarted

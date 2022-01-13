@@ -1,0 +1,34 @@
+---
+- name: "Create a k3s config directory"
+  ansible.builtin.file:
+    group: "root"
+    mode: "600"
+    owner: "root"
+    path: "{{ config_directory_path }}"
+    recurse: yes
+    state: directory
+
+- name: "Create k8s_gateway configuration"
+  ansible.builtin.template:
+    mode: "644"
+    dest: "{{ config_directory_path }}/k8s_gateway-values.yaml"
+    src: "k8s_gateway-values.yaml"
+
+- name: "Helm - Add k8s_gateway repo"
+  kubernetes.core.helm_repository:
+    repo_name: "k8s_gateway"
+    repo_state: "present"
+    repo_url: "https://ori-edge.github.io/k8s_gateway/"
+
+- name: "Helm - Install k8s_gateway"
+  kubernetes.core.helm:
+    chart_ref: "k8s_gateway/k8s-gateway"
+    create_namespace: yes
+    kubeconfig: "/etc/rancher/k3s/k3s.yaml"
+    release_name: "exdns"
+    release_namespace: "k8s-gateway"
+    update_repo_cache: yes
+    values_files:
+      - "{{ config_directory_path }}/k8s_gateway-values.yaml"
+    wait: yes
+    wait_timeout: "15m"

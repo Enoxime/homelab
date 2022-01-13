@@ -1,0 +1,5 @@
+[Unit]
+Description=Endlessh
+
+[Service]
+ExecStart=/usr/local/bin/endlessh -4 -p {{ endlessh.port | default(22) }}

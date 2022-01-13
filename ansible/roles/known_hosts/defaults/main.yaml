@@ -1,0 +1,2 @@
+---
+default_known_hosts_path: "~/.ssh/known_hosts"

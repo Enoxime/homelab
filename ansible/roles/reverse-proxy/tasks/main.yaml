@@ -1,0 +1,88 @@
+---
+- name: "Install packages"
+  ansible.builtin.apt:
+    name:
+      - "ca-certificates"
+      - "certbot"
+      - "gzip"
+      - "nginx"
+      - "openssl"
+      - "python3-certbot-nginx"
+    state: present
+
+- name: "Clean internal_network folder"
+  ansible.builtin.file:
+    path: "/etc/nginx/internal_network"
+    state: absent
+
+- name: "Create needed directories"
+  ansible.builtin.file:
+    group: "root"
+    mode: "755"
+    owner: "root"
+    path: "/etc/nginx/{{ item }}"
+    recurse: yes
+    state: directory
+  loop:
+    - "dhparam"
+    - "internal_network"
+    - "certs"
+
+- name: "Generate dhparam file"
+  ansible.builtin.command:
+    cmd: openssl dhparam -dsaparam -out /etc/nginx/dhparam/dhparam.pem 4096
+    creates: /etc/nginx/dhparam/dhparam.pem
+
+- name: "Define internal network groups"
+  ansible.builtin.template:
+    dest: "/etc/nginx/internal_network/{{ internal_network.name | lower | replace(' ', '_') }}.conf"
+    group: "root"
+    mode: "644"
+    owner: "root"
+    src: "internal_network.conf"
+  loop: "{{ nginx.internal_network }}"
+  loop_control:
+    loop_var: "internal_network"
+
+- name: "Check if letsencrypt certificate exists"
+  ansible.builtin.stat:
+    path: "/etc/letsencrypt/live/{{ service.main_domain_name }}/fullchain.pem"
+  loop: "{{ nginx.http.services }}"
+  loop_control:
+    loop_var: "service"
+  register: letsencrypt_cert_exists
+  when:
+    - nginx.config.certbot is defined
+    - service.main_domain_name is defined
+
+- name: "Copy existing certificates from proxy_bind"
+  ansible.builtin.copy:
+    mode: "644"
+    backup: yes
+    dest: "/etc/nginx/certs/{{ service.main_domain_name }}/"
+    src: "temp/{{ service.proxy_bind.ssl.hostname }}/certs/"
+  loop: "{{ nginx.http.services }}"
+  loop_control:
+    loop_var: "service"
+  when:
+    - service.proxy_bind is defined
+    - service.proxy_bind.ssl is defined
+
+- name: "Generate nxginx.conf file"
+  ansible.builtin.template:
+    dest: "/etc/nginx/nginx.conf"
+    group: "root"
+    mode: "644"
+    owner: "root"
+    src: "nginx.conf"
+  notify: "Reload nginx"
+
+- name: "Install certificate with certbot"
+  ansible.builtin.include_tasks: "certbot.yaml"
+  loop: "{{ nginx.http.services }}"
+  loop_control:
+    loop_var: "service"
+  when:
+    - nginx.config.certbot is defined
+    - service.ssl is defined
+    - service.ssl.type == "letsencrypt"

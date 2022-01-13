@@ -1,0 +1,32 @@
+global:
+  name: "consul"
+  # gossipEncryption:
+  #   secretName: consul-gossip-encryption-key
+  #   secretKey: key
+  # metrics:
+  #   enabled: true
+  #   enableAgentMetrics: true
+  #   enableGatewayMetrics: false
+  tls:
+    enabled: {{ k3s.config.consul.tls }}
+
+server:
+  enabled: true
+  replicas: {{ k3s.config.consul.server.replicas }}
+  storageClass: {{ k3s.config.consul.server.storage_class | default("null") }}
+  extraConfig: |
+    {
+      "raft_protocol": 3
+    }
+
+ui:
+  enabled: true
+  service:
+    enabled: true
+    type: "ClusterIP"
+  ingress:
+    enabled: true
+    hosts:
+      - host: "{{ k3s.config.consul.ui.host }}"
+        paths:
+          - /

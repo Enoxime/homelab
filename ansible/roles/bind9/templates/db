@@ -1,0 +1,28 @@
+{% set iteration_serial = "00" %}
+{% set refresh = "20m" %}
+{% set retry = "2m" %}
+{% set expire = "1w" %}
+{% set negative_ttl = "1h" %}
+{% if file_exists.stat.exists %}{% set iteration_serial = serial.stdout[-2:]|int + 1 %}{% endif %}
+{% if zone.config is defined and zone.config.refresh is defined %}{% set refresh = zone.config.refresh %}{% elif bind9.config is defined and bind9.config.refresh is defined %}{% set refresh = bind9.config.refresh %}{% endif %}
+{% if zone.config is defined and zone.config.retry is defined %}{% set refresh = zone.config.retry %}{% elif bind9.config is defined and bind9.config.retry is defined %}{% set refresh = bind9.config.retry %}{% endif %}
+{% if zone.config is defined and zone.config.expire is defined %}{% set refresh = zone.config.expire %}{% elif bind9.config is defined and bind9.config.expire is defined %}{% set refresh = bind9.config.expire %}{% endif %}
+{% if zone.config is defined and zone.config.negative_ttl is defined %}{% set refresh = zone.config.negative_ttl %}{% elif bind9.config is defined and bind9.config.negative_ttl is defined %}{% set refresh = bind9.config.negative_ttl %}{% endif %}
+$ORIGIN   {{ zone.name }}.
+$TTL      3600          ; Default TTL for this zone (1 hour)
+
+; Start of Authority (SOA) record  defining the key characteristics of this zone
+{{ '{:20}'.format('@') }}{{ '{:4}'.format('IN') }}{{ '{:6}'.format('SOA') }}{{ zone.name_servers[0] }}. {{ zone.email | replace("@", ".") }}. (
+                              {{ '%Y%m%d' | strftime }}{{ iteration_serial }} ; Serial
+                              {{ '{:10}'.format(refresh) }}; Frequency of zone transfer from slave
+                              {{ '{:10}'.format(retry) }}; delay before slave retries after a zone transfer failure
+                              {{ '{:10}'.format(expire) }}; Time a slave will keep the data in case it cannot contact the master
+                              {{ '{:10}'.format(negative_ttl) }}; Time a cache will keep negative responses (NXDOMAIN)
+)
+
+{% for ns in zone.name_servers %}
+{{ '{:20}'.format('@') }}{{ '{:4}'.format('IN') }}{{ '{:6}'.format('NS') }}{{ ns }}.
+{% endfor %}
+{% for host in zone.hosts %}
+{{ '{:20}'.format(host.name) }}{{ '{:4}'.format('IN') }}{{ '{:6}'.format(host.type) }}{{ host.content }}
+{% endfor %}

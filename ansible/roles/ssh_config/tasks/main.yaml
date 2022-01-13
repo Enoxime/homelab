@@ -1,0 +1,37 @@
+---
+- name: "Generate ssh config file"
+  ansible.builtin.blockinfile:
+    backup: yes
+    block: |
+      {% if ssh_config.hostnames is defined %}
+      {%  for hostname in ssh_config.hostnames %}
+      Host {% for host in hostname.hosts %}{{ host }}{% if not loop.last %} {% endif %}{% endfor %}{% if hostname.ip is defined %} {{ hostname.ip }}{% endif %}
+
+        Hostname {% if hostname.hostname is defined %}{{ hostname.hostname }}{% else %}{{ hostname.ip }}{% endif %}
+
+        User {{ hostname.user }}
+        Port {% if hostname.port is defined %}{{ hostname.port }}{% else %}22{% endif %}
+
+        IdentityFile "{% if hostname.identity_file_path is defined %}{{ hostname.identity_file_path }}{% else %}{{ ssh_config.default_identity_file_path }}{% endif %}"
+        {% if hostname.jump is defined %}ProxyJump {{ hostname.jump }}{% endif %}
+
+      {%  endfor %}
+      {% endif %}
+      {% if ssh_config.ansible_hosts is defined and ssh_config.ansible_hosts %}
+      {%  for hostname in hostvars %}
+      {%    if hostvars[hostname].hosts is defined %}
+      Host {% for host in hostvars[hostname].hosts %}{{ host }}{% if not loop.last %} {% endif %}{% endfor %} {{ hostvars[hostname].ansible_host }}
+        Hostname {{ hostvars[hostname].ansible_host }}
+        User {{ hostvars[hostname].ansible_user }}
+        Port {% if hostvars[hostname].ansible_port is defined %}{{ hostvars[hostname].ansible_port }}{% else %}22{% endif %}
+
+        IdentityFile "{% if hostvars[hostname].identity_file_path is defined %}{{ hostvars[hostname].identity_file_path }}{% else %}{{ ssh_config.default_identity_file_path }}{% endif %}"
+        {% if hostvars[hostname].jump is defined %}
+        ProxyJump {{ hostvars[hostname].jump }}
+        {% endif %}
+
+      {%    endif %}
+      {%  endfor %}
+      {% endif %}
+    path: "~/.ssh/config"
+  when: ssh_config is defined

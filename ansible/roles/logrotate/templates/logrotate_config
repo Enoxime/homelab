@@ -1,0 +1,8 @@
+{% for path in log.log_path %}
+{{ path }}
+{% endfor -%} {
+    {% for option in log.options %}
+    {{ option }}
+    {% endfor %}
+
+}

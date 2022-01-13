@@ -1,0 +1,7 @@
+---
+- name: "Restart nfs service"
+  ansible.builtin.service:
+    enabled: yes
+    name: "nfs-kernel-server"
+    state: "restarted"
+...

@@ -1,0 +1,34 @@
+---
+- name: "Join kubernetes cluster"
+  ansible.builtin.shell: |
+    set -o pipefail
+
+    curl -sfL https://get.k3s.io | sh -s - \
+    agent \
+      --node-ip {{ item.ip }} \
+      --node-name {{ item.host }} \
+      --server https://{{ k3s.masters[0].ip }}:{{ k3s.masters[0].port }} \
+      --token {{ master_node_token }}
+  loop: "{{ k3s.nodes }}"
+  when:
+    - item.host == inventory_hostname
+    - k3s.masters | length == 1
+
+- name: "Join kubernetes cluster"
+  ansible.builtin.shell: |
+    set -o pipefail
+
+    curl -sfL https://get.k3s.io | sh -s - \
+    agent \
+      --node-ip {{ item.ip }} \
+      --node-name {{ item.host }} \
+      --server https://{{ k3s.config.vip }}:{{ k3s.config.port }} \
+      --token {{ master_node_token }}
+  loop: "{{ k3s.nodes }}"
+  when:
+    - item.host == inventory_hostname
+    - k3s.masters | length > 1
+
+- name: "Wait the nodes to join the cluster"
+  ansible.builtin.pause:
+    minutes: "1"

@@ -1,0 +1,7 @@
+---
+- name: "Update ssh_config and known_hosts files"
+  gather_facts: no
+  hosts: localhost
+  roles:
+    - ssh_config
+    - known_hosts

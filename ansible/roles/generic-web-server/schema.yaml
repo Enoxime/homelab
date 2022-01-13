@@ -1,0 +1,25 @@
+generic_web_server:
+  dns_resolver: []
+  config:
+    user: ""
+    certbot:
+      email: ""
+    http:
+      ssl_protocols: []
+      ssl_ciphers: []
+      ssl_prefer_server_ciphers: ""
+      cache:
+        path: ""
+        name: ""
+        size: ""
+
+  services:
+    - name: ""
+      listen: ""
+      main_domain_name: ""
+      domain_names: []
+      ssl:
+        type: "letsencrypt or manual"
+        cert_name: ""
+        test: true
+      unauthorized_method: []

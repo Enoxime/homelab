@@ -1,0 +1,19 @@
+---
+- name: "Install needed packages"
+  ansible.builtin.apt:
+    name:
+      - "apcupsd"
+
+- name: "Set configuration to yes"
+  ansible.builtin.lineinfile:
+    path: "/etc/default/apcupsd"
+    regexp: '^ISCONFIGURED'
+    line: "ISCONFIGURED=yes"
+  notify: apcups_restart
+
+- name: "Set apcupsd configuration"
+  ansible.builtin.template:
+    dest: "/etc/apcupsd/apcupsd.conf"
+    mode: "644"
+    src: "apcupsd.conf"
+  notify: apcups_restart

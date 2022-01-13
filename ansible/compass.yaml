@@ -1,0 +1,33 @@
+---
+- name: "Set sshd port"
+  become: yes
+  hosts: nameserver_old
+  tags: never
+  roles:
+    - sshd_config
+
+- name: "Set base"
+  become: yes
+  hosts: nameserver
+  roles:
+    - base
+    - endlessh
+    - hosts
+    - sshd_config
+    - fail2ban
+    - ufw
+
+- name: "Set DNS server"
+  become: yes
+  hosts: nameserver
+  tags: bind
+  roles:
+    - bind9
+
+- name: "Set static page for enoxi.me"
+  become: yes
+  hosts: nameserver
+  tags: server
+  roles:
+    - ssl-certificate
+    - generic-web-server

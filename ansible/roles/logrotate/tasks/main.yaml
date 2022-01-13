@@ -1,0 +1,15 @@
+---
+- name: "Install logrotate"
+  ansible.builtin.apt:
+    name: "logrotate"
+    state: "present"
+    update_cache: yes
+    cache_valid_time: 86400
+
+- name: "Update/Add logrotate configuration file"
+  ansible.builtin.template:
+    dest: "/etc/logrotate.d/{{ log.name }}"
+    src: "logrotate_config"
+  loop: "{{ logrotate }}"
+  loop_control:
+    loop_var: "log"

@@ -1,0 +1,49 @@
+---
+- name: Delete networks, disconnecting all containers
+  community.docker.docker_network:
+    name: "{{ item.name }}"
+    state: "absent"
+    force: yes
+  loop: "{{ container_network }}"
+
+- name: Tasks to do once before deploying the container(s)
+  ansible.builtin.include_tasks: tasks_todo_once.yaml
+  loop: "{{ container }}"
+
+- name: Tasks to do each time before deploying the container(s)
+  ansible.builtin.include_tasks: tasks_todo.yaml
+  loop: "{{ container }}"
+  loop_control:
+    loop_var: iter_command_list
+
+- name: Deploy conatainers
+  ansible.builtin.include_tasks: deploy.yaml
+  loop: "{{ container }}"
+
+- name: Create networks
+  community.docker.docker_network:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+    force: "{{ item.force | default(omit) }}"
+  loop: "{{ container_network }}"
+  when:
+    - item.config is not defined
+
+- name: Create networks with config
+  community.docker.docker_network:
+    name: "{{ item.name }}"
+    ipam_config:
+      - subnet: "{{ item.config.subnet }}"
+    state: "{{ item.state | default('present') }}"
+    force: "{{ item.force | default(omit) }}"
+  loop: "{{ container_network }}"
+  when:
+    - item.config is defined
+
+- name: Add containers to networks
+  community.docker.docker_network:
+    name: "{{ item.name }}"
+    connected: "{{ item.containers }}"
+    appends: yes
+  loop: "{{ container_network }}"
+...

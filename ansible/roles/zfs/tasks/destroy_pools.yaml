@@ -1,0 +1,43 @@
+---
+- name: Gather disks facts
+  ansible.builtin.shell: "zpool status | grep {{ item }} || exit 0"
+  loop: "{{ iter_pool.list_disks }}"
+  register: gather_disks_facts
+
+- name: Sort gather_disks_facts
+  set_fact:
+    disks_facts: "true"
+  loop: "{{ gather_disks_facts.results }}"
+  register: disks_in_pool
+  when: item.stdout != ""
+
+- name: Gather pool facts
+  ansible.builtin.stat:
+    path: "{{ zfs.zfs_mountpoint }}/{{ iter_pool.mountpoint_name }}"
+  register: pool_exists
+
+- name: Remove zfs file system(s)
+  community.general.zfs:
+    name: "{{ iter_pool.mountpoint_name }}/{{ item.name }}"
+    state: absent
+  loop: "{{ iter_pool.zfs_fs }}"
+  when:
+    - iter_pool.zfs_fs is defined
+    - item.state == "absent"
+
+- name: Destroy pool(s)
+  become: yes
+  ansible.builtin.command: "zpool destroy {{ iter_pool.mountpoint_name }}"
+  when:
+    - iter_pool.state == "absent"
+    - pool_exists.stat.exists
+
+- name: Remove mountpoint
+  become: yes
+  ansible.builtin.file:
+    path: "{{ zfs.zfs_mountpoint }}/{{ iter_pool.mountpoint_name }}"
+    state: absent
+  when:
+    - iter_pool.state == "absent"
+    - pool_exists.stat.exists
+...

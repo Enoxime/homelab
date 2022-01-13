@@ -1,0 +1,300 @@
+---
+home:
+  hosts:
+    nas:
+      tmp_size: "1G"
+
+
+      packages_list:
+        - libpq-dev
+        - python3-dev
+
+
+      python_packages:
+        - psycopg2
+
+
+      hosts_file:
+        - ip: "127.0.0.1"
+          names:
+            - "nas"
+            - "nas.lan"
+
+
+      apc:
+        on_battery_delay: 120
+        battery_level: 15
+        minutes: 1
+        upsname: br700g
+
+
+      netplan:
+        path: "/etc/netplan"
+        file: "00-installer-config.yaml"
+        vlans:
+          k8s:
+            addresses:
+            - "{{ network.zones.home.hosts.nas.k8s | ansible.netcommon.ipaddr('host') }}"
+            dhcp4: false
+            gateway4: "{{ network.zones.home.lans.k8s.gateway }}"
+            id: 30
+            link: enp4s0
+            macaddress: "{{ '42' | community.general.random_mac() }}"
+            nameservers:
+              addresses:
+              - "{{ network.zones.home.lans.k8s.gateway }}"
+              - "{{ network.nameservers.block_malware[0] }}"
+              - "{{ network.nameservers.block_malware[1] }}"
+
+
+      sshd_config:
+        permit_root_login: "no"
+        password_authentication: "no"
+        x11_forwarding: "no"
+
+
+      fail2ban_config:
+        ignore_ip:
+          - "127.0.0.1/32"
+          - "::1"
+          - "{{ network.zones.home.hosts.nas.k8s | ansible.netcommon.ipaddr('address') }}/32"
+          - "{{ network.zones.home.hosts.nas.lab | ansible.netcommon.ipaddr('address') }}/32"
+        bantime: "{{ fail2ban_config_template.bantime }}"
+        findtime: "{{ fail2ban_config_template.findtime }}"
+        maxretry: "{{ fail2ban_config_template.maxretry }}"
+        jails:
+          "{{ fail2ban_config_template.jails }}"
+
+
+      ufw_ipv6: "no"
+      ufw_default_input_policy: DROP
+      ufw_default_output_policy: ACCEPT
+      ufw_default_forward_policy: ACCEPT
+      ufw_default_application_policy: SKIP
+      ufw_logging: "off"
+      ufw_state: "enabled"
+
+      ufw_rules:
+        - comment: "Allow NTP sync"
+          to_port: "123"
+          direction: "out"
+          proto: "udp"
+          rule: "allow"
+
+        - comment: "Allow ssh from Lab"
+          from_ip: "{{ network.zones.home.lans.lab.cidr }}"
+          to_port: "22"
+          direction: "in"
+          proto: "tcp"
+          rule: "allow"
+
+        - comment: "Allow nfs from Lab"
+          from_ip: "{{ network.zones.home.lans.lab.cidr }}"
+          to_port: "2049"
+          proto: "tcp"
+          rule: "allow"
+
+        - comment: "Allow nfs from k8s"
+          from_ip: "{{ network.zones.home.lans.k8s.cidr }}"
+          to_port: "2049"
+          proto: "tcp"
+          rule: "allow"
+
+        - comment: "Allow smb 139 tcp (NETBIOS) from Lab"
+          from_ip: "{{ network.zones.home.lans.lab.cidr }}"
+          to_port: "139"
+          proto: "tcp"
+          rule: "allow"
+
+        - comment: "Allow smb 445 tcp from Lab"
+          from_ip: "{{ network.zones.home.lans.lab.cidr }}"
+          to_port: "445"
+          proto: "tcp"
+          rule: "allow"
+
+        - comment: "Allow smb nmbd 137 udp from Lab"
+          from_ip: "{{ network.zones.home.lans.lab.cidr }}"
+          to_port: "137"
+          proto: "udp"
+          rule: "allow"
+
+        - comment: "Allow smb nmbd 138 udp from Lab"
+          from_ip: "{{ network.zones.home.lans.lab.cidr }}"
+          to_port: "138"
+          proto: "udp"
+          rule: "allow"
+
+        - comment: "Allow postgres-k3s"
+          from_ip: "{{ network.zones.home.lans.k8s.cidr }}"
+          to_port: "5432"
+          proto: "tcp"
+          rule: "allow"
+
+
+      postgres_init:
+        user:
+          login_host: "{{ network.zones.home.hosts.reverseproxy.lab }}"
+          login_password: "acme"
+          login_user: "acme"
+          users:
+            - username: "vault"
+              password: "123456789"
+        db:
+          login_host: "{{ network.zones.home.hosts.reverseproxy.lab }}"
+          login_password: "acme"
+          login_user: "acme"
+          dbs:
+            - name: "vault"
+              owner: "vault"
+        query:
+          login_host: "{{ network.zones.home.hosts.reverseproxy.lab }}"
+          login_password: "123456789"
+          login_user: "vault"
+          queries:
+            - db: "vault"
+              query: >
+                CREATE TABLE vault_kv_store (
+                  parent_path TEXT COLLATE "C" NOT NULL,
+                  path        TEXT COLLATE "C",
+                  key         TEXT COLLATE "C",
+                  value       BYTEA,
+                  CONSTRAINT pkey PRIMARY KEY (path, key)
+                );
+
+                CREATE INDEX parent_path_idx ON vault_kv_store (parent_path);
+            - db: "vault"
+              query: >
+                CREATE TABLE vault_ha_locks (
+                  ha_key      TEXT COLLATE "C" NOT NULL,
+                  ha_identity TEXT COLLATE "C" NOT NULL,
+                  ha_value    TEXT COLLATE "C",
+                  valid_until TIMESTAMP WITH TIME ZONE NOT NULL,
+                  CONSTRAINT ha_key PRIMARY KEY (ha_key)
+                );
+
+
+      zfs:
+        zfs_mountpoint: "/mnt/zfs"
+        # Fix to be sure zfs-mount mount the filesystems before those services starts
+        before_service:
+          - "containerd.service"
+          - "nfs-server.service"
+        pools:
+          - state: "present"
+            mountpoint_name: "nas"
+            pool_type: "raidz"
+            # I recommend to use the disk refence by ID -> ls -lah /dev/disk/by-id/ata-*
+            list_disks:
+              - ata-disk1
+              - ata-disk2
+              - ata-disk3
+
+            zfs_fs:
+              - name: junk
+                state: "present"
+                option:
+                  quota: "2T"
+
+              - name: container_data
+                state: "present"
+                option:
+                  quota: "1T"
+                snapshot:
+                  monthly:
+                  weekly:
+                  daily:
+
+              - name: k3s
+                state: "present"
+                option:
+                  quota: "1T"
+                snapshot:
+                  monthly:
+                  weekly:
+                  daily:
+                  hourly:
+                  frequent:
+
+              - name: "docker_storage"
+                state: "present"
+                option:
+                  quota: "1T"
+                  mountpoint: "/var/lib/docker"
+
+      nfs:
+        - src: "{{ zfs.zfs_mountpoint }}/nas/junk"
+          dest: "junk"
+          ip_src:
+            - ip: "{{ network.zones.home.lans.lab.cidr }}"
+              options:
+                - "secure"
+                - "rw"
+                - "sync"
+                - "no_root_squash"
+                - "no_subtree_check"
+          state: present
+
+        - src: "{{ zfs.zfs_mountpoint }}/nas/k3s"
+          dest: "k3s"
+          ip_src:
+            - ip: "{{ network.zones.home.lans.k8s.cidr }}"
+              options:
+                - "secure"
+                - "rw"
+                - "sync"
+                - "no_root_squash"
+                - "no_subtree_check"
+          state: present
+
+
+      docker_users:
+        - "{{ ansible_user }}"
+
+      docker_config:
+        storage_driver: "zfs"
+        dns: "{{ network.nameservers.block_malware }}"
+        log:
+          driver: "json-file"
+          opts:
+            max_size: "500m"
+            max_file: 5
+
+      container_data: "/mnt/zfs/nas/container_data"
+
+      container:
+        - command:
+            - "-p"
+            - "-s \"junk;/junk;yes;no;no;acme;none;;junk_folder\""
+            - "-u acme;acme"
+            - "-w WORKGROUP"
+          env:
+            TZ: "{{ timezone }}"
+            USERID: "0"
+            GROUPID: "0"
+          image: "dperson/samba:latest"
+          name: "samba"
+          ports:
+            - "137:137/udp"
+            - "138:138/udp"
+            - "139:139/tcp"
+            - "445:445/tcp"
+          restart: no
+          restart_policy: "unless-stopped"
+          state: started
+          volumes:
+            - "/mnt/zfs/nas/junk:/junk"
+
+        - env:
+            POSTGRES_PASSWORD: "acme"
+            POSTGRES_USER: "acme"
+          image: "postgres:13.4"
+          name: "postgres-k3s"
+          ports:
+            - "{{ network.zones.home.hosts.nas.k8s | ansible.netcommon.ipaddr('address') }}:5432:5432/tcp"
+          restart: no
+          restart_policy: "unless-stopped"
+          state: started
+          task_todo_once:
+            - mkdir -p "{{ container_data }}"/postgres-k3s
+          volumes:
+            - "{{ container_data }}/postgres-k3s:/var/lib/postgresql/data"

@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+cryptography = "*"
+netaddr = "*"
+ansible-lint = "*"
+jmespath = "*"
+openshift = "*"
+psycopg2 = "*"
+ansible = "==5.0.1"
+ansible-base = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"

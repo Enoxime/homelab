@@ -1,0 +1,69 @@
+# This file contains a netplan-compatible configuration which cloud-init
+# will apply on first-boot. Please refer to the cloud-init documentation and
+# the netplan reference for full details:
+#
+# https://cloudinit.readthedocs.io/
+# https://netplan.io/reference
+#
+# Some additional examples are commented out below
+
+version: 2
+{% if network_config.ethernet is defined %}
+ethernets:
+  eth0:
+    dhcp4: {{ network_config.ethernet.dhcp4 | bool }}
+{% if network_config.ethernet.addresses is defined %}
+    addresses:
+{% for addr in network_config.ethernet.addresses %}
+      - {{ addr }}
+{% endfor %}
+    gateway4: {{ network_config.ethernet.gateway4 }}
+    nameservers:
+      addresses:
+{% for nameservers in network_config.ethernet.nameservers %}
+        - {{ nameservers }}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% if network_config.vlans is defined %}
+
+vlans:
+{% for vlan in network_config.vlans %}
+  "{{ vlan.name }}":
+    id: {{ vlan.id }}
+    link: eth0
+    dhcp4: {{ vlan.dhcp4 | bool }}
+{% if vlan.addresses is defined %}
+    addresses:
+{% for addr in vlan.addresses %}
+      - {{ addr }}
+{% endfor %}
+    gateway4: {{ vlan.gateway4 }}
+    macaddress: {{ vlan.macaddress }}
+    nameservers:
+      addresses:
+{% for nameserver in vlan.nameservers %}
+        - {{ nameserver }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if network_config.wifi is defined %}
+
+wifis:
+  wlan0:
+    dhcp4: {{ network_config.wifi.dhcp4 | bool }}
+    addresses:
+{% for addr in network_config.wifi.addresses %}
+      - {{ addr }}
+{% endfor %}
+    gateway4: {{ network_config.wifi.gateway4 }}
+    nameservers:
+      addresses:
+{% for nameservers in network_config.wifi.nameservers %}
+        - {{ nameservers }}
+{% endfor %}
+    access-points:
+      "{{ network_config.wifi.ssid }}":
+        password: "{{ network_config.wifi.password }}"
+{% endif %}

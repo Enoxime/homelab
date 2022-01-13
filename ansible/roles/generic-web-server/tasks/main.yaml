@@ -1,0 +1,75 @@
+---
+- name: "Install packages"
+  ansible.builtin.apt:
+    name:
+      - "ca-certificates"
+      - "certbot"
+      - "gzip"
+      - "nginx"
+      - "openssl"
+      - "python3-certbot-nginx"
+    state: present
+
+- name: "Create needed directories"
+  ansible.builtin.file:
+    group: "root"
+    mode: "755"
+    owner: "root"
+    path: "/etc/nginx/{{ item }}"
+    recurse: yes
+    state: directory
+  loop:
+    - "dhparam"
+    - "certs"
+
+- name: "Create needed service directories"
+  ansible.builtin.file:
+    group: "root"
+    mode: "755"
+    owner: "root"
+    path: "/var/www/{{ item.name }}"
+    recurse: yes
+    state: directory
+  loop: "{{ generic_web_server.services }}"
+
+- name: "Generate html page"
+  ansible.builtin.template:
+    dest: "/var/www/{{ item.name }}/index.html"
+    group: "root"
+    mode: "644"
+    owner: "root"
+    src: "index.html"
+  loop: "{{ generic_web_server.services }}"
+
+- name: "Generate dhparam file"
+  ansible.builtin.command:
+    cmd: openssl dhparam -dsaparam -out /etc/nginx/dhparam/dhparam.pem 4096
+    creates: /etc/nginx/dhparam/dhparam.pem
+
+- name: "Check if letsencrypt certificate exists"
+  ansible.builtin.stat:
+    path: "/etc/letsencrypt/live/{{ service.main_domain_name }}/fullchain.pem"
+  loop: "{{ generic_web_server.services }}"
+  loop_control:
+    loop_var: "service"
+  register: letsencrypt_cert_exists
+  when:
+    - service.main_domain_name is defined
+
+- name: "Generate nxginx.conf file"
+  ansible.builtin.template:
+    dest: "/etc/nginx/nginx.conf"
+    group: "root"
+    mode: "644"
+    owner: "root"
+    src: "nginx.conf"
+  notify: "Reload nginx"
+
+- name: "Install certificate with certbot"
+  ansible.builtin.include_tasks: "certbot.yaml"
+  loop: "{{ generic_web_server.services }}"
+  loop_control:
+    loop_var: "service"
+  when:
+    - service.ssl is defined
+    - service.ssl.type == "letsencrypt"

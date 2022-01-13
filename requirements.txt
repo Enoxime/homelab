@@ -1,0 +1,8 @@
+ansible==5.0.1
+ansible-base==*
+ansible-lint==*
+cryptography==*
+jmespath==*
+netaddr==*
+openshift==*
+psycopg2==*

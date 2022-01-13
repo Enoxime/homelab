@@ -1,0 +1,118 @@
+---
+- name: "Generate cloud-init files"
+  hosts: k3s_nodes
+  connection: local
+  tags: generate_files
+  roles:
+    - cloud-init
+
+- name: "set up k3s nodes"
+  become: yes
+  hosts:
+    - k3s_nodes
+  gather_facts: yes
+  tags: sys
+  roles:
+    - security
+    - hostname
+    - base
+    - hosts
+    - sshd_config
+    - fail2ban
+
+- name: "Install k3s"
+  become: yes
+  tags: bin
+  hosts: k3s_all
+  roles:
+    - k3s/base
+
+- name: "Setup k3s"
+  become: yes
+  hosts: k3s_masters
+  tags: install
+  roles:
+    - k3s/master
+
+- name: "Get master node token"
+  become: yes
+  hosts: "k3s-master-a"
+  tags: join
+  tasks:
+    - name: "Register the token"
+      ansible.builtin.fetch:
+        dest: "/tmp/node_token"
+        flat: yes
+        src: "/var/lib/rancher/k3s/server/node-token"
+
+    - name: "Get nodes list"
+      ansible.builtin.shell: |
+        set -o pipefail
+
+        k3s \
+          kubectl get nodes -o json | jq '[.items[].metadata.name]' > \
+            /tmp/registered_nodes
+      args:
+        creates: "/tmp/registered_nodes"
+
+    - name: "Register the nodes registered"
+      ansible.builtin.fetch:
+        dest: "/tmp/registered_nodes"
+        flat: yes
+        src: "/tmp/registered_nodes"
+
+    - name: "Remove the remote file"
+      ansible.builtin.file:
+        path: "/tmp/registered_nodes"
+        state: absent
+
+- name: "Install k3s agent nodes"
+  become: yes
+  hosts: k3s_nodes
+  tags: join
+  pre_tasks:
+    - name: "Register content of files"
+      set_fact:
+        master_node_token: "{{ lookup('file', '/tmp/node_token') }}"
+        registered_nodes: "{{ lookup('file', '/tmp/registered_nodes') }}"
+  roles:
+    - role: k3s/nodes
+      when: inventory_hostname not in registered_nodes
+
+- name: "Apply node role"
+  become: yes
+  hosts: "k3s-master-a"
+  tags: join
+  pre_tasks:
+    - name: "Register content of files"
+      set_fact:
+        registered_nodes: "{{ lookup('file', '/tmp/registered_nodes') }}"
+  tasks:
+    - name: "Set node role"
+      ansible.builtin.shell: |
+        k3s \
+          kubectl label node {{ item.host }} node-role.kubernetes.io/worker=worker
+      loop: "{{ k3s.nodes }}"
+      when:
+        - item.host not in registered_nodes
+
+- name: "Install k3s network and storage base"
+  become: yes
+  hosts: "k3s-master-a"
+  gather_facts: yes
+  tags: base
+  roles:
+    - k3s/metallb
+    - k3s/ingress-nginx
+    - k3s/k8s_gateway
+    - k3s/cert-manager
+    - k3s/storage-nfs
+    - k3s/vault
+
+- name: "Install base devops apps"
+  become: yes
+  hosts: "k3s-master-a"
+  tags: apps
+  roles:
+    - k3s/prometheus
+    - k3s/pihole

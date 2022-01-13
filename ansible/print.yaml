@@ -1,0 +1,20 @@
+---
+- name: "Generate cloud-init files"
+  hosts: "print"
+  connection: local
+  tags: generate_files
+  roles:
+    - cloud-init
+
+- name: "Setting up Print"
+  become: yes
+  hosts: print
+  tags: setting_up
+  roles:
+    - security
+    - base
+    - hosts
+    - sshd_config
+    - fail2ban
+    - ufw
+    - cups
