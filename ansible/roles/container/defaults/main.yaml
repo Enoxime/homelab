@@ -1,4 +1,0 @@
----
-docker_default:
-  restart: no
-  restart_policy: "unless-stopped"

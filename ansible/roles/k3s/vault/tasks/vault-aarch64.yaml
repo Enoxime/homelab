@@ -1,6 +1,0 @@
----
-- name: "Download and install vault binary"
-  ansible.builtin.unarchive:
-    dest: "/usr/bin"
-    remote_src: yes
-    src: "https://releases.hashicorp.com/vault/1.8.1/vault_1.8.1_linux_arm64.zip"

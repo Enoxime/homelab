@@ -1,3 +1,0 @@
-netplan_default:
-  path: "/etc/netplan"
-  file: "50-cloud-init.yaml"

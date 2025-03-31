@@ -1,7 +1,0 @@
-domain: '{% for dm in k3s.config.k8s_gateway.domain %}{% if not loop.first %} "{% endif %}{{ dm }}{% if not loop.last %}"{% endif %}{% endfor %}'
-watchedResources:
-{% for wr in k3s.config.k8s_gateway.watchedResources %}
-  - "{{ wr }}"
-{% endfor %}
-ttl: {{ k3s.config.k8s_gateway.ttl }}
-{% if k3s.config.k8s_gateway.loadBalancerIP is defined %}loadBalancerIP: "{{ k3s.config.k8s_gateway.loadBalancerIP }}"{% endif %}
