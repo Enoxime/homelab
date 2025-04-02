@@ -1,0 +1,23 @@
+---
+- name: "Deactivate DNSStubListener from systemd-resolved"
+  ansible.builtin.lineinfile:
+    backrefs: true
+    path: "/etc/systemd/resolved.conf"
+    regexp: '^#?DNSStubListener=yes'
+    line: 'DNSStubListener=no'
+
+
+- name: "Set default dns service for systemd-resolved"
+  ansible.builtin.lineinfile:
+    backrefs: true
+    path: "/etc/systemd/resolved.conf"
+    regexp: '^#?DNS='
+    line: 'DNS={{ dns_53 }}'
+
+
+- name: "Set sytemd-resolved default generated conf"
+  ansible.builtin.file:
+    path: "/etc/resolv.conf"
+    src: "/run/systemd/resolve/resolv.conf"
+    state: "link"
+  notify: "Reload systemd-resolved"

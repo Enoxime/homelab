@@ -1,0 +1,8 @@
+---
+- name: "Restart infnoise"
+  ansible.builtin.service:
+    name: "infnoise.service"
+    state: restarted
+    enabled: true
+  when:
+    - cas_infnoise_this.stat.exists

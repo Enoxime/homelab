@@ -1,0 +1,54 @@
+---
+- name: Mount the partition
+  ansible.posix.mount:
+    fstype: "{{ cas.mount.fstype | default('ext4') }}"
+    path: "{{ cas.mount.path | default('/mnt') }}"
+    src: "{{ cas.mount.src }}"
+    state: mounted
+
+
+- name: Create directories
+  ansible.builtin.file:
+    path: "{{ cas.mount.path }}/ca"
+    mode: "755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    state: directory
+
+
+- name: Check if the root certificate is already created
+  ansible.builtin.stat:
+    path: "{{ cas.mount.path }}/ca/certs/root_ca.crt"
+  register: cas_this
+
+
+- name: Generate step's certificates and configurations
+  when:
+    - not cas_this.stat.exists
+  block:
+    - name: Generate the password file
+      ansible.builtin.copy:
+        dest: "{{ cas.mount.path }}/ca/password"
+        mode: "400"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        content: "{{ cas_root_key_password }}"
+      no_log: true
+
+    - name: Generate all
+      ansible.builtin.shell:
+        cmd: |
+          STEPPATH="{{ cas.mount.path }}/ca" step ca init \
+            --acme \
+            --address {{ cas.root_ca.listen | default(':443') | quote }} \
+            --deployment-type=standalone \
+            {%- for dns in cas.root_ca.dns %}
+            --dns {{ dns }} \
+            {%- endfor %}
+            --name "{{ cas.root_ca.name }}" \
+            --password-file {{ cas.mount.path }}/ca/password \
+            --provisioner {{ cas.root_ca.provisioner | quote }}
+        creates: "{{ cas.mount.path }}/ca/certs/root_ca.crt"
+        executable: /bin/bash
+      become: true
+      become_user: "{{ ansible_user }}"

@@ -1,0 +1,166 @@
+---
+- name: Set facts
+  ansible.builtin.set_fact:
+    init_dietpi_headless_device_path: "{{ init_dietpi_headless_device_path | default }}"
+    init_dietpi_headless_temporary_folder_path: "{{ init_dietpi_headless_temporary_folder_path | default }}"
+
+
+- name: Check if sdcard device exists and if p7zip is installed
+  block:
+    - name: Get device stats
+      ansible.builtin.stat:
+        follow: true
+        path: "{{ init_dietpi_headless_device_path }}"
+      register: device_stat
+
+    - name: Fail if the device does not exists
+      ansible.builtin.fail:
+        msg: "Device on {{ init_dietpi_headless_device_path }} does not exists!"
+      when:
+        - not device_stat.stat.exists
+
+    - name: Ensure requirements is installed for debian based
+      ansible.builtin.package:
+        name:
+          - parted
+          - xz-utils
+        state: present
+      when:
+        - ansible_os_family == 'Debian'
+
+    - name: Ensure requirements is installed
+      ansible.builtin.package:
+        name:
+          - parted
+          - xz
+        state: present
+      when:
+        - ansible_os_family != 'Debian'
+
+
+- name: Create a temporary folder
+  become: true
+  block:
+    - name: Remove the folder if it exists
+      ansible.builtin.file:
+        path: "{{ init_dietpi_headless_temporary_folder_path }}"
+        state: absent
+
+    - name: Recreate the folder
+      ansible.builtin.file:
+        path: "{{ init_dietpi_headless_temporary_folder_path }}"
+        mode: '755'
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        state: directory
+
+
+- name: Download dietpi image
+  ansible.builtin.get_url:
+    dest: "{{ init_dietpi_headless_temporary_folder_path }}/dietpi.img.xz"
+    group: "{{ ansible_user }}"
+    mode: "664"
+    owner: "{{ ansible_user }}"
+    url: "{{ init_dietpi_headless_image_url }}"
+
+
+- name: Uncompress image
+  ansible.builtin.command:
+    cmd: "xz --decompress {{ init_dietpi_headless_temporary_folder_path }}/dietpi.img.xz"
+    creates: "{{ init_dietpi_headless_temporary_folder_path }}/dietpi.img"
+    removes: "{{ init_dietpi_headless_temporary_folder_path }}/dietpi.img.xz"
+
+
+- name: Locate sdcard and unmount partitions
+  block:
+    - name: Create list of mounted devices
+      ansible.builtin.set_fact:
+        mounted_devices: "{{ ansible_mounts | json_query('[].{device: device, mount: mount}') }}"
+
+    - name: Unmount sdcard partitions
+      become: true
+      when:
+        - item.device | regex_search(init_dietpi_headless_device_path+'.+')
+      ansible.posix.mount:
+        path: "{{ item.mount }}"
+        state: unmounted
+      loop: "{{ mounted_devices }}"
+
+
+- name: Remove existing partitions
+  become: true
+  block:
+    - name: Read device information (always use unit when probing)
+      community.general.parted:
+        device: "{{ init_dietpi_headless_device_path }}"
+        unit: "MiB"
+      register: sdcard_info
+
+    - name: Remove all partitions from disk
+      community.general.parted:
+        device: "{{ init_dietpi_headless_device_path }}"
+        number: "{{ item.num }}"
+        state: absent
+      loop: "{{ sdcard_info.partitions }}"
+
+
+- name: Install the image into the sdcard
+  become: true
+  ansible.builtin.command:
+    cmd: "dd if={{ init_dietpi_headless_temporary_folder_path }}/dietpi.img of={{ init_dietpi_headless_device_path }}"
+    creates: "{{ init_dietpi_headless_device_path }}p1"
+
+
+- name: Mount filesystem, setup config then unmount
+  become: true
+  block:
+    - name: Remove the folder if it exists
+      ansible.builtin.file:
+        path: "{{ init_dietpi_headless_temporary_folder_path }}"
+        state: absent
+
+    - name: Create the folder
+      ansible.builtin.file:
+        path: "{{ init_dietpi_headless_temporary_folder_path }}"
+        mode: '755'
+        owner: root
+        group: root
+        state: directory
+
+    - name: Mount filesystem
+      ansible.posix.mount:
+        fstype: vfat
+        path: "{{ init_dietpi_headless_temporary_folder_path }}"
+        state: mounted
+        src: "{{ init_dietpi_headless_device_path }}p1"
+
+    - name: Add config file
+      ansible.builtin.template:
+        dest: "{{ init_dietpi_headless_temporary_folder_path }}/dietpi.txt.jinja"
+        group: root
+        mode: '644'
+        owner: root
+        src: dietpi.txt
+
+    - name: Add wifi config file
+      ansible.builtin.template:
+        dest: "{{ init_dietpi_headless_temporary_folder_path }}/dietpi-wifi.txt.jinja"
+        group: root
+        mode: '644'
+        owner: root
+        src: dietpi-wifi.txt
+      no_log: true
+      when:
+        - idh.net.wifi is defined
+
+  always:
+    - name: Unmount filesystem
+      ansible.posix.mount:
+        path: "{{ init_dietpi_headless_temporary_folder_path }}"
+        state: absent
+        src: "{{ init_dietpi_headless_device_path }}p3"
+
+    - name: Remove the folder if it exists
+      ansible.builtin.file:
+        path: "{{ init_dietpi_headless_temporary_folder_path }}"
+        state: absent

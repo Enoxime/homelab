@@ -1,7 +1,7 @@
 ---
 - name: "Create /dev/shm as tmpfs filesystem"
   ansible.posix.mount:
-    backup: yes
+    backup: true
     dump: "0"
     fstype: "tmpfs"
     opts: "rw,nodev,nosuid,noexec,size={{ shm_size }}"
@@ -11,9 +11,10 @@
     state: "mounted"
   when: shm_size is defined
 
+
 - name: "Create /tmp as tmpfs filesystem"
   ansible.posix.mount:
-    backup: yes
+    backup: true
     dump: "0"
     fstype: "tmpfs"
     opts: "rw,nodev,nosuid,noexec,size={{ tmp_size }}"
@@ -23,6 +24,7 @@
     state: "mounted"
   when: tmp_size is defined
 
+
 - name: "Bind /var/tmp to /tmp"
   ansible.posix.mount:
     path: "/var/tmp"
@@ -31,3 +33,5 @@
     state: mounted
     fstype: none
   when: tmp_size is defined
+
+# TODO: /var/log

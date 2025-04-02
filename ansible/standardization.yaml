@@ -1,0 +1,25 @@
+---
+- name: Ensure instances respect standardization
+  hosts:
+    - dietpi
+  gather_facts: false
+  tags:
+    - standardization
+  roles:
+    - standardization
+
+
+- name: Ensure the base and security are installed
+  hosts:
+    - dietpi
+  gather_facts: true
+  become: true
+  roles:
+    - base
+    - security
+    - user_group
+    # TODO
+    # - endlessh
+    # - fail2ban
+    # - logrotate
+    # - cron

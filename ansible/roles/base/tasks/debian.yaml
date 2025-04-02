@@ -1,0 +1,122 @@
+---
+- name: Remove snap
+  block:
+    - name: Check if snap exists
+      ansible.builtin.command: command -v snap
+      register: snap_exists
+      changed_when: snap_exists.rc != 0
+      ignore_errors: true
+
+    - name: Remove snap
+      when:
+        - snap_exists.rc == 0
+      block:
+        - name: List snap apps
+          ansible.builtin.shell: "set -o pipefail && snap list | awk '{if (NR!=1) { if ($1 !~ /snapd/) { if ($1 !~ /core20/) {print $1} } } }'"
+          args:
+            executable: /usr/bin/bash
+          register: snap_list
+          changed_when: snap_list == 0
+
+        - name: Remove snap apps except snapd and core20
+          community.general.snap:
+            name: "{{ item }}"
+            state: absent
+          loop: "{{ snap_list.stdout_lines }}"
+
+        - name: Remove core20
+          community.general.snap:
+            name: core20
+            state: absent
+
+        - name: Remove snapd
+          community.general.snap:
+            name: snapd
+            state: absent
+
+        - name: Remove snapd from apt
+          ansible.builtin.apt:
+            name: snapd
+            state: absent
+            autoremove: true
+
+        - name: Create a file to prevent snapd installation
+          ansible.builtin.copy:
+            dest: /etc/apt/preferences.d/nosnap.pref
+            mode: "644"
+            owner: root
+            group: root
+            content: |
+              # To prevent repository packages from triggering the installation of snap,
+              # this file forbids snapd from being installed by APT.
+
+              Package: snapd
+              Pin: release a=*
+              Pin-Priority: -10
+
+
+# TODO: Add the possibility to specify the ntp servers
+- name: Ensure NTP is activated
+  block:
+    - name: Get NTP status
+      ansible.builtin.command:
+        cmd: timedatectl show
+      register: ntp_status
+      changed_when: ntp_status.rc == 0
+
+    - name: Activate NTP
+      ansible.builtin.command:
+        cmd: timedatectl set-ntp true
+      register: return_code
+      changed_when: return_code.rc == 0
+      when:
+        - not "NTP=yes" in ntp_status.stdout_lines
+      notify: "Restart systemd-timesyncd"
+
+
+- name: Set timezone
+  ansible.builtin.command:
+    cmd: "timedatectl set-timezone {{ timezone | quote }}"
+  register: return_code
+  changed_when: return_code.rc == 0
+  notify: "Restart systemd-timesyncd"
+  when:
+    - timezone is defined
+
+
+- name: "Update package manager"
+  ansible.builtin.apt:
+    autoclean: true
+    autoremove: true
+    update_cache: true
+    cache_valid_time: 86400 # 6 hours
+
+
+- name: "Install base packages"
+  ansible.builtin.apt:
+    name:
+      - curl
+      - dnsutils
+      - htop
+      - iotop
+      - nmap
+      - python3
+      - python3-pip
+      - rsync
+      - screen
+      - sudo
+      - tmux
+      - tree
+      - vim
+      - wget
+    state: present
+  when:
+    - install_base_package | default(false)
+
+
+- name: "Install packages"
+  ansible.builtin.apt:
+    name: "{{ packages_list }}"
+    state: present
+  when:
+    - packages_list is defined

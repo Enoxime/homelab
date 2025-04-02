@@ -1,0 +1,2 @@
+ACTION=="add", SUBSYSTEM=="usb", ENV{PRODUCT}=="1050/{{ cas.yubikey.product_id | default('407') }}/*", TAG+="systemd", SYMLINK+="yubikey"
+ACTION=="remove", SUBSYSTEM=="usb", ENV{PRODUCT}=="1050/{{ cas.yubikey.product_id | default('407') }}/*", TAG+="systemd"

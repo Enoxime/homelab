@@ -1,0 +1,18 @@
+[Unit]
+Description=step-ca PKI Certificate Authority
+After=network.target
+{% if cas.yubikey.enabled %}
+BindsTo=dev-yubikey.device
+After=dev-yubikey.device
+{% endif %}
+
+[Service]
+User={{ ansible_user }}
+Group={{ ansible_user }}
+ExecStart=/bin/sh -c '/usr/local/bin/step-ca {{ cas.mount.path }}/ca/config/ca.json'
+Restart=on-failure
+RestartSec=10
+Type=simple
+
+[Install]
+WantedBy=multi-user.target

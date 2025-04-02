@@ -1,0 +1,93 @@
+---
+- name: Enable and start pcscd service
+  ansible.builtin.service:
+    name: pcscd.service
+    state: started
+    enabled: true
+
+
+# Ensure that:
+#
+# You have set a pin and puk:
+# ykman piv access change-pin --pin 123456 --new-pin XXXXXX
+# ykman piv access change-puk --puk 12345678 --new-puk XXXXXXXX
+#
+# You have set a management key:
+# openssl rand -hex 24
+# ykman piv access change-management-key \
+#   --algorithm AES256 \ <= Not supported correctly by step-kms-plugin (https://github.com/smallstep/crypto/blob/v0.54.0/kms/yubikey/yubikey.go#L123)
+#                           You can let it as TDES (3 DES) as default, it should be good enough.
+#   --protect \
+#   --pin XXXXXX \
+#   --touch \
+#   --new-management-key THE_RESULT_OF_THE_HEX_24
+#
+#
+# To import a key (to do before th certificate):
+# ykman piv keys import \
+#   --pin-policy NEVER \ <= Not necessary
+#   --touch-policy NEVER \
+#   --pin XXXXXX \
+#   SLOT PRIVATE-KEY
+#
+# To import a certificate:
+# ykman piv certificates import --verify --pin XXXXXX SLOT CERTIFICATE
+- name: Advise the user to copy the keys and certificates in a yubikey
+  ansible.builtin.pause:
+    prompt: >
+      Please ensure you have copied the keys and certificates
+      in the yubikey before pressing <ENTER>
+
+
+- name: Remove keys
+  ansible.builtin.file:
+    path: "{{ cas.mount.path }}/ca/secrets/{{ item }}"
+    state: absent
+  loop:
+    - root_ca_key
+    - intermediate_ca_key
+
+
+- name: Modify the step ca configuration
+  block:
+    - name: Retrieve the configuration
+      ansible.builtin.slurp:
+        src: "{{ cas.mount.path }}/ca/config/ca.json"
+      register: cas_yubikey_remote_config
+
+    - name: Register new objects for the remote config
+      ansible.builtin.set_fact:
+        cas_yubikey_config:
+          key: "{{ cas.yubikey.intermediate.slot }}"
+          kms:
+            type: yubikey
+            uri: "yubikey:management-key={{ cas_yubikey.management_key }}?pin-value={{ cas_yubikey.pin }}"
+
+    - name: Register the config as an object
+      ansible.builtin.set_fact:
+        cas_config: "{{ cas_yubikey_remote_config.content | b64decode | from_json | combine(cas_yubikey_config) }}"
+
+    - name: Rewrite the remote config
+      ansible.builtin.copy:
+        dest: "{{ cas.mount.path }}/ca/config/ca.json"
+        mode: "600"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        content: "{{ cas_config | to_nice_json(indent=2) }}"
+
+
+- name: Create a yubikey udev rule
+  ansible.builtin.template:
+    src: 75-yubikey.rules.jinja
+    dest: /etc/udev/rules.d/75-yubikey.rules
+    mode: "644"
+    owner: root
+    group: root
+
+
+- name: Reload udev rules
+  ansible.builtin.command:
+    cmd: udevadm control --reload-rules
+  register: return_code
+  failed_when: return_code.rc != 0
+  changed_when: return_code.rc == 0
