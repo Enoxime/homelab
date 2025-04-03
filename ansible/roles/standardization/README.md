@@ -1,7 +1,7 @@
 
 # standardization
 
-Ensure all instances respect basics policies and compliancies.
+Ensure all instances respect basics policies and compliancy.
 
 - Ensure Python is installed to support Ansible
 - Ensure the timezone is set to the correct parameter
