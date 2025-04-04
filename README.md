@@ -184,7 +184,7 @@ After testing against the tutorial I went with the "automate everything" way and
 write Ansible roles to do it for me in case of needed changes or just redoing it
 entirely (See the Ansible folder).
 
-> ![IMPORTANT]
+> [!IMPORTANT]
 > I will not go on explaining all the steps needed to be done because I assume
 > that you know the basics with Ansible. *I also assume that you store your
 > private variables encrypted somewhere else with a strong password.*
@@ -257,7 +257,7 @@ https://YOUR_CA_SERVER_HOSTNAME/roots.pem`. We can also install cerbot locally
 and try to obtain a certificate. We can set up the Opnsense router to ask for a
 [certificate](https://homenetworkguy.com/how-to/replace-opnsense-web-ui-self-signed-certificate-with-lets-encrypt/).
 
-> ![NOTE]
+> [!NOTE]
 > We will need to set up a local Bind server to answer the step-ca call for
 > internal domain.
 
