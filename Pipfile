@@ -4,16 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-cryptography = "*"
-netaddr = "*"
+ansible = "*"
 ansible-lint = "*"
+pre-commit = "*"
 jmespath = "*"
-openshift = "*"
-psycopg2 = "*"
-ansible = "==5.0.1"
-ansible-base = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.10"
+python_version = "3.12"
+python_full_version = "3.12.9"

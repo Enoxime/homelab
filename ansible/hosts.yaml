@@ -1,0 +1,45 @@
+local:
+  hosts:
+    localhost:
+      ansible_connection: local
+
+
+home:
+  children:
+    dietpi:
+      hosts:
+        ca:
+      vars:
+        package_mgr: apt
+        pkg_flags: --quiet --yes
+        python: python3
+
+  vars:
+    ansible_user: ansible
+    ansible_host: "{{ inventory_hostname }}.{{ mgmt_domain }}"
+
+    ## Standardization
+    timezone: "{{ local_timezone | default('Etc/UTC') }}"
+    hostname_fqdn:
+      - "{{ inventory_hostname }}.{{ mgmt_domain }}"
+      - "{{ inventory_hostname }}"
+
+    # user-group
+    user_group:
+      groups:
+        - "{{ admin_username }}"
+        - ansible
+      users:
+        - create_home: true
+          group: "{{ admin_username }}"
+          name: "{{ admin_username }}"
+          key: "{{ admin_ssh_pub_key }}"
+          password: "{{ admin_password }}"
+        - create_home: true
+          group: "ansible"
+          name: "ansible"
+          key: "{{ ansible_ssh_pub_key }}"
+      sudo:
+        - name: "{{ admin_username }}"
+        - name: ansible
+          nopasswd: true

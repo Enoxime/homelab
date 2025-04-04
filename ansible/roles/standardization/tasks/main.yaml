@@ -1,0 +1,49 @@
+---
+- name: Ensure python is installed
+  ansible.builtin.raw: "{% if need_sudo %}sudo {% endif %}{{ package_mgr }} install {{ pkg_flags }} {{ python }}"
+  changed_when: false
+
+
+# - name: Install needed packages on rocky linux
+#   ansible.builtin.yum:
+#     name:
+#       - yum-utils
+#     state: present
+
+
+- name: "Set timezone to {{ timezone }}"
+  community.general.timezone:
+    name: "{{ timezone }}"
+  when:
+    - timezone is defined
+
+
+- name: Update hostname
+  ansible.builtin.hostname:
+    name: "{{ hostname | default(inventory_hostname) }}"
+
+
+- name: Define hostname in host file for IPv4
+  ansible.builtin.lineinfile:
+    firstmatch: true
+    path: "/etc/hosts"
+    mode: "0644"
+    owner: root
+    group: root
+    regexp: '^127.0.0.1'
+    line: "127.0.0.1 {{ hostname_fqdn | join(' ') }} localhost"
+  when:
+    - hostname_fqdn is defined
+
+
+- name: Define hostname in host file for IPv6
+  ansible.builtin.lineinfile:
+    firstmatch: true
+    path: "/etc/hosts"
+    mode: "0644"
+    owner: root
+    group: root
+    regexp: '^::1'
+    line: "::1 {{ hostname_fqdn | join(' ') }} localhost"
+  when:
+    - hostname_fqdn is defined

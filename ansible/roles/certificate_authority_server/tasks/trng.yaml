@@ -1,0 +1,69 @@
+- name: Check if infnoise was already installed
+  ansible.builtin.stat:
+    path: /usr/local/sbin/infnoise
+  register: cas_infnoise_this
+
+
+- name: Register latest TRNG release
+  ansible.builtin.uri:
+    method: GET
+    url: https://api.github.com/repos/leetronics/infnoise/releases/latest
+  register: trng_release
+
+
+- name: Create temporary directory
+  block:
+    - name: Remove the directory if it exists
+      ansible.builtin.file:
+        path: "{{ certificate_authority_server_temporary_folder_path }}"
+        state: absent
+
+    - name: Create the directory
+      ansible.builtin.file:
+        path: "{{ certificate_authority_server_temporary_folder_path }}/trng"
+        mode: '755'
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        state: directory
+        recurse: true
+
+
+- name: Download the trng tarball
+  ansible.builtin.get_url:
+    url: "{{ trng_release.json.tarball_url }}"
+    dest: "{{ certificate_authority_server_temporary_folder_path }}/trng.tar.gz"
+    mode: "644"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+
+- name: Decompress trng tarball
+  ansible.builtin.unarchive:
+    src: "{{ certificate_authority_server_temporary_folder_path }}/trng.tar.gz"
+    remote_src: true
+    dest: "{{ certificate_authority_server_temporary_folder_path }}/trng"
+    mode: "755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    extra_opts:
+      - --strip-components=1
+
+
+- name: Build trng binary
+  community.general.make:
+    chdir: "{{ certificate_authority_server_temporary_folder_path }}/trng/software"
+    file: Makefile.linux
+
+
+- name: Install trng binary
+  community.general.make:
+    chdir: "{{ certificate_authority_server_temporary_folder_path }}/trng/software"
+    file: Makefile.linux
+    target: install
+  notify: Restart infnoise
+
+
+- name: Restart the instance
+  ansible.builtin.reboot:
+  when:
+    not cas_infnoise_this.stat.exists

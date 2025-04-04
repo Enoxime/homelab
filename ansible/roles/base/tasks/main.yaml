@@ -1,68 +1,52 @@
 ---
-- name: "Set timezone to {{ timezone }}"
-  community.general.timezone:
-    name: "{{ timezone }}"
-  when:
-    - timezone is defined
+- name: Sysctl options
+  ansible.posix.sysctl:
+    name: "{{ sysctl_opt.name }}"
+    reload: true
+    state: "{{ sysctl_opt.state | default('present') }}"
+    value: "{{ sysctl_opt.value }}"
+  loop: "{{ sysctl_options | default([]) }}"
+  loop_control:
+    loop_var: sysctl_opt
 
-- name: "Update package manager"
-  ansible.builtin.apt:
-    autoclean: yes
-    autoremove: yes
-    update_cache: yes
-    cache_valid_time: 86400
 
-- name: "Install base packages"
-  ansible.builtin.apt:
-    name:
-      - htop
-      - iotop
-      - python3-pip
-      - screen
-      - tree
-      - vim
-    state: present
+- name: Include os specific
+  ansible.builtin.include_tasks: "{{ ansible_os_family | lower }}.yaml"
 
-- name: "Install packages"
-  ansible.builtin.apt:
-    name: "{{ packages_list }}"
-    state: present
-  when:
-    - packages_list is defined
 
 - name: "Install python packages"
   ansible.builtin.pip:
-    executable: pip3
     name: "{{ python_packages }}"
   when:
     - python_packages is defined
 
-- name: "Deactivate DNSStubListener from systemd-resolved"
-  ansible.builtin.lineinfile:
-    backrefs: yes
-    path: "/etc/systemd/resolved.conf"
-    regexp: '^#?DNSStubListener=yes'
-    line: 'DNSStubListener=no'
+
+- name: Setup internal dns
+  ansible.builtin.include_tasks: dns.yaml
   when:
     - dns_53 is defined
     - dns_53
 
-- name: "Set default dns service for systemd-resolved"
-  ansible.builtin.lineinfile:
-    backrefs: yes
-    path: "/etc/systemd/resolved.conf"
-    regexp: '^#?DNS='
-    line: 'DNS={{ dns_53 }}'
-  when:
-    - dns_53 is defined
-    - dns_53
 
-- name: "Set sytemd-resolved default generated conf"
-  ansible.builtin.file:
-    path: "/etc/resolv.conf"
-    src: "/run/systemd/resolve/resolv.conf"
-    state: "link"
+- name: Add host entries
+  ansible.builtin.blockinfile:
+    backup: true
+    block: |
+      {% for host in hosts_file %}
+      {{ host.ip }}{% for name in host.names %} {{ host.name }}{% endfor %}
+
+      {% endfor %}
+    group: "root"
+    marker: "# {mark} Managed by Ansible"
+    mode: "0644"
+    owner: "root"
+    path: "/etc/hosts"
+    state: "present"
   when:
-    - dns_53 is defined
-    - dns_53
-  notify: "Reload systemd-resolved"
+    - hosts_file is defined
+
+
+# - name: Setup SomeoneWhoCares (https://someonewhocares.org/)
+#   block:
+#   when:
+#     - someonewhocares is defined

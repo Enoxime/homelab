@@ -1,0 +1,28 @@
+---
+# Use --limit HOST, --ask-become-pass and -e ansible_user=YOUR_USERNAME <- Your local username $(whoami)
+- name: Prepare dietpi systems
+  hosts:
+    - dietpi
+  gather_facts: true
+  connection: local
+  tags:
+    - prepare_dietpi
+  become: true
+  roles:
+    - init_dietpi_headless
+
+
+# Use --limit HOST, --private-key PRIV_SSH_KEY_PATH and, optional, -e ansible_host=HOST_IP
+- name: Setup dietpi base
+  hosts:
+    - dietpi
+  gather_facts: false
+  tags:
+    - setup_dietpi
+  vars:
+    ansible_user: root
+  roles:
+    - standardization
+    - role: user_group
+      vars:
+        ansible_user: root

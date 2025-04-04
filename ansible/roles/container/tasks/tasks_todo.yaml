@@ -1,6 +1,0 @@
----
-- name: Tasks to do before deploying the container(s)
-  ansible.builtin.shell: "{{ item }}"
-  loop: "{{ iter_command_list.task_todo }}"
-  when: iter_command_list.task_todo is defined
-...

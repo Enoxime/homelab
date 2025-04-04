@@ -1,10 +1,4 @@
 ---
 collections:
-  - ansible.netcommon
   - ansible.posix
-  - ansible.utils
-  - community.crypto
-  - community.docker
   - community.general
-  - kubernetes.core
-  - community.postgresql

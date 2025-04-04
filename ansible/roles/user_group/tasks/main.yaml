@@ -1,0 +1,55 @@
+---
+- name: Create groups
+  ansible.builtin.group:
+    name: "{{ group }}"
+  loop: "{{ user_group.groups | default([]) }}"
+  loop_control:
+    loop_var: group
+
+
+- name: User part
+  no_log: true
+  block:
+    - name: Create users
+      ansible.builtin.user:
+        create_home: "{{ user.create_home | default(omit) }}"
+        group: "{{ user.group | default(omit) }}"
+        groups: "{{ user.groups | default(omit) }}"
+        name: "{{ user.name }}"
+        password: "{{ user.password | default(omit) | password_hash(hashtype='sha512', rounds=4096) }}"
+        shell: "{{ user.shell | default('/bin/bash') }}"
+        update_password: "on_create"
+      loop: "{{ user_group.users | default([]) }}"
+      loop_control:
+        loop_var: user
+
+    - name: Update ssh key
+      ansible.posix.authorized_key:
+        comment: "Imported by ansible"
+        # TODO: Add the option to load more than just one key
+        key: "{{ user.key }}"
+        user: "{{ user.name }}"
+      loop: "{{ user_group.users | default([]) }}"
+      loop_control:
+        loop_var: user
+      when: user.key is defined
+
+    - name: Import ssh key
+      ansible.builtin.copy:
+        dest: "/home/{{ user.name }}/.ssh/{{ user.import_key.name }}"
+        mode: "400"
+        owner: "{{ user.name }}"
+        group: "{{ user.group }}"
+        # TODO: Add more options
+        src: "{{ user.import_key.path }}"
+      loop: "{{ user_group.users | default([]) }}"
+      loop_control:
+        loop_var: user
+      when: user.import_key is defined
+
+
+- name: Sudoers
+  ansible.builtin.include_tasks: sudoers.yaml
+  loop: "{{ user_group.sudo | default([]) }}"
+  loop_control:
+    loop_var: sudo

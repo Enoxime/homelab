@@ -1,0 +1,51 @@
+---
+idh:
+  timezone: "{{ local_timezone }}"
+  hostname: ca
+  root_ssh_pubkey: "{{ admin_ssh_pub_key }}"
+  default_password: "{{ admin_password }}"
+packages_list:
+  # yubikey pkg
+  - yubikey-manager
+  - pcscd
+  # needed to build infinite noise trng
+  - libftdi-dev
+  - libusb-dev
+  - make
+  - git
+  - gcc
+  # needed to build step-ca with yubikey support
+  # (see: https://github.com/smallstep/certificates/blob/master/CONTRIBUTING.md#build-step-ca-using-cgo)
+  - libpcsclite-dev
+  - pkg-config
+  # others
+  - vlan
+go_checksum: sha256:f626cdd92fc21a88b31c1251f419c17782933a42903db87a174ce74eeecc66a9
+cas:
+  trng:
+    enabled: true
+  mount:
+    path: /mnt
+    src: LABEL=key
+  root_ca:
+    name: homelab
+    dns: "{{ cas_root_ca_dns }}"
+    provisioner: "{{ cas_root_ca_provisioner }}"
+  yubikey:
+    enabled: true
+    product_id: 407
+    root:
+      slot: "{{ cas_yubikey.root_slot }}"
+    intermediate:
+      name: home
+      slot: "{{ cas_yubikey.intermediate_slot }}"
+  config:
+    authority:
+      claims:
+        # 3 months
+        maxTLSCertDuration: 2160h
+      # policy:
+      #   x509:
+      #     allow:
+      #       dns:
+      #         - "*.example.com"
