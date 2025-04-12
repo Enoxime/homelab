@@ -102,7 +102,7 @@ This is what I have for now:
 lot I can do here unless getting a hardware that can replace it that is more
 proficient.
 - The router is a fan-less Topton 12th gen with six 2.5G Ethernet ports. It runs
-on [Opnsense](https://opnsense.org/). Good hardware but I had to redo the
+on [OPNsense](https://opnsense.org/). Good hardware but I had to redo the
 thermal paste on the CPU.
 - The switch is a standard Unifi switch 24 ports PoE. I like the simplicity of
 those devices.
@@ -149,7 +149,7 @@ their roles assigned. Let's go!
 #### Step one: Set up the router
 
 The first step would be to set up the router. I made the choice of
-[Opnsense](https://opnsense.org/) for many good reasons:
+[OPNsense](https://opnsense.org/) for many good reasons:
 
 - Known to be pretty stable
 - Firewall focused
@@ -163,6 +163,7 @@ I mainly followed the tutorials from
 - [Set Up a Fully Functioning Home Network Using OPNsense](https://homenetworkguy.com/how-to/set-up-a-fully-functioning-home-network-using-opnsense/)
 - [How to Connect to Your Home Network via WireGuard VPN Server in OPNsense](https://homenetworkguy.com/how-to/configure-wireguard-opnsense/)
 - [How to Configure IPv6 in Your Home Network with ISP such as Comcast Xfinity](https://homenetworkguy.com/how-to/configure-ipv6-opnsense-with-isp-such-as-comcast-xfinity/)
+- [Harden Your Home Network Against Network Intrusions](https://homenetworkguy.com/how-to/configure-intrusion-detection-opnsense/)
 
 > Thank you HomeNetworkGuy!
 
@@ -253,7 +254,7 @@ ansible-playbook \
 
 The server is up and running, we just need to play with it to ensure it works as
 expected. We can first get the root CA via the URL by doing a `curl --insecure
-https://YOUR_CA_SERVER_HOSTNAME/roots.pem`. We can also install cerbot locally
+https://YOUR_CA_SERVER_HOSTNAME/roots.pem`. We can also install Cerbot locally
 and try to obtain a certificate. We can set up the Opnsense router to ask for a
 [certificate](https://homenetworkguy.com/how-to/replace-opnsense-web-ui-self-signed-certificate-with-lets-encrypt/).
 
@@ -261,5 +262,10 @@ and try to obtain a certificate. We can set up the Opnsense router to ask for a
 > We will need to set up a local Bind server to answer the step-ca call for
 > internal domain.
 
-TODO: Document on how to set up Bind with step-ca to obtain our self-signed
-certificate.
+##### Bonus: get its own certificate
+
+Now that the CA server is up and running, it would be a nice idea to set up the
+router with a certificate. For that, there will be a need to configure Bind and
+ACME.
+
+See [OPNsense automatic certificate](./docs/opnsense_automatic_certificate.md).
