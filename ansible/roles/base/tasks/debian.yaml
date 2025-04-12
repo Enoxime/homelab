@@ -99,7 +99,6 @@
       - dnsutils
       - htop
       - iotop
-      - nmap
       - python3
       - python3-pip
       - rsync
@@ -120,3 +119,30 @@
     state: present
   when:
     - packages_list is defined
+
+
+- name: Add and configure VLANs
+  when:
+    - base.vlan.enabled | bool | default(false)
+  block:
+    - name: Install VLAN module
+      ansible.builtin.apt:
+        name: vlan
+        state: present
+
+    - name: Ensure module 8021q is loaded
+      community.general.modprobe:
+        name: 8021q
+        state: present
+        persistent: present
+
+    - name: Add network interfaces definition
+      ansible.builtin.copy:
+        dest: /etc/network/interfaces.d/vlans
+        mode: "644"
+        owner: root
+        group: root
+        content: "{{ base.vlan.vlans_definition }}"
+
+    - name: Restart the instance to apply the changes
+      ansible.builtin.reboot:

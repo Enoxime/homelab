@@ -1,4 +1,11 @@
 ---
+base:
+  vlan:
+    enabled: true
+    vlans_definition: |
+      auto eth0.30
+      iface eth0.30 inet dhcp
+        vlan-raw-device eth0
 idh:
   timezone: "{{ local_timezone }}"
   hostname: ca
@@ -18,9 +25,8 @@ packages_list:
   # (see: https://github.com/smallstep/certificates/blob/master/CONTRIBUTING.md#build-step-ca-using-cgo)
   - libpcsclite-dev
   - pkg-config
-  # others
-  - vlan
-go_checksum: sha256:f626cdd92fc21a88b31c1251f419c17782933a42903db87a174ce74eeecc66a9
+go_lang_checksum: sha256:f626cdd92fc21a88b31c1251f419c17782933a42903db87a174ce74eeecc66a9
+certificate_authority_server_temporary_folder_path: "/home/{{ ansible_user }}/cas"
 cas:
   trng:
     enabled: true

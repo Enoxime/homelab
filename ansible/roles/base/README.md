@@ -11,6 +11,9 @@ This role is used to setup the basics for an Debian based server as:
 
 Name | Default value | Description
 -- | -- | --
+base.vlan | `{}` | Set up and install VLANs.
+base.vlan.enabled | `false` | Enable the installation and set up of VLANs.
+base.vlan.vlans_definition | `""` | Network definition of VLANs
 dns_53 | `""` | IP of a DNS server to use. Enable sytemd-resolved.
 hosts_file | `[]` | List of hosts to add in the hosts file.
 hosts_file[].names | `[]` | List of host names.
