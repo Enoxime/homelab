@@ -8,6 +8,7 @@ ansible = "*"
 ansible-lint = "*"
 pre-commit = "*"
 jmespath = "*"
+passlib = "*"
 
 [dev-packages]
 

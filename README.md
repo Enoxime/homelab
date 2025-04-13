@@ -24,6 +24,7 @@ gitops way.
     - [Set up the router](#step-one-set-up-the-router)
     - [Start the switch](#step-two-start-the-switch)
     - [The CA server](#step-three-the-ca-server)
+    - [The bootstrap server](#step-four-the-bootstrap-server)
 
 ## Planification
 
@@ -61,7 +62,7 @@ title: Infrastructure
 ---
 flowchart TB
   Internet --- router["Router (Opnsense)"]
-  router --- switch["Switch unifi"]
+  router --- switch["Switch Unifi"]
   ca["Certificate Authority server (act also as a local letsencrypt)"]
   switch --- ca
   switch --- bootstrap
@@ -269,3 +270,118 @@ router with a certificate. For that, there will be a need to configure Bind and
 ACME.
 
 See [OPNsense automatic certificate](./docs/opnsense_automatic_certificate.md).
+
+#### Step four: The bootstrap server
+
+As mentioned above, the bootstrap server serves as a PXE server, Unifi Network
+Application and Ansible and Terraform agent. It is the main part of our
+infrastructure that manage the creation and maintenance of the infrastructure.
+
+TODO: Find a way to enable via the butane file the docker.service.
+
+> [!TIP]
+> One the Unifi Network Application is set, we can use the DHCP to help the
+> Unifi devices where to find the controller.
+> See [Unifi l3 adoption](https://tcpip.wtf/en/unifi-l3-adoption-with-dhcp-option-43-on-pfsense-mikrotik-and-others.htm)
+
+[](ignored)
+
+> [!IMPORTANT]
+> Sometimes Unifi devices looks for a Unifi host inside the network.
+> I would recommend to set a `unifi.YOURDOMA.IN` to point it to the Unifi
+> Network Application.
+
+The OS of choice is [flatcar](https://www.flatcar.org/). I choose flatcar
+because it is pretty simple. It is an immutable OS that update itself
+automatically. It will be used to host containers and that is all. To set up a
+flatcar system, we will need to configure what we would like it to be with what
+is called a butane file. It is pretty much a yaml file wrapped with a butane
+specification. Once done, the butane file should be transformed to an ignition
+file which is a json file of the yaml one (there is some differences but I will
+let you learn that by yourself). The next step is to upload it to install
+flatcar in the bootstrap server.
+
+##### Bootstrap: Butane to ignition
+
+Once the butane file is ready to be used I use an ansible-playbook to transform
+it. See the
+[documentation on the role](./ansible/roles/flatcar/tasks/README.md).
+Run [prepare_infra.yaml](./ansible/prepare_infra.yaml).
+
+```bash
+ansible-playbook \
+  --vault-password-file=/PATH_TO_SECRET_FILE/secret \
+  --extra-vars=@/PATH_TO_VARIABLES_FILE/variables.yaml \
+  --limit bootstrap \
+  --inventory hosts.yaml \
+  --tags flatcar_butane \
+  prepare_infra.yaml
+```
+
+##### Bootstrap: Start flatcar on Bootstrap
+
+Go to the [flatcar](https://www.flatcar.org/) website, download an image and
+upload it in a USB key. Once done, start the Bootstrap server via the USB key.
+
+##### Bootstrap: Start the ignition file server
+
+Now we need to share the ignition file to the Bootstrap server. To do so, the
+simple way would be to share the file via another USB key or to start an NGINX
+server to retrieve our file.
+
+```bash
+# Go to the folder that contain the ignition file
+cd flatcar
+
+# Get the iP of the nginx server
+ip a
+
+# Start the nginx server
+sudo podman run \
+  --interactive \
+  --tty \
+  --rm \
+  --name deploy_flatcar \
+  --volume ./:/usr/share/nginx/html:ro \
+  --publish 8080:80 \
+  docker.io/nginx
+```
+
+##### Bootstrap: Download the ignition file and install the system
+
+On the Bootstrap server curl the ignition file then start the installation.
+
+```bash
+# Curl the ignition file
+curl http://IP_OF_THE_NGINX_SERVER/bootstrap.ignition.json \
+  --output /tmp/bootstrap.ignition.json
+
+# Install flatcar
+sudo flatcar-install \
+  -d /dev/DISK_WHERE_TO_INSTALL_FLATCAR \
+  -C stable \
+  -i /tmp/bootstrap.ignition.json
+
+# Last step is to reboot and remove the USB key
+sudo reboot
+```
+
+##### Bootstrap: Install the bootstrap system
+
+Now the only thing to do is to install netbootxyz, Unifi network application and
+semaphore (Ansible and Terrafom/Tofu) via containers. All of the endpoints will
+be managed by Traefik and the autoupdate of container versions will be managed
+by beatkind/watchtower. The official Watchtowe seems to not be maintained
+anymore. Refer to the documentations on
+[directories_files](./ansible/roles/directories_files/README.md) and
+[docker_mgmt](./ansible/roles/docker_mgmt/README.md).
+Run [setup.yaml](./ansible/setup.yaml).
+
+```bash
+ansible-playbook \
+  --vault-password-file=/PATH_TO_SECRET_FILE/secret \
+  --extra-vars=@/PATH_TO_VARIABLES_FILE/variables.yaml \
+  --limit bootstrap \
+  --inventory hosts.yaml \
+  setup.yaml
+```

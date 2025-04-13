@@ -1,0 +1,43 @@
+---
+- name: Setup networks
+  community.docker.docker_network:
+    driver: "{{ net.driver | default('bridge') }}"
+    name: "{{ net.name }}"
+  loop: "{{ docker_mgmt.networks | default([]) }}"
+  loop_control:
+    loop_var: net
+
+
+- name: Setup volumes
+  community.docker.docker_volume:
+    driver_options: "{{ vol.driver_options | default(omit) }}"
+    recreate: never
+    volume_name: "{{ vol.name }}"
+  loop: "{{ docker_mgmt.volumes | default([]) }}"
+  loop_control:
+    loop_var: vol
+
+
+- name: Setup containers
+  community.docker.docker_container:
+    capabilities: "{{ container.capabilities | default(omit) }}"
+    command: "{{ container.command | default(omit) }}"
+    devices: "{{ container.devices | default(omit) }}"
+    env: "{{ container.env | default(omit) }}"
+    exposed_ports: "{{ container.exposed_ports | default(omit) }}"
+    groups: "{{ container.groups | default(omit) }}"
+    healthcheck: "{{ container.healthcheck | default(omit) }}"
+    image: "{{ container.image }}"
+    labels: "{{ container.labels | default(omit) }}"
+    name: "{{ container.name }}"
+    network_mode: "{{ container.network_mode | default(omit) }}"
+    networks: "{{ container.networks | default(omit) }}"
+    privileged: "{{ container.privileged | default(omit) }}"
+    published_ports: "{{ container.ports | default(omit) }}"
+    restart_policy: "{{ container.restart_policy | default('unless-stopped') }}"
+    user: "{{ container.user | default(omit) }}"
+    volumes: "{{ container.volumes | default(omit) }}"
+  loop: "{{ docker_mgmt.containers | default([]) }}"
+  loop_control:
+    loop_var: container
+  no_log: "{{ not (docker_mgmt.debug | default(false)) | default(true) | bool }}"

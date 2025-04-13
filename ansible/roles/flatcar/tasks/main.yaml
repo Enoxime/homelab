@@ -1,0 +1,34 @@
+---
+- name: Create a butane file from template
+  ansible.builtin.template:
+    dest: "{{ butane.file_path }}/{{ butane.name }}.butane.yaml"
+    mode: "0644"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    src: "{{ butane.file_path }}/{{ butane.name }}.butane.yaml.jinja"
+  loop: "{{ flatcar.butane_list }}"
+  loop_control:
+    loop_var: butane
+
+
+- name: Generate ignition from butane
+  containers.podman.podman_container:
+    command:
+      - --pretty
+      - --strict
+      - --output
+      - "{{ ignition.name }}.ignition.json"
+      - "{{ ignition.name }}.butane.yaml"
+    detach: false
+    image: quay.io/coreos/butane:release
+    name: butane_to_ignition
+    rm: true
+    security_opt:
+      - label=disable
+    state: started
+    volume:
+      - "{{ ignition.file_path }}:/flatcar"
+    workdir: /flatcar
+  loop: "{{ flatcar.butane_list }}"
+  loop_control:
+    loop_var: ignition

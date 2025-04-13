@@ -13,6 +13,9 @@ home:
         package_mgr: apt
         pkg_flags: --quiet --yes
         python: python3
+    flatcar:
+      hosts:
+        bootstrap:
 
   vars:
     ansible_user: ansible

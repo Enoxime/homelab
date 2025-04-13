@@ -26,3 +26,15 @@
     - role: user_group
       vars:
         ansible_user: root
+
+
+# Use --e ansible_user=YOUR_USERNAME <- Your local username $(whoami)
+- name: Prepare flatcar ignition files
+  hosts:
+    - flatcar
+  gather_facts: true
+  connection: local
+  tags:
+    - flatcar_butane
+  roles:
+    - flatcar
