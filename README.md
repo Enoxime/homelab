@@ -287,7 +287,7 @@ TODO: Find a way to enable via the butane file the docker.service.
 [](ignored)
 
 > [!IMPORTANT]
-> Sometimes Unifi devices looks for a Unifi host inside the network.
+> Sometimes Unifi devices looks for an Unifi host inside the network.
 > I would recommend to set a `unifi.YOURDOMA.IN` to point it to the Unifi
 > Network Application.
 
@@ -297,7 +297,7 @@ automatically. It will be used to host containers and that is all. To set up a
 flatcar system, we will need to configure what we would like it to be with what
 is called a butane file. It is pretty much a yaml file wrapped with a butane
 specification. Once done, the butane file should be transformed to an ignition
-file which is a json file of the yaml one (there is some differences but I will
+file which is a json file of the yaml one (there are some differences but I will
 let you learn that by yourself). The next step is to upload it to install
 flatcar in the bootstrap server.
 
@@ -369,8 +369,8 @@ sudo reboot
 ##### Bootstrap: Install the bootstrap system
 
 Now the only thing to do is to install netbootxyz, Unifi network application and
-semaphore (Ansible and Terrafom/Tofu) via containers. All of the endpoints will
-be managed by Traefik and the autoupdate of container versions will be managed
+semaphore (Ansible and Terrafom/Tofu) via containers. All the endpoints will
+be managed by Traefik and the auto-update of container versions will be managed
 by beatkind/watchtower. The official Watchtowe seems to not be maintained
 anymore. Refer to the documentations on
 [directories_files](./ansible/roles/directories_files/README.md) and
