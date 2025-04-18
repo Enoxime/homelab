@@ -1,0 +1,15 @@
+---
+docker_mgmt:
+  debug: true
+  networks:
+    - name: traefik
+    - name: unifi
+    - name: semaphore
+  volumes: "{{
+    docker_misc_volumes
+    + docker_unifi_volumes
+    + docker_semaphore_volumes }}"
+  containers: "{{
+    docker_misc_stack
+    + docker_unifi_stack
+    + docker_semaphore_stack }}"

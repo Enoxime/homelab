@@ -1,0 +1,37 @@
+---
+- name: Create directory
+  ansible.builtin.file:
+    path: "{{ dir.path }}"
+    mode: "{{ dir.mode | default('755') }}"
+    owner: "{{ dir.owner | default('root') }}"
+    group: "{{ dir.group | default('root') }}"
+    state: directory
+    recurse: true
+  loop: "{{ directories_files.directories | default([]) }}"
+  loop_control:
+    loop_var: dir
+
+
+- name: Create file
+  ansible.builtin.file:
+    path: "{{ file.path }}"
+    mode: "{{ file.mode | default('644') }}"
+    owner: "{{ file.owner | default('root') }}"
+    group: "{{ file.group | default('root') }}"
+    state: file
+    src: "{{ file.src }}"
+  loop: "{{ directories_files.files | default([]) }}"
+  loop_control:
+    loop_var: file
+
+
+- name: Create file from content
+  ansible.builtin.copy:
+    dest: "{{ content.dest }}"
+    mode: "{{ content.mode | default('644') }}"
+    owner: "{{ content.owner | default('root') }}"
+    group: "{{ content.group | default('root') }}"
+    content: "{{ content.content }}"
+  loop: "{{ directories_files.contents | default([]) }}"
+  loop_control:
+    loop_var: content

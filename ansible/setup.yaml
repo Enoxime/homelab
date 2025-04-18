@@ -7,3 +7,13 @@
     - base
     - go_lang
     - certificate_authority_server
+
+
+- name: Setup docker containers
+  hosts:
+    - flatcar
+  gather_facts: false
+  become: false
+  roles:
+    - directories_files
+    - docker_mgmt

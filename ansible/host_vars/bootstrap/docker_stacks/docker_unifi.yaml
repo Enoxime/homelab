@@ -1,0 +1,49 @@
+---
+docker_unifi_volumes:
+  - name: unifi_config
+  - name: unifi_mongo_data
+docker_unifi_stack:
+  # unifi_mongo
+  - env:
+      MONGO_INITDB_ROOT_PASSWORD: "{{ unifi_mongo_root_password }}"
+      MONGO_INITDB_ROOT_USERNAME: unifi
+    image: docker.io/mongo:8
+    name: unifi_mongo
+    networks:
+      - name: unifi
+    volumes:
+      - unifi_mongo_data:/data/db
+  # unifi network application
+  - env:
+      MONGO_AUTHSOURCE: admin
+      MONGO_DBNAME: unifi
+      MONGO_HOST: unifi_mongo
+      MONGO_PASS: "{{ unifi_mongo_root_password }}"
+      MONGO_PORT: "27017"
+      MONGO_USER: unifi
+      PGID: "1000"
+      PUID: "1000"
+      TZ: Etc/UTC
+    image: lscr.io/linuxserver/unifi-network-application:latest
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      # traefik.enable: "true"
+      # traefik.docker.network: traefik
+      # traefik.http.routers.unifi.entrypoints: mgmt,mgmtsecure
+      # traefik.http.routers.unifi.rule: Host(`unifi.bootstrap.mgmt.home.enoxi.me`)
+      # traefik.http.routers.unifi.tls: "true"
+      # traefik.http.routers.unifi.tls.certresolver: cainternal
+      # traefik.http.routers.unifi.service: unifi
+      # traefik.http.services.unifi.loadbalancer.server.port: "8443"
+      # traefik.http.services.unifi.loadbalancer.serverstransport: ignorecert@file
+    name: unifi-network-application
+    networks:
+      - name: traefik
+      - name: unifi
+    ports:
+      - 192.168.0.5:10001:10001/udp
+      - 192.168.0.5:3478:3478/udp
+      - 192.168.0.5:8080:8080
+      - 192.168.0.5:8443:8443
+    volumes:
+      - unifi_config:/config

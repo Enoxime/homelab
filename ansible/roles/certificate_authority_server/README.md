@@ -28,6 +28,7 @@ cas.trng.enabled | `false` | Set trng. A noise generator on a usb stick. See [In
 cas.yubikey.enabled | `false` | Define whether the setup include a yubikey sets.
 cas.yubikey.intermediate.slot | `""` | Slot ID where the certificate is on the yubikey.
 cas.yubikey.product_id | `407` | Udev product id of the yubikey.
+certificate_authority_server_temporary_folder_path | `/tmp/cas` | Temporary path for the module.
 
 ```yaml
 cas:

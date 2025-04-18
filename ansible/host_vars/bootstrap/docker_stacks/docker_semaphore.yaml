@@ -1,0 +1,67 @@
+---
+docker_semaphore_volumes:
+  - name: semaphore_postgres
+  - name: semaphore_data
+  - name: semaphore_tmp
+  - name: semaphore_config
+docker_semaphore_stack:
+  # postgresql
+  - env:
+      POSTGRES_PASSWORD: "{{ semaphore_db_password }}"
+      POSTGRES_USER: semaphore
+      POSTGRES_DB: semaphore
+    image: docker.io/postgres:latest
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    name: semaphore-postgres
+    networks:
+      - name: semaphore
+    volumes:
+      - semaphore_postgres:/var/lib/postgresql/data
+
+  # semaphore
+  - env:
+      SEMAPHORE_DB_DIALECT: postgres
+      SEMAPHORE_DB_HOST: semaphore-postgres
+      SEMAPHORE_DB_NAME: semaphore
+      SEMAPHORE_DB_USER: semaphore
+      SEMAPHORE_DB_PASS: "{{ semaphore_db_password }}"
+      SEMAPHORE_ADMIN: "{{ admin_username }}"
+      SEMAPHORE_ADMIN_PASSWORD: "{{ admin_password }}"
+      SEMAPHORE_ADMIN_NAME: "{{ admin_username }}"
+      SEMAPHORE_ADMIN_EMAIL: admin@enoxi.me
+      ANSIBLE_HOST_KEY_CHECKING: "False"
+      # SEMAPHORE_USE_REMOTE_RUNNER: "True"
+      # SEMAPHORE_RUNNER_REGISTRATION_TOKEN: "{{ semaphore_runner_registration_token }}"
+    image: semaphoreui/semaphore:v2.13.12
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      traefik.enable: "true"
+      traefik.docker.network: traefik
+      traefik.http.routers.unifi.entrypoints: mgmt,mgmtsecure
+      traefik.http.routers.unifi.rule: Host(`semaphore.bootstrap.mgmt.home.enoxi.me`)
+      traefik.http.routers.unifi.tls: "true"
+      traefik.http.routers.unifi.tls.certresolver: cainternal
+      traefik.http.services.unifi.loadbalancer.server.port: "3000"
+    name: semaphore
+    networks:
+      - name: traefik
+      - name: semaphore
+    volumes:
+      - semaphore_data:/var/lib/semaphore
+      - semaphore_config:/etc/semaphore
+      - semaphore_tmp:/tmp/semaphore
+
+  # sempahore runner
+  # - env:
+  #     ANSIBLE_HOST_KEY_CHECKING: "False"
+  #   image: semaphoreui/semaphore-runner:v2.13.12
+  #   labels:
+  #     com.centurylinklabs.watchtower.enable: "true"
+  #   name: semaphore-runner
+  #   networks:
+  #     - name: semaphore
+  #   volumes:
+  #     - semaphore_data:/var/lib/semaphore
+  #     - semaphore_config:/etc/semaphore
+  #     - semaphore_tmp:/tmp/semaphore

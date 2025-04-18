@@ -1,0 +1,91 @@
+---
+docker_misc_volumes:
+  - name: traefik_acme
+  - name: netbootxyz_config
+  - name: netbootxyz_assets
+docker_misc_stack:
+  # watchtower
+  - command:
+      - "--cleanup"
+      - "--label-enable"
+      - "--rolling-restart"
+    image: docker.io/beatkind/watchtower:latest
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  # traefik
+  - image: docker.io/traefik:latest
+    labels:
+      com.centurylinklabs.traefik.enable: "true"
+      traefik.enable: "true"
+      traefik.http.routers.dashboard.entrypoints: mgmt,mgmtsecure
+      traefik.http.routers.dashboard.rule: "Host(`traefik.bootstrap.{{ mgmt_domain }}`)"
+      traefik.http.routers.dashboard.service: api@internal
+      traefik.http.routers.dashboard.tls: "true"
+      traefik.http.routers.dashboard.tls.certresolver: cainternal
+      traefik.http.routers.prometheus.entrypoints: monitoring
+      traefik.http.routers.prometheus.rule: "Host(`traefik.bootstrap.monitoring.{{ domain }}`)"
+      traefik.http.routers.prometheus.service: prometheus@internal
+    name: traefik
+    networks:
+      - name: traefik
+    ports:
+      - 192.168.0.5:80:80
+      - 192.168.0.5:443:443
+      - 192.168.30.5:80:81
+      - 192.168.40.5:80:82
+      - 192.168.70.5:8082:8082
+    volumes:
+      - traefik_acme:/certificates
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/ssl/certs/homelab.pem:/etc/ssl/certs/homelab.pem:ro
+      - "/home/{{ ansible_user }}/traefik_config/traefik.yml:/etc/traefik/traefik.yml"
+      - "/home/{{ ansible_user }}/traefik_config/ignorecert.yaml:/etc/traefik/ignorecert.yml"
+
+  # netbootxyz
+  # https://docs.linuxserver.io/images/docker-netbootxyz/
+  - env:
+      TZ: "{{ local_timezone }}"
+      PUID: "1000"
+      PGID: "1000"
+      NGINX_PORT: "80"
+      WEB_APP_PORT: "3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+      start_period: 3s
+    image: lscr.io/linuxserver/netbootxyz:latest
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      traefik.enable: "true"
+      traefik.http.routers.netbootxyzwebmgmt.entrypoints: mgmt,mgmtsecure
+      traefik.http.routers.netbootxyzwebmgmt.rule: Host(`netbootxyzmgmt.bootstrap.mgmt.home.enoxi.me`)
+      traefik.http.routers.netbootxyzwebmgmt.tls: "true"
+      traefik.http.routers.netbootxyzwebmgmt.tls.certresolver: cainternal
+      traefik.http.routers.netbootxyzwebmgmt.service: netbootxyzwebmgmt
+      traefik.http.services.netbootxyzwebmgmt.loadbalancer.server.port: "3000"
+      traefik.http.services.netbootxyzwebmgmt.loadbalancer.passhostheader: "true"
+      traefik.http.routers.netbootxyzmgmt.entrypoints: mgmt
+      traefik.http.routers.netbootxyzmgmt.rule: Host(`netbootxyz.bootstrap.mgmt.home.enoxi.me`)
+      traefik.http.routers.netbootxyzmgmt.service: netbootxyzmgmt
+      traefik.http.services.netbootxyzmgmt.loadbalancer.server.port: "80"
+      traefik.http.routers.netbootxyzservice.entrypoints: service
+      traefik.http.routers.netbootxyzservice.rule: Host(`netbootxyz.bootstrap.service.home.enoxi.me`)
+      traefik.http.routers.netbootxyzservice.service: netbootxyzservice
+      traefik.http.services.netbootxyzservice.loadbalancer.server.port: "80"
+      traefik.http.routers.netbootxyzk8s00.entrypoints: k8s00
+      traefik.http.routers.netbootxyzk8s00.rule: Host(`netbootxyz.bootstrap.k8s00.home.enoxi.me`)
+      traefik.http.routers.netbootxyzk8s00.service: netbootxyzk8s00
+      traefik.http.services.netbootxyzk8s00.loadbalancer.server.port: "80"
+    name: netbootxyz
+    networks:
+      - name: traefik
+    ports:
+      - 69:69/udp
+    volumes:
+      - netbootxyz_config:/config
+      - netbootxyz_assets:/assets
