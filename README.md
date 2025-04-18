@@ -61,7 +61,7 @@ The basic infrastructure:
 title: Infrastructure
 ---
 flowchart TB
-  Internet --- router["Router (Opnsense)"]
+  Internet --- router["Router (OPNsense)"]
   router --- switch["Switch Unifi"]
   ca["Certificate Authority server (act also as a local letsencrypt)"]
   switch --- ca
@@ -146,6 +146,7 @@ their roles assigned. Let's go!
 1. [Set up the router](#step-one-set-up-the-router)
 2. [Start the switch](#step-two-start-the-switch)
 3. [The CA server](#step-three-the-ca-server)
+4. [The bootstrap server](#step-four-the-bootstrap-server)
 
 #### Step one: Set up the router
 
@@ -353,7 +354,7 @@ On the Bootstrap server curl the ignition file then start the installation.
 
 ```bash
 # Curl the ignition file
-curl http://IP_OF_THE_NGINX_SERVER/bootstrap.ignition.json \
+curl http://IP_OF_THE_NGINX_SERVER:8080/bootstrap.ignition.json \
   --output /tmp/bootstrap.ignition.json
 
 # Install flatcar
