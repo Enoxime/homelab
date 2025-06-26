@@ -1,0 +1,176 @@
+---
+- name: Set variables
+  ansible.builtin.set_fact:
+    device_path: "{{ pikvm.device_path | default(init_pikvm_headless_default.device_path) }}"
+    temporary_folder_path: "{{
+      pikvm.temporary_folder_path |
+      default(init_pikvm_headless_default.temporary_folder_path) }}"
+
+
+- name: Check if sdcard device exists and if xz is installed
+  block:
+    - name: Get device stats
+      ansible.builtin.stat:
+        follow: true
+        path: "{{ device_path }}"
+      register: device_stat
+
+    - name: Fail if the device does not exists
+      ansible.builtin.fail:
+        msg: "Device on {{ device_path }} does not exists!"
+      when:
+        - not device_stat.stat.exists
+
+    - name: Ensure xz is installed for Debian based OS
+      ansible.builtin.package:
+        name:
+          - xz-utils
+        state: present
+      when:
+        - ansible_os_family == 'Debian'
+
+    - name: Ensure xz is installed for Arch based OS
+      ansible.builtin.package:
+        name:
+          - xz
+        state: present
+      when:
+        - ansible_os_family == 'Archlinux'
+
+
+- name: Create a temporary folder
+  become: true
+  block:
+    - name: Remove the folder if it exists
+      ansible.builtin.file:
+        path: "{{ temporary_folder_path }}"
+        state: absent
+
+    - name: Create the folder
+      ansible.builtin.file:
+        path: "{{ temporary_folder_path }}"
+        mode: '755'
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        state: directory
+
+
+- name: Download pikvm image
+  ansible.builtin.get_url:
+    dest: "{{ temporary_folder_path }}/pikvm.img.xz"
+    group: "{{ ansible_user }}"
+    mode: "664"
+    owner: "{{ ansible_user }}"
+    url: "{{ pikvm_image_url }}"
+
+
+- name: Uncompress image
+  ansible.builtin.command:
+    cmd: "xz --decompress {{ temporary_folder_path }}/pikvm.img.xz"
+    creates: "{{ temporary_folder_path }}/pikvm.img"
+    removes: "{{ temporary_folder_path }}/pikvm.img.xz"
+
+
+- name: Locate sdcard and unmount partitions
+  block:
+    - name: Create list of mounted devices
+      ansible.builtin.set_fact:
+        mounted_devices: "{{ ansible_mounts | json_query('[].{device: device, mount: mount}') }}"
+
+    - name: Unmount sdcard partitions
+      ansible.posix.mount:
+        path: "{{ item.mount }}"
+        state: unmounted
+      loop: "{{ mounted_devices }}"
+      when:
+        - item.device | regex_search(device_path+'.+')
+      become: true
+
+
+- name: Remove existing partitions
+  become: true
+  block:
+    - name: Read device information (always use unit when probing)
+      community.general.parted:
+        device: "{{ device_path }}"
+        unit: "MiB"
+      register: sdcard_info
+
+    - name: Remove all partitions from disk
+      community.general.parted:
+        device: "{{ device_path }}"
+        number: "{{ item.num }}"
+        state: absent
+      loop: "{{ sdcard_info.partitions }}"
+
+
+- name: Install the image to the sdcard
+  ansible.builtin.command:
+    cmd: "dd if={{ temporary_folder_path }}/pikvm.img of={{ device_path }}"
+    creates: "{{ device_path }}p1"
+  become: true
+
+
+- name: Mount filesystem, set up the network then unmount
+  become: true
+  block:
+    - name: Remove the folder if it exists
+      ansible.builtin.file:
+        path: "{{ temporary_folder_path }}"
+        state: absent
+
+    - name: Create the folder
+      ansible.builtin.file:
+        path: "{{ temporary_folder_path }}"
+        mode: '755'
+        owner: "root"
+        group: "root"
+        state: directory
+
+    - name: Mount filesystem
+      ansible.posix.mount:
+        fstype: ext4
+        path: "{{ temporary_folder_path }}"
+        state: ephemeral
+        src: "{{ device_path }}p3"
+
+    - name: Update eth0.network
+      ansible.builtin.template:
+        src: "eth0.network"
+        dest: "{{ temporary_folder_path }}/etc/systemd/network/eth0.network"
+        mode: "644"
+        owner: "root"
+        group: "root"
+
+    - name: Set hostname
+      when:
+        - pikvm.hostname is defined
+      block:
+        - name: Set hosts file
+          ansible.builtin.copy:
+            dest: "{{ temporary_folder_path }}/etc/hosts"
+            mode: "644"
+            owner: root
+            group: root
+            content: |
+              127.0.0.1 {{ pikvm.hostname.fqdn + ' ' | default('') }}{{ pikvm.hostname.name }} localhost
+              ::1 {{ pikvm.hostname.fqdn + ' ' | default('') }}{{ pikvm.hostname.name }} localhost
+
+        - name: Set hostname file
+          ansible.builtin.copy:
+            dest: "{{ temporary_folder_path }}/etc/hostname"
+            mode: "644"
+            owner: root
+            group: root
+            content: "{{ pikvm.hostname.name }}"
+
+  always:
+    - name: Unmount filesystem
+      ansible.posix.mount:
+        path: "{{ temporary_folder_path }}"
+        state: absent
+
+    - name: Remove the folder if it exists
+      ansible.builtin.file:
+        path: "{{ temporary_folder_path }}"
+        state: absent

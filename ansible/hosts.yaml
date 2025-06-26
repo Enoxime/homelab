@@ -16,6 +16,9 @@ home:
     flatcar:
       hosts:
         bootstrap:
+    miscs:
+      hosts:
+        pikvm:
 
   vars:
     ansible_user: ansible

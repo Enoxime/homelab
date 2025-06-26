@@ -1,0 +1,19 @@
+[Match]
+Name=eth0
+
+[Network]
+{% if pikvm.ip is defined %}
+Address={{ pikvm.ip.address }}
+Gateway={{ pikvm.ip.gateway }}
+{% for dns in pikvm.ip.dns %}
+DNS={{ dns }}
+{% endfor %}
+{%- else %}
+DHCP=yes
+
+[DHCP]
+# Use same IP by forcing to use MAC address for clientID
+ClientIdentifier=mac
+# https://github.com/pikvm/pikvm/issues/583
+RouteMetric=10
+{% endif %}

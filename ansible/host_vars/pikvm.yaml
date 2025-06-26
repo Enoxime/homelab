@@ -1,0 +1,50 @@
+---
+pikvm:
+  hostname:
+    fqdn: "{{ inventory_hostname }}.{{ mgmt_domain }}"
+    name: "{{ inventory_hostname }}"
+  override:
+    gpio:
+      drivers: ezcoo
+      input:
+        - nas00
+        - cp00
+        - wk00
+        - wk01
+  web:
+    users:
+      - name: admin
+        password: "{{ admin_password }}"
+      - name: "{{ admin_username }}"
+        password: "{{ admin_password }}"
+  certificates:
+    - name: homelab.crt
+      url: https://ca.mgmt.home.enoxi.me/roots.pem
+      validate_cert: false
+  letsencrypt:
+    server: https://ca.mgmt.home.enoxi.me/acme/acme/directory
+    domains:
+      - "{{ inventory_hostname }}.{{ mgmt_domain }}"
+
+# user-group
+user_group:
+  groups:
+    - "{{ admin_username }}"
+    - ansible
+  users:
+    - group: root
+      name: root
+      password: "{{ admin_password }}"
+    - create_home: true
+      group: "{{ admin_username }}"
+      name: "{{ admin_username }}"
+      key: "{{ admin_ssh_pub_key }}"
+      password: "{{ admin_password }}"
+    - create_home: true
+      group: "ansible"
+      name: "ansible"
+      key: "{{ ansible_ssh_pub_key }}"
+  sudo:
+    - name: "{{ admin_username }}"
+    - name: ansible
+      nopasswd: true

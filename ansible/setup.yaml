@@ -17,3 +17,13 @@
   roles:
     - directories_files
     - docker_mgmt
+
+
+- name: Set up pikvm
+  hosts:
+    - pikvm
+  gather_facts: false
+  become: true
+  roles:
+    - user_group
+    - pikvm_config
