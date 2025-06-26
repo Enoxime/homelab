@@ -1,0 +1,11 @@
+---
+- name: "Restart sshd"
+  ansible.builtin.service:
+    name: "sshd"
+    state: "restarted"
+
+
+- name: "Restart kvmd"
+  ansible.builtin.service:
+    name: "kvmd.service"
+    state: "restarted"

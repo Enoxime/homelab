@@ -1,0 +1,72 @@
+###############################################################################
+#                                                                             #
+#  Override KVMD settings.                                                    #
+#                                                                             #
+#    * https://docs.pikvm.org/first_steps/#structure-of-configuration-files   #
+#                                                                             #
+#  This file uses YAML syntax. All overridden parameters will be applied      #
+#  AFTER other configs and "!include" directives, and BEFORE validation.      #
+#  Values should be combined under common sections.                           #
+#                                                                             #
+###############################################################################
+#
+#########
+# Wrong #
+#########
+#kvmd:
+#    gpio:
+#        drivers: ...
+#kvmd:
+#    gpio:
+#        scheme: ...
+#
+###########
+# Correct #
+###########
+#kvmd:
+#    gpio:
+#        drivers: ...
+#        scheme: ...
+#
+###########
+# Example #
+###########
+#vnc:
+#    # See https://docs.pikvm.org/vnc
+#    keymap: /usr/share/kvmd/keymaps/ru # Set russian keymap
+#    auth:
+#        vncauth:
+#            enabled: true # Enable auth via /etc/kvmd/vncpasswd
+kvmd:
+    {% if pikvm.override.gpio is defined -%}
+    {% set gpio = pikvm.override.gpio -%}
+    gpio:
+        {% if gpio.drivers is defined -%}
+        drivers:
+            {% if gpio.drivers == "ezcoo" -%}
+            ez:
+                type: ezcoo
+                protocol: 2
+                device: /dev/ttyUSB0
+            {% endif %}
+        {% endif %}
+
+        scheme:
+            {% for input in gpio.input -%}
+            ch{{ loop.index - 1 }}_led:
+                driver: ez
+                pin: {{ loop.index - 1 }}
+                mode: input
+            ch{{ loop.index - 1 }}_button:
+                driver: ez
+                pin: {{ loop.index - 1 }}
+                mode: output
+                switch: false
+            {% endfor %}
+
+        view:
+            table:
+                {% for input in gpio.input -%}
+                - ["#{{ input }}", ch{{ loop.index - 1 }}_led, ch{{ loop.index - 1 }}_button]
+                {% endfor %}
+    {% endif %}

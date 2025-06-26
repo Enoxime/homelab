@@ -1,0 +1,4 @@
+---
+init_pikvm_headless_default:
+  device_path: "/dev/mmcblk0"
+  temporary_folder_path: "/tmp/pikvm"

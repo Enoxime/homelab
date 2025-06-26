@@ -1,0 +1,151 @@
+---
+- name: Set the system as read-write
+  ansible.builtin.raw: /usr/bin/rw
+  register: rw
+  changed_when: rw.rc == 0
+
+
+- name: Configure sshd
+  ansible.builtin.lineinfile:
+    path: "/etc/ssh/sshd_config"
+    regex: "^(#)?PermitRootLogin"
+    line: "PermitRootLogin no"
+    state: present
+  notify: Restart sshd
+
+
+# override
+- name: Render override.yaml
+  ansible.builtin.template:
+    src: override.yaml.jinja
+    dest: /etc/kvmd/override.yaml
+    mode: "644"
+    owner: root
+    group: root
+  when:
+    - pikvm.override is defined
+  notify: Restart kvmd
+
+
+# web users
+- name: Ensure that 'expect' is installed
+  community.general.pacman:
+    name: expect
+    state: present
+    update_cache: true
+
+
+- name: Create/update pikvm web users
+  when:
+    - pikvm.web.users | default(false)
+  block:
+    - name: List web users
+      ansible.builtin.command: kvmd-htpasswd list
+      register: list_web_users
+      changed_when: list_web_users.rc == 0
+
+    - name: Create/update web {{ user.name }}
+      ansible.builtin.shell: |
+        set -o pipefail && cat <<EOD | expect -
+        spawn kvmd-htpasswd add {{ user.name }}
+        match_max 100000
+        expect -exact "Password: "
+        send -- "{{ user.password }}\r"
+        expect -exact "\r
+        Repeat: "
+        send -- "{{ user.password }}\r"
+        expect eof
+        EOD
+      loop: "{{ pikvm.web.users }}"
+      loop_control:
+        loop_var: user
+      register: rc
+      changed_when: rc.rc == 0
+      when:
+        - user.name not in list_web_users.stdout_lines
+      no_log: true
+
+    - name: Create/update web {{ user.name }}
+      ansible.builtin.shell: |
+        set -o pipefail && cat <<EOD | expect -
+        spawn kvmd-htpasswd set {{ user.name }}
+        match_max 100000
+        expect -exact "Password: "
+        send -- "{{ user.password }}\r"
+        expect -exact "\r
+        Repeat: "
+        send -- "{{ user.password }}\r"
+        expect eof
+        EOD
+      loop: "{{ pikvm.web.users }}"
+      loop_control:
+        loop_var: user
+      register: rc
+      changed_when: rc.rc == 0
+      when:
+        - user.name in list_web_users.stdout_lines
+      no_log: true
+
+
+# certificates
+- name: Add self-signed certificates
+  block:
+    - name: Save the certificate on the pikvm
+      ansible.builtin.get_url:
+        url: "{{ cert.url }}"
+        dest: "/tmp/{{ cert.name }}"
+        mode: "444"
+        owner: root
+        group: root
+        validate_certs: "{{ cert.validate_cert | default(omit) }}"
+      loop: "{{ pikvm.certificates }}"
+      loop_control:
+        loop_var: cert
+
+    - name: Add the certificate to the trust store
+      ansible.builtin.command: "trust anchor --store /tmp/{{ cert.name }}"
+      loop: "{{ pikvm.certificates }}"
+      loop_control:
+        loop_var: cert
+      register: is_cert_in_trusstore
+      changed_when: is_cert_in_trusstore.rc == 0
+      failed_when: is_cert_in_trusstore.rc != 0
+
+
+- name: Let's Encrypt certificate
+  when:
+    - pikvm.letsencrypt.domains | default(false)
+  block:
+    - name: Obtain the certificate
+      ansible.builtin.command: >-
+        kvmd-certbot certonly_webroot
+        --agree-tos
+        -n
+        --email admin@enoxi.me
+        -d {{ domain }}
+        {% if pikvm.letsencrypt.server is defined %}--server {{ pikvm.letsencrypt }}{% endif %}
+      loop: "{{ pikvm.letsencrypt.domains }}"
+      loop_control:
+        loop_var: domain
+      register: letsencrypt
+      changed_when: letsencrypt.rc == 0
+
+    - name: Install the certificate
+      ansible.builtin.command: "kvmd-certbot install_nginx {{ domain }}"
+      loop: "{{ pikvm.letsencrypt.domains }}"
+      loop_control:
+        loop_var: domain
+      register: install_certificate
+      changed_when: install_certificate.rc == 0
+
+    - name: Enable automatic certificate renewal
+      ansible.builtin.service:
+        name: kvmd-certbot.timer
+        state: started
+        enabled: true
+
+
+- name: Set the system as read-only
+  ansible.builtin.raw: /usr/bin/ro
+  register: ro
+  changed_when: ro.rc == 0

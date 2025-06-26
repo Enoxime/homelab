@@ -5,3 +5,6 @@ ansible/secrets.yaml
 # Butane
 *.butane.yaml
 *.ignition.json
+
+# aspell
+*.bak
