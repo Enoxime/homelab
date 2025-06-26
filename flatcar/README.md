@@ -1,5 +1,7 @@
 # Flatcar delivery
 
+[Butane Configuration Specification](https://www.flatcar.org/docs/latest/provisioning/config-transpiler/configuration/)
+
 1. Transform a butane file to an ignition file
 
     ```bash

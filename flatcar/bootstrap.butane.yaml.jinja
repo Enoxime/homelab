@@ -26,11 +26,12 @@ storage:
         inline: |
           [Network]
           IPv6PrivacyExtensions=yes
-    - path: /etc/systemd/network/10-enp0s20f0u1.network
+    - path: /etc/systemd/network/10-enp0.network
       contents:
         inline: |
           [Match]
-          Name=enp0s20f0u1
+          Name=enp0*
+          Name=!enp0.*
 
           [Network]
           Address=192.168.0.5/24
@@ -39,19 +40,19 @@ storage:
           DHCP=ipv6
           IPv6SendRA=yes
           DHCPv6PrefixDelegation=yes
-          VLAN=enp0s20f0u1.30
-          VLAN=enp0s20f0u1.40
-          VLAN=enp0s20f0u1.70
+          VLAN=enp0.30
+          VLAN=enp0.40
+          VLAN=enp0.70
       mode: 0644
       user:
         name: root
       group:
         name: root
-    - path: /etc/systemd/network/20-enp0s20f0u1.30.netdev
+    - path: /etc/systemd/network/20-enp0.30.netdev
       contents:
         inline: |
           [NetDev]
-          Name=enp0s20f0u1.30
+          Name=enp0.30
           Kind=vlan
           IPv6SendRA=yes
           DHCPv6PrefixDelegation=yes
@@ -63,11 +64,11 @@ storage:
         name: root
       group:
         name: root
-    - path: /etc/systemd/network/30-enp0s20f0u1.40.netdev
+    - path: /etc/systemd/network/30-enp0.40.netdev
       contents:
         inline: |
           [NetDev]
-          Name=enp0s20f0u1.40
+          Name=enp0.40
           Kind=vlan
 
           [VLAN]
@@ -77,11 +78,11 @@ storage:
         name: root
       group:
         name: root
-    - path: /etc/systemd/network/40-enp0s20f0u1.70.netdev
+    - path: /etc/systemd/network/40-enp0.70.netdev
       contents:
         inline: |
           [NetDev]
-          Name=enp0s20f0u1.70
+          Name=enp0.70
           Kind=vlan
 
           [VLAN]
@@ -91,11 +92,11 @@ storage:
         name: root
       group:
         name: root
-    - path: /etc/systemd/network/50-enp0s20f0u1.30.network
+    - path: /etc/systemd/network/50-enp0.30.network
       contents:
         inline: |
           [Match]
-          Name=enp0s20f0u1.30
+          Name=enp0.30
 
           [Network]
           Address=192.168.30.5/24
@@ -109,11 +110,11 @@ storage:
         name: root
       group:
         name: root
-    - path: /etc/systemd/network/60-enp0s20f0u1.40.network
+    - path: /etc/systemd/network/60-enp0.40.network
       contents:
         inline: |
           [Match]
-          Name=enp0s20f0u1.40
+          Name=enp0.40
 
           [Network]
           Address=192.168.40.5/24
@@ -127,11 +128,11 @@ storage:
         name: root
       group:
         name: root
-    - path: /etc/systemd/network/70-enp0s20f0u1.70.network
+    - path: /etc/systemd/network/70-enp0.70.network
       contents:
         inline: |
           [Match]
-          Name=enp0s20f0u1.70
+          Name=enp0.70
 
           [Network]
           Address=192.168.70.5/24
@@ -140,6 +141,18 @@ storage:
           DHCP=ipv6
           IPv6SendRA=yes
           DHCPv6PrefixDelegation=yes
+      mode: 0644
+      user:
+        name: root
+      group:
+        name: root
+    # Disable sleep when lid is closed
+    - path: /etc/systemd/logind.conf
+      append:
+        - inline: |
+            HandleLidSwitch=ignore
+            HandleLidSwitchExternalPower=ignore
+            HandleLidSwitchDocked=ignore
       mode: 0644
       user:
         name: root
