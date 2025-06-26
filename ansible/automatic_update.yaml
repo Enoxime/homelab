@@ -1,0 +1,28 @@
+---
+# CA update
+- name: Update dietpi servers
+  hosts:
+    - dietpi
+  gather_facts: false
+  become: true
+  tasks:
+    # See https://github.com/Fourdee/DietPi/blob/master/dietpi/dietpi-update
+    - name: Run dietpi-update
+      ansible.builtin.command: /boot/dietpi/dietpi-update 1
+      register: dietpi_update
+      failed_when: dietpi_update.rc != 0
+      changed_when: dietpi_update == 0
+
+
+# pikvm update
+- name: Update pikvm
+  hosts:
+    - pikvm
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Run pikvm-update
+      ansible.builtin.command: pikvm-update
+      register: pikvm_update
+      failed_when: pikvm_update.rc != 0
+      changed_when: pikvm_update == 0
