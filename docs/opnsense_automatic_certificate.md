@@ -5,7 +5,7 @@
 
 Bind will be used to point ACME requests to the router.
 
-In OPNsense got to `Services -> Bind -> Configuration`.
+In OPNsense go to `Services -> Bind -> Configuration`.
 
 1. Check "Enable BIND Daemon".
 2. Listen IPs `0.0.0.0`.
@@ -36,6 +36,21 @@ the IP of the nameserver.
 8. The `Type` is `A`.
 9. The `Value` is the router default IP like `192.168.0.1`.
 10. Save.
+
+## Unbound DNS
+
+As Unbound DNS is used as the main server, it will need to know where to look at
+for the DNS challenge on Bind.
+
+In OPNsense go to `Services -> Unbound DNS -> Query Forwarding`.
+
+1. Click on the plus `+` sign to add the query forward entry.
+2. Set the `Domain` to `internal.example.com`.
+3. Set the `Server IP` to `127.0.0.1`.
+4. Set the `Server Port` to `53530`.
+5. Don't check the `Forward first`.
+6. Add a description.
+7. Save.
 
 ## ACME
 
