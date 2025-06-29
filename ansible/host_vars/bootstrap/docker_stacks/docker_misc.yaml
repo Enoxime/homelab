@@ -45,7 +45,7 @@ docker_misc_stack:
       - "/home/{{ ansible_user }}/traefik_config/ignorecert.yaml:/etc/traefik/ignorecert.yml"
 
   # netbootxyz
-  # https://docs.linuxserver.io/images/docker-netbootxyz/
+  # https://github.com/netbootxyz/docker-netbootxyz
   - env:
       TZ: "{{ local_timezone }}"
       PUID: "1000"
@@ -58,7 +58,7 @@ docker_misc_stack:
       timeout: 2s
       retries: 10
       start_period: 3s
-    image: lscr.io/linuxserver/netbootxyz:latest
+    image: ghcr.io/netbootxyz/netbootxyz:latest
     labels:
       com.centurylinklabs.watchtower.enable: "true"
       traefik.enable: "true"

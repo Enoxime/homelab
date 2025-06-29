@@ -33,7 +33,7 @@ docker_semaphore_stack:
       ANSIBLE_HOST_KEY_CHECKING: "False"
       # SEMAPHORE_USE_REMOTE_RUNNER: "True"
       # SEMAPHORE_RUNNER_REGISTRATION_TOKEN: "{{ semaphore_runner_registration_token }}"
-    image: semaphoreui/semaphore:v2.13.12
+    image: semaphoreui/semaphore:latest
     labels:
       com.centurylinklabs.watchtower.enable: "true"
       traefik.enable: "true"
@@ -55,7 +55,7 @@ docker_semaphore_stack:
   # sempahore runner
   # - env:
   #     ANSIBLE_HOST_KEY_CHECKING: "False"
-  #   image: semaphoreui/semaphore-runner:v2.13.12
+  #   image: semaphoreui/semaphore-runner:latest
   #   labels:
   #     com.centurylinklabs.watchtower.enable: "true"
   #   name: semaphore-runner
