@@ -8,3 +8,8 @@ ansible/secrets.yaml
 
 # aspell
 *.bak
+
+# Terraform/Tofu
+*.tfvars
+terraform.tfstate*
+.terraform
