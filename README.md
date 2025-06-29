@@ -25,6 +25,7 @@ gitops way.
     - [Start the switch](#step-two-start-the-switch)
     - [The CA server](#step-three-the-ca-server)
     - [The bootstrap server](#step-four-the-bootstrap-server)
+    - [The pikvm server](#step-five-the-pikvm-server)
 
 ## Planification
 
@@ -147,6 +148,7 @@ their roles assigned. Let's go!
 2. [Start the switch](#step-two-start-the-switch)
 3. [The CA server](#step-three-the-ca-server)
 4. [The bootstrap server](#step-four-the-bootstrap-server)
+5. [The pikvm server](#step-five-the-pikvm-server)
 
 #### Step one: Set up the router
 
@@ -281,8 +283,8 @@ infrastructure that manage the creation and maintenance of the infrastructure.
 TODO: Find a way to enable via the butane file the docker.service.
 
 > [!TIP]
-> One the Unifi Network Application is set, we can use the DHCP to help the
-> Unifi devices where to find the controller.
+> Once the Unifi Network Application is set, we can use the DHCP to help the
+> Unifi devices to find where is the controller.
 > See [Unifi l3 adoption](https://tcpip.wtf/en/unifi-l3-adoption-with-dhcp-option-43-on-pfsense-mikrotik-and-others.htm)
 
 [](ignored)
@@ -372,7 +374,7 @@ sudo reboot
 Now the only thing to do is to install netbootxyz, Unifi network application and
 semaphore (Ansible and Terrafom/Tofu) via containers. All the endpoints will
 be managed by Traefik and the auto-update of container versions will be managed
-by beatkind/watchtower. The official Watchtowe seems to not be maintained
+by beatkind/watchtower. The official Watchtower seems to not be maintained
 anymore. Refer to the documentations on
 [directories_files](./ansible/roles/directories_files/README.md) and
 [docker_mgmt](./ansible/roles/docker_mgmt/README.md).
@@ -384,5 +386,33 @@ ansible-playbook \
   --extra-vars=@/PATH_TO_VARIABLES_FILE/variables.yaml \
   --limit bootstrap \
   --inventory hosts.yaml \
+  setup.yaml
+```
+
+#### Step five: the pikvm server
+
+There is only two steps here. The first one is to Install the pivkm image with
+some custom configuration inside the SD card. The second is to set up the server
+with the configuration needed.
+
+##### Pikvm: Install pikvm in a SD card
+
+```bash
+ansible-playbook \
+  --vault-password-file=/PATH_TO_SECRET_FILE/secret \
+  --extra-vars=@/PATH_TO_VARIABLES_FILE/variables.yaml \
+  --inventory hosts.yaml \
+  --tags setup_pikvm \
+  prepare_infra.yaml
+```
+
+##### Pikvm: Configure pikvm
+
+```bash
+ansible-playbook \
+  --vault-password-file=/PATH_TO_SECRET_FILE/secret \
+  --extra-vars=@/PATH_TO_VARIABLES_FILE/variables.yaml \
+  --inventory hosts.yaml \
+  --limit pikvm \
   setup.yaml
 ```
