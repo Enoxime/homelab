@@ -1,6 +1,7 @@
 ---
 docker_semaphore_volumes:
   - name: semaphore_postgres
+  - name: semaphore_postgres_backup
   - name: semaphore_data
   - name: semaphore_tmp
   - name: semaphore_config
@@ -13,11 +14,17 @@ docker_semaphore_stack:
     image: docker.io/postgres:latest
     labels:
       com.centurylinklabs.watchtower.enable: "true"
+      docker-volume-backup.archive-pre: >-
+        /bin/sh -c 'export PGPASSWORD="${POSTGRES_PASSWORD}"
+        && pg_dump -U "${POSTGRES_USER}" "${POSTGRES_DB}"
+        | gzip -9 > /backup/semaphore-postgres-backup.sql.gz'
+      docker-volume-backup.exec-label: database-postgres-semaphore
     name: semaphore-postgres
     networks:
       - name: semaphore
     volumes:
       - semaphore_postgres:/var/lib/postgresql/data
+      - semaphore_postgres_backup:/backup
 
   # semaphore
   - env:
@@ -52,7 +59,7 @@ docker_semaphore_stack:
       - semaphore_config:/etc/semaphore
       - semaphore_tmp:/tmp/semaphore
 
-  # sempahore runner
+  # semaphore runner
   # - env:
   #     ANSIBLE_HOST_KEY_CHECKING: "False"
   #   image: semaphoreui/semaphore-runner:latest

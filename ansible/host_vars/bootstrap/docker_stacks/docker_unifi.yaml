@@ -2,17 +2,27 @@
 docker_unifi_volumes:
   - name: unifi_config
   - name: unifi_mongo_data
+  - name: unifi_mongo_backup
 docker_unifi_stack:
   # unifi_mongo
   - env:
       MONGO_INITDB_ROOT_PASSWORD: "{{ unifi_mongo_root_password }}"
       MONGO_INITDB_ROOT_USERNAME: unifi
     image: docker.io/mongo:8
+    labels:
+      docker-volume-backup.archive-pre: >-
+        /bin/sh -c 'mongodump
+        --username "${MONGO_INITDB_ROOT_USERNAME}"
+        --password "${MONGO_INITDB_ROOT_PASSWORD}"
+        --gzip --archive=/backup/dump.gz'
+      docker-volume-backup.exec-label: database-mongodb
     name: unifi_mongo
     networks:
       - name: unifi
     volumes:
       - unifi_mongo_data:/data/db
+      - unifi_mongo_backup:/backup
+
   # unifi network application
   - env:
       MONGO_AUTHSOURCE: admin

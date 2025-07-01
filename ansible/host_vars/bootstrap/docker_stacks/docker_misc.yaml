@@ -3,6 +3,11 @@ docker_misc_volumes:
   - name: traefik_acme
   - name: netbootxyz_config
   - name: netbootxyz_assets
+  - name: dvb_bootstap_backup
+    driver_options:
+      type: nfs
+      device: :/mnt/nas/backups/bootstrap_backup
+      o: "addr={{ nas00.ip }},rw,nfsvers=4"
 docker_misc_stack:
   # watchtower
   - command:
@@ -89,3 +94,19 @@ docker_misc_stack:
     volumes:
       - netbootxyz_config:/config
       - netbootxyz_assets:/assets
+
+  # docker-volume-backup
+  # https://offen.github.io/docker-volume-backup/reference/
+  - image: docker.io/offen/docker-volume-backup:latest
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    name: docker-volume-backup
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - "/home/{{ ansible_user }}/docker_volume_backup_config:/etc/dockervolumebackup/conf.d"
+      - dvb_bootstap_backup:/bootstap_backup
+      - unifi_mongo_backup:/custom_backup/unifi_mongo:ro
+      - unifi_config:/custom_backup/unifi_config:ro
+      - semaphore_data:/custom_backup/semaphore/semaphore_data:ro
+      - semaphore_config:/custom_backup/semaphore/semaphore_config:ro
+      - semaphore_postgres_backup:/custom_backup/semaphore_db:ro
