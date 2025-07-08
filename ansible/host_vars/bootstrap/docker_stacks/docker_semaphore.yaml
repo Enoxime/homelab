@@ -36,17 +36,18 @@ docker_semaphore_stack:
       SEMAPHORE_ADMIN: "{{ admin_username }}"
       SEMAPHORE_ADMIN_PASSWORD: "{{ admin_password }}"
       SEMAPHORE_ADMIN_NAME: "{{ admin_username }}"
-      SEMAPHORE_ADMIN_EMAIL: admin@enoxi.me
+      SEMAPHORE_ADMIN_EMAIL: "admin@{{ base_domain }}"
       ANSIBLE_HOST_KEY_CHECKING: "False"
       # SEMAPHORE_USE_REMOTE_RUNNER: "True"
       # SEMAPHORE_RUNNER_REGISTRATION_TOKEN: "{{ semaphore_runner_registration_token }}"
+      TZ: "{{ timezone }}"
     image: semaphoreui/semaphore:latest
     labels:
       com.centurylinklabs.watchtower.enable: "true"
       traefik.enable: "true"
       traefik.docker.network: traefik
       traefik.http.routers.unifi.entrypoints: mgmt,mgmtsecure
-      traefik.http.routers.unifi.rule: Host(`semaphore.bootstrap.mgmt.home.enoxi.me`)
+      traefik.http.routers.unifi.rule: "Host(`semaphore.bootstrap.mgmt.{{ domain }}`)"
       traefik.http.routers.unifi.tls: "true"
       traefik.http.routers.unifi.tls.certresolver: cainternal
       traefik.http.services.unifi.loadbalancer.server.port: "3000"

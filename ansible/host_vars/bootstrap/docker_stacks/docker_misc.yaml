@@ -31,7 +31,7 @@ docker_misc_stack:
       traefik.http.routers.dashboard.tls: "true"
       traefik.http.routers.dashboard.tls.certresolver: cainternal
       traefik.http.routers.prometheus.entrypoints: monitoring
-      traefik.http.routers.prometheus.rule: "Host(`traefik.bootstrap.monitoring.{{ domain }}`)"
+      traefik.http.routers.prometheus.rule: "Host(`traefik.bootstrap.monitoring.{{ base_domain }}`)"
       traefik.http.routers.prometheus.service: prometheus@internal
     name: traefik
     networks:
@@ -68,22 +68,22 @@ docker_misc_stack:
       com.centurylinklabs.watchtower.enable: "true"
       traefik.enable: "true"
       traefik.http.routers.netbootxyzwebmgmt.entrypoints: mgmt,mgmtsecure
-      traefik.http.routers.netbootxyzwebmgmt.rule: Host(`netbootxyzmgmt.bootstrap.mgmt.home.enoxi.me`)
+      traefik.http.routers.netbootxyzwebmgmt.rule: "Host(`netbootxyzmgmt.bootstrap.mgmt.{{ domain }}`)"
       traefik.http.routers.netbootxyzwebmgmt.tls: "true"
       traefik.http.routers.netbootxyzwebmgmt.tls.certresolver: cainternal
       traefik.http.routers.netbootxyzwebmgmt.service: netbootxyzwebmgmt
       traefik.http.services.netbootxyzwebmgmt.loadbalancer.server.port: "3000"
       traefik.http.services.netbootxyzwebmgmt.loadbalancer.passhostheader: "true"
       traefik.http.routers.netbootxyzmgmt.entrypoints: mgmt
-      traefik.http.routers.netbootxyzmgmt.rule: Host(`netbootxyz.bootstrap.mgmt.home.enoxi.me`)
+      traefik.http.routers.netbootxyzmgmt.rule: "Host(`netbootxyz.bootstrap.mgmt.{{ domain }}`)"
       traefik.http.routers.netbootxyzmgmt.service: netbootxyzmgmt
       traefik.http.services.netbootxyzmgmt.loadbalancer.server.port: "80"
       traefik.http.routers.netbootxyzservice.entrypoints: service
-      traefik.http.routers.netbootxyzservice.rule: Host(`netbootxyz.bootstrap.service.home.enoxi.me`)
+      traefik.http.routers.netbootxyzservice.rule: "Host(`netbootxyz.bootstrap.service.{{ domain }}`)"
       traefik.http.routers.netbootxyzservice.service: netbootxyzservice
       traefik.http.services.netbootxyzservice.loadbalancer.server.port: "80"
       traefik.http.routers.netbootxyzk8s00.entrypoints: k8s00
-      traefik.http.routers.netbootxyzk8s00.rule: Host(`netbootxyz.bootstrap.k8s00.home.enoxi.me`)
+      traefik.http.routers.netbootxyzk8s00.rule: "Host(`netbootxyz.bootstrap.k8s00.{{ domain }}`)"
       traefik.http.routers.netbootxyzk8s00.service: netbootxyzk8s00
       traefik.http.services.netbootxyzk8s00.loadbalancer.server.port: "80"
     name: netbootxyz
