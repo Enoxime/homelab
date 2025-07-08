@@ -3,14 +3,14 @@ pikvm:
   hostname:
     fqdn: "{{ inventory_hostname }}.{{ mgmt_domain }}"
     name: "{{ inventory_hostname }}"
-  override:
-    gpio:
-      drivers: ezcoo
-      input:
-        - nas00
-        - cp00
-        - wk00
-        - wk01
+  # override:
+  #   gpio:
+  #     drivers: ezcoo
+  #     input:
+  #       - nas00
+  #       - cp00
+  #       - wk00
+  #       - wk01
   web:
     users:
       - name: admin
@@ -19,10 +19,10 @@ pikvm:
         password: "{{ admin_password }}"
   certificates:
     - name: homelab.crt
-      url: https://ca.mgmt.home.enoxi.me/roots.pem
+      url: "https://ca.mgmt.{{ domain }}/roots.pem"
       validate_cert: false
   letsencrypt:
-    server: https://ca.mgmt.home.enoxi.me/acme/acme/directory
+    server: "https://ca.mgmt.{{ domain }}/acme/acme/directory"
     domains:
       - "{{ inventory_hostname }}.{{ mgmt_domain }}"
 
