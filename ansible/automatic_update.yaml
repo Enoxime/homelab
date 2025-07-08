@@ -6,6 +6,13 @@
   gather_facts: false
   become: true
   tasks:
+    - name: Package update
+      ansible.builtin.apt:
+        # state: latest
+        update_cache: true
+        upgrade: full
+        autoremove: true
+        autoclean: true
     # See https://github.com/Fourdee/DietPi/blob/master/dietpi/dietpi-update
     - name: Run dietpi-update
       ansible.builtin.command: /boot/dietpi/dietpi-update 1
