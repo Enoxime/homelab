@@ -61,7 +61,7 @@
     group: "{{ ansible_user }}"
     mode: "664"
     owner: "{{ ansible_user }}"
-    url: "{{ pikvm_image_url }}"
+    url: "{{ init_pikvm_headless_image_url }}"
 
 
 - name: Uncompress image
@@ -170,7 +170,7 @@
         path: "{{ temporary_folder_path }}"
         state: absent
 
-    - name: Remove the folder if it exists
-      ansible.builtin.file:
-        path: "{{ temporary_folder_path }}"
-        state: absent
+    # - name: Remove the folder if it exists
+    #   ansible.builtin.file:
+    #     path: "{{ temporary_folder_path }}"
+    #     state: absent

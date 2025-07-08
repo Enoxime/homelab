@@ -121,20 +121,20 @@
         kvmd-certbot certonly_webroot
         --agree-tos
         -n
-        --email admin@enoxi.me
-        -d {{ domain }}
-        {% if pikvm.letsencrypt.server is defined %}--server {{ pikvm.letsencrypt }}{% endif %}
+        --email admin@{{ base_domain }}
+        -d {{ lets_domain }}
+        {% if pikvm.letsencrypt.server is defined %}--server {{ pikvm.letsencrypt.server }}{% endif %}
       loop: "{{ pikvm.letsencrypt.domains }}"
       loop_control:
-        loop_var: domain
+        loop_var: lets_domain
       register: letsencrypt
       changed_when: letsencrypt.rc == 0
 
     - name: Install the certificate
-      ansible.builtin.command: "kvmd-certbot install_nginx {{ domain }}"
+      ansible.builtin.command: "kvmd-certbot install_nginx {{ crt_domain }}"
       loop: "{{ pikvm.letsencrypt.domains }}"
       loop_control:
-        loop_var: domain
+        loop_var: crt_domain
       register: install_certificate
       changed_when: install_certificate.rc == 0
 
