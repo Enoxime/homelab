@@ -146,3 +146,4 @@ their roles assigned. Let's go!
 4. [The bootstrap server](./docs/application/4_the_bootstrap_server.md)
 5. [The pikvm server](./docs/application/5_the_pikvm_server.md)
 6. [The nas server](./docs/application/6_the_nas_server.md)
+7. [The kubernetes cluster](./docs/application/7_the_kubernetes_cluster.md)

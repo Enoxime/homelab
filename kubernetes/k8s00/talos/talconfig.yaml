@@ -1,0 +1,166 @@
+clusterName: k8s00
+endpoint: https://endpoint.${subdomain}:6443
+kubernetesVersion: "1.32.6"
+nodes:
+  - hostname: cp00.${subdomain}
+    ipAddress: cp00.${subdomain}
+    controlPlane: true
+    installDisk: /dev/sda
+  - hostname: cp01.${subdomain}
+    ipAddress: cp01.${subdomain}
+    controlPlane: true
+    installDisk: /dev/sda
+  - hostname: cp02.${subdomain}
+    ipAddress: cp02.${subdomain}
+    controlPlane: true
+    installDisk: /dev/sda
+  - hostname: wk00.${subdomain}
+    ipAddress: wk00.${subdomain}
+    controlPlane: false
+    installDisk: /dev/nvme0n1
+  - hostname: wk01.${subdomain}
+    ipAddress: wk01.${subdomain}
+    controlPlane: false
+    installDisk: /dev/nvme0n1
+  - hostname: wk02.${subdomain}
+    ipAddress: wk02.${subdomain}
+    controlPlane: false
+    installDisk: /dev/nvme0n1
+  # - hostname: wk03.${subdomain}
+  #   ipAddress: wk03.${subdomain}
+  #   controlPlane: false
+  #   installDisk: /dev/pouet
+  #   schematic:
+  #     customization:
+  #       systemExtensions:
+  #         officialExtensions:
+  #           - siderolabs/nvidia-open-gpu-kernel-modules-production
+  #           - siderolabs/nvidia-container-toolkit-production
+  #           - siderolabs/amd-ucode
+  #   kernelModules:
+  #     - name: nvidia
+  #     - name: nvidia_uvm
+  #     - name: nvidia_drm
+  #     - name: nvidia_modeset
+  #   patches:
+  #     - |-
+  #       machine:
+  #         sysctls:
+  #           net.core.bpf_jit_harden: 1
+  #   volumes:
+  #     - name: EPHEMERAL
+  #       provisioning:
+  #         maxSize: 855GB
+  #         grow: false
+  # - hostname: wk04.${subdomain}
+  #   ipAddress: wk04.${subdomain}
+  #   controlPlane: false
+  #   installDisk:
+  #   schematic:
+  #     customization:
+  #       systemExtensions:
+  #         officialExtensions:
+  #           - siderolabs/nvidia-open-gpu-kernel-modules-production
+  #           - siderolabs/nvidia-container-toolkit-production
+  #           - siderolabs/intel-ucode
+  #   kernelModules:
+  #     - name: nvidia
+  #     - name: nvidia_uvm
+  #     - name: nvidia_drm
+  #     - name: nvidia_modeset
+  #   patches:
+  #     - |-
+  #       machine:
+  #         sysctls:
+  #           net.core.bpf_jit_harden: 1
+cniConfig:
+  name: none
+patches:
+  - |-
+    cluster:
+      proxy:
+        disabled: true
+      discovery:
+        enabled: false
+        registries:
+          service:
+            disabled: false
+  - |-
+    machine:
+      kubelet:
+        extraArgs:
+          rotate-server-certificates: true
+controlPlane:
+  schematic:
+    customization:
+      systemExtensions:
+        officialExtensions:
+          - siderolabs/i915
+          - siderolabs/intel-ucode
+  volumes:
+    - name: EPHEMERAL
+      provisioning:
+        maxSize: 150GB
+        grow: false
+  userVolumes:
+    - name: local-path-provisioner
+      provisioning:
+        diskSelector:
+          match: system_disk
+        maxSize: 100GB
+        grow: false
+      filesystem:
+        type: xfs
+  networkInterfaces:
+      - interface: enp1s0
+        dhcp: false
+      - interface: br0
+        routes:
+          - network: 0.0.0.0/0
+            gateway: "${gateway}"
+        bridge:
+          interfaces:
+            - enp1s0
+          stp:
+            enabled: true
+          # vlan:
+          #   vlanFiltering: true
+        dhcp: true
+worker:
+  schematic:
+    customization:
+      systemExtensions:
+        officialExtensions:
+          - siderolabs/amdgpu
+          - siderolabs/amd-ucode
+  volumes:
+    - name: EPHEMERAL
+      provisioning:
+        maxSize: 355GB
+        grow: false
+  userVolumes:
+    - name: local-path-provisioner
+      provisioning:
+        diskSelector:
+          match: system_disk
+        maxSize: 100GB
+        grow: false
+      filesystem:
+        type: xfs
+  networkInterfaces:
+      - interface: enp1s0
+        dhcp: false
+      - interface: br0
+        routes:
+          - network: 0.0.0.0/0
+            gateway: "${gateway}"
+        bridge:
+          interfaces:
+            - enp1s0
+          stp:
+            enabled: true
+          # vlan:
+          #   vlanFiltering: true
+        dhcp: true
+  nodeLabels:
+    node-role.kubernetes.io/worker: worker
