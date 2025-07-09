@@ -13,3 +13,7 @@ ansible/secrets.yaml
 *.tfvars
 terraform.tfstate*
 .terraform
+
+# talos
+kubernetes/**/.secrets
+kubernetes/**/charts

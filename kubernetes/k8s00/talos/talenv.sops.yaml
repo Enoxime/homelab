@@ -1,0 +1,17 @@
+subdomain: ENC[AES256_GCM,data:Djl+/CBfy/lfxYxnb2wWPM1kug==,iv:5kgA3ZDDqUomU6Etp8ISUBCCLuCoWQbleUenfQv0pu0=,tag:KQ1QPIeO3M8H7XWbHXrlkQ==,type:str]
+gateway: ENC[AES256_GCM,data:cfjzldMpvoCiI1xp,iv:f+I4+Ut2nuDvwYAoKm895bu5QlMrmQzqE1fxHiUnoRg=,tag:vdQE7HRSts0m1RmU6MCL8A==,type:str]
+sops:
+  age:
+    - recipient: age195m7v6w6lce8knleuc9juqwklj56vjflng64q60eh90yrfpsfyjs222pls
+      enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBVdkZJMkxEMERUQ1E5OGRO
+        MXFMcWpPUHppSDlIOFpGYmxDelhlWENWOUhJCi9BMXlnMmpFYkVUV0xBTVp4UHZk
+        MlJGSThsamJsQjJxT2J4NGxmZDl4L3cKLS0tIDJMUWFxTHNnUk5hUFZwUEhIYVdL
+        MEkrV00weS9XSml2Vkt5Y3VJaWo0dTAKZVikX4Ygqe54+sHd1UTAma2ZB8hlUqIm
+        ZQxu+8jZrW9Cyn5saPtjmmvdxmIPQsDIxKYp4PlkOh/lY3SkUjBn6g==
+        -----END AGE ENCRYPTED FILE-----
+  lastmodified: "2025-07-06T19:56:07Z"
+  mac: ENC[AES256_GCM,data:qb/ElDsX0/NsPaYuD4zxmjEa11i4ACa4+M0I8oVv8QnY9z4Zm4/zQNGb/KnhwmqW1vKhRxmWS3ZeDvM9cr7OIG2W+byISjDWxmR+o0dclTczUkxHRkgLMtdacVmJjkz6SPYKBriWgPXKU5R7c8h1Uf5WiV8lnbSysY1n2hNeIAE=,iv:ra0EcMgB/+0qPEb1LAoXC/QlBNRIWixjmUKIiFFOmg4=,tag:wXFN9I203eWQ4Bg/YyE0Wg==,type:str]
+  unencrypted_suffix: _unencrypted
+  version: 3.10.2
