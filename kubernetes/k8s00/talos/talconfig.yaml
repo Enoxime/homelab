@@ -26,32 +26,47 @@ nodes:
     ipAddress: wk02.${subdomain}
     controlPlane: false
     installDisk: /dev/nvme0n1
-  # - hostname: wk03.${subdomain}
-  #   ipAddress: wk03.${subdomain}
-  #   controlPlane: false
-  #   installDisk: /dev/pouet
-  #   schematic:
-  #     customization:
-  #       systemExtensions:
-  #         officialExtensions:
-  #           - siderolabs/nvidia-open-gpu-kernel-modules-production
-  #           - siderolabs/nvidia-container-toolkit-production
-  #           - siderolabs/amd-ucode
-  #   kernelModules:
-  #     - name: nvidia
-  #     - name: nvidia_uvm
-  #     - name: nvidia_drm
-  #     - name: nvidia_modeset
-  #   patches:
-  #     - |-
-  #       machine:
-  #         sysctls:
-  #           net.core.bpf_jit_harden: 1
-  #   volumes:
-  #     - name: EPHEMERAL
-  #       provisioning:
-  #         maxSize: 855GB
-  #         grow: false
+  - hostname: wk03.${subdomain}
+    ipAddress: wk03.${subdomain}
+    controlPlane: false
+    installDisk: /dev/nvme1n1
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/nvidia-open-gpu-kernel-modules-production
+            - siderolabs/nvidia-container-toolkit-production
+            - siderolabs/amd-ucode
+    kernelModules:
+      - name: nvidia
+      - name: nvidia_uvm
+      - name: nvidia_drm
+      - name: nvidia_modeset
+    patches:
+      - |-
+        machine:
+          sysctls:
+            net.core.bpf_jit_harden: 1
+    volumes:
+      - name: EPHEMERAL
+        provisioning:
+          maxSize: 150GB
+          grow: false
+    networkInterfaces:
+      - interface: enp5s0
+        dhcp: false
+      - interface: br0
+        routes:
+          - network: 0.0.0.0/0
+            gateway: "${gateway}"
+        bridge:
+          interfaces:
+            - enp5s0
+          stp:
+            enabled: true
+          # vlan:
+          #   vlanFiltering: true
+        dhcp: true
   # - hostname: wk04.${subdomain}
   #   ipAddress: wk04.${subdomain}
   #   controlPlane: false
@@ -91,6 +106,17 @@ patches:
         extraArgs:
           rotate-server-certificates: true
 controlPlane:
+  patches:
+    - |-
+      - op: add
+        path: /cluster/apiServer/admissionControl/0/configuration/exemptions/namespaces
+        value:
+          - kube-system
+          - local-path-storage
+          - flux-system
+          - rook-ceph
+          - monitoring
+          - nvidia-gpu
   schematic:
     customization:
       systemExtensions:
