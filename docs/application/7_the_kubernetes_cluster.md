@@ -87,3 +87,12 @@ flux bootstrap github \
   --private=false \
   --personal=true
 ```
+
+### Add SOPS age-key secrets
+
+```bash
+cat TO_THE_AGE_KEY |
+  kubectl create secret generic sops-age \
+    --namespace=flux-system \
+    --from-file=age.agekey=/dev/stdin
+```
