@@ -8,4 +8,4 @@ resources:
   - external-snapshotter/external-snapshotter.yaml
   - rook-ceph/rook-ceph.yaml
   - cert-manager/cert-manager.yaml
-  - prometheus/helmRepository.yaml
+  - prometheus
