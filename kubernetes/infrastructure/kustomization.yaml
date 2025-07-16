@@ -5,3 +5,5 @@ resources:
   - local-path-provisioner/local-path-provisioner.yaml
   - metrics-server
   - generic-device-plugin/generic-device-plugin.yaml
+  - external-snapshotter/external-snapshotter.yaml
+  - rook-ceph/rook-ceph.yaml
