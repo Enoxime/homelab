@@ -20,7 +20,12 @@ spec:
       createPrometheusRules: true
     cephClusterSpec:
       storage:
-        useAllNodes: true
+        useAllNodes: false
+        nodes:
+          - names: "wk00"
+          - names: "wk01"
+          - names: "wk02"
+          - names: "wk03"
         useAllDevices: true
     cephBlockPools:
       - name: rook-ceph-retain
