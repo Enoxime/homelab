@@ -32,7 +32,7 @@ spec:
           enabled: true
           name: rook-ceph-retain
           isDefault: false
-          reclaimPolicy: retain
+          reclaimPolicy: Retain
           allowVolumeExpansion: true
       - name: rook-ceph-delete
         spec:
@@ -43,7 +43,7 @@ spec:
           enabled: true
           name: rook-ceph-delete
           isDefault: true
-          reclaimPolicy: delete
+          reclaimPolicy: Delete
           allowVolumeExpansion: true
     # cephFileSystems:
     #   - name: rook-cephfs-rwx-retain
@@ -51,12 +51,12 @@ spec:
     #       enabled: true
     #       name: rook-cephfs-rwx-retain
     #       isDefault: false
-    #       reclaimPolicy: retain
+    #       reclaimPolicy: Retain
     #       allowVolumeExpansion: true
     #   - name: rook-cephfs-rwx-delete
     #     storageClass:
     #       enabled: true
     #       name: rook-cephfs-rwx-delete
     #       isDefault: false
-    #       reclaimPolicy: delete
+    #       reclaimPolicy: Delete
     #       allowVolumeExpansion: true
