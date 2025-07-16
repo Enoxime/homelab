@@ -4,3 +4,4 @@ resources:
   - cilium
   - local-path-provisioner/local-path-provisioner.yaml
   - rook-ceph
+  - cert-manager
