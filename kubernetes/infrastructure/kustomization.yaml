@@ -7,3 +7,4 @@ resources:
   - generic-device-plugin/generic-device-plugin.yaml
   - external-snapshotter/external-snapshotter.yaml
   - rook-ceph/rook-ceph.yaml
+  - cert-manager/cert-manager.yaml
