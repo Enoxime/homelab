@@ -8,7 +8,7 @@ spec:
   targetNamespace: local-path-storage
   sourceRef:
     kind: GitRepository
-    name: local-path-storage
+    name: local-path-provisioner
   path: "./deploy"
   prune: true
   timeout: 1m
