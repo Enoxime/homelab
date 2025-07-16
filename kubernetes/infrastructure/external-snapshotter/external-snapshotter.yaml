@@ -4,7 +4,7 @@ metadata:
   name: external-snapshotter
   namespace: kube-system
 spec:
-  interval: 1d
+  interval: 1440m
   url: https://github.com/kubernetes-csi/external-snapshotter
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
