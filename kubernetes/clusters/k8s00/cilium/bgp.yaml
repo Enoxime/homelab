@@ -4,8 +4,6 @@ metadata:
   name: cilium-bgp
   namespace: kube-system
 spec:
-  dependsOn:
-    - name: cilium
   interval: 5m
   path: ./bgp/bgp.yaml
   prune: true
