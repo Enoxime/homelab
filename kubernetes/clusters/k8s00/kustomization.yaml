@@ -6,3 +6,4 @@ resources:
   - rook-ceph
   - cert-manager
   - prometheus/helmRelease.yaml
+  - nvidia-device-plugin

@@ -10,3 +10,4 @@ resources:
   - cert-manager/cert-manager.yaml
   - prometheus
   - cilium/cilium.yaml
+  - nvidia-device-plugin
