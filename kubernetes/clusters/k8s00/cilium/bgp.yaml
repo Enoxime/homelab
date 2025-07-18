@@ -5,7 +5,7 @@ metadata:
   namespace: kube-system
 spec:
   interval: 5m
-  path: ./kubernetes/clusters/k8s00/bgp
+  path: ./kubernetes/clusters/k8s00/cilium/bgp
   prune: true
   sourceRef:
     kind: GitRepository
