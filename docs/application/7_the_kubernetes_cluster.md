@@ -62,6 +62,9 @@ talhelper gencommand bootstrap
 
 # To obtain the kubeconfig of the created cluster
 talhelper gencommand kubeconfig
+
+# Ensure the workers a tagged as workers
+kubectl label node <worker node name>.... node-role.kubernetes.io/worker=worker
 ```
 
 ## Kubernetes cluster
