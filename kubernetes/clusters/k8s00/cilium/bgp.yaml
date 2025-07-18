@@ -5,7 +5,7 @@ metadata:
   namespace: kube-system
 spec:
   interval: 5m
-  path: ./bgp/bgp.yaml
+  path: ./kubernetes/clusters/k8s00/bgp
   prune: true
   sourceRef:
     kind: GitRepository
