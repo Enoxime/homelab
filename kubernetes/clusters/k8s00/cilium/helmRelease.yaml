@@ -1,9 +1,12 @@
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: cilium
   namespace: kube-system
 spec:
+  dependsOn:
+    - name: kube-prometheus-stack
+      namespace: monitoring
   interval: 5m
   chart:
     spec:
@@ -88,24 +91,25 @@ spec:
         enabled: true
         ingress:
           enabled: false
-          annotations: {}
-          # kubernetes.io/ingress.class: nginx
-          # kubernetes.io/tls-acme: "true"
-          className: ""
-          hosts:
-            - chart-example.local
-          labels: {}
-          tls: []
-          #  - secretName: chart-example-tls
-          #    hosts:
-          #      - chart-example.local
-    ipv6:
-      # -- Enable IPv6 support.
-      enabled: true
+          # annotations: {}
+          # # kubernetes.io/ingress.class: nginx
+          # # kubernetes.io/tls-acme: "true"
+          # className: ""
+          # hosts:
+          #   - chart-example.local
+          # labels: {}
+          # tls: []
+          # #  - secretName: chart-example-tls
+          # #    hosts:
+          # #      - chart-example.local
+    # ipv6:
+    #   # -- Enable IPv6 support.
+    #   enabled: true
     prometheus:
       metricsService: true
       enabled: true
       serviceMonitor:
         enabled: true
+        trustCRDsExist: true
     dashboards:
       enabled: true
