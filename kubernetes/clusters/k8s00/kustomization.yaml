@@ -4,6 +4,6 @@ resources:
   - cilium
   - local-path-provisioner/local-path-provisioner.yaml
   - rook-ceph
-  - cert-manager
+  - cert-manager/cert-manager.yaml
   - prometheus
   - nvidia-device-plugin

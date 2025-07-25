@@ -11,3 +11,13 @@ metadata:
 spec:
   interval: 60m
   url: https://charts.jetstack.io
+---
+# https://github.com/smallstep/step-issuer?tab=readme-ov-file
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: smallstep
+  namespace: cert-manager
+spec:
+  interval: 60m
+  url: https://smallstep.github.io/helm-charts
