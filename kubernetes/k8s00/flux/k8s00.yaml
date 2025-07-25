@@ -8,7 +8,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ../../infrastructure
+  path: kubernetes/infrastructure
   prune: true
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -21,7 +21,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ../../clusters/k8s00
+  path: kubernetes/clusters/k8s00
   prune: true
   decryption:
     provider: sops
