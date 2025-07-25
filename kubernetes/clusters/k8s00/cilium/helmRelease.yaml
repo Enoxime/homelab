@@ -17,9 +17,6 @@ spec:
         name: cilium
         namespace: kube-system
       interval: 1m
-  # valuesFrom:
-  #   - kind: Secret
-  #     name: cilium-helm-values
   values:
     ipam:
       mode: kubernetes
@@ -61,6 +58,8 @@ spec:
       enabled: true
       enableAlpn: true
       enableAppProtocol: true
+      gatewayClass:
+        create: gateway.networking.k8s.io/v1/GatewayClass
     encryption:
       enabled: true
       type: wireguard
@@ -113,3 +112,8 @@ spec:
         trustCRDsExist: true
     dashboards:
       enabled: true
+    l7Proxy: true
+    envoy:
+      securityContext:
+        capabilities:
+          keepCapNetBindService: true

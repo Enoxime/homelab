@@ -4,9 +4,3 @@ namespace: kube-system
 resources:
   - helmRelease.yaml
   - bgp.yaml
-# secretGenerator:
-#   - name: cilium-helm-values
-#     files:
-#       - values.yaml=values.sops.yaml
-# configurations:
-#   - kustomizeconfig.yaml
