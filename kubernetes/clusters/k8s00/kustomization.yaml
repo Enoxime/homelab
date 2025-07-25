@@ -5,5 +5,5 @@ resources:
   - local-path-provisioner/local-path-provisioner.yaml
   - rook-ceph
   - cert-manager
-  - prometheus/helmRelease.yaml
+  - prometheus
   - nvidia-device-plugin
