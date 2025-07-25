@@ -100,11 +100,22 @@ patches:
         registries:
           service:
             disabled: false
+      controllerManager:
+        extraArgs:
+          # For prometheus
+          bind-address: 0.0.0.0
+      scheduler:
+        extraArgs:
+          # For prometheus
+          bind-address: 0.0.0.0
   - |-
     machine:
       kubelet:
         extraArgs:
           rotate-server-certificates: true
+        nodeIP:
+          validSubnets:
+            - "${cidr}"
 controlPlane:
   patches:
     - |-
@@ -117,6 +128,14 @@ controlPlane:
           - rook-ceph
           - monitoring
           - nvidia-gpu
+    - |-
+      cluster:
+        etcd:
+          extraArgs:
+            # for prometheus
+            listen-metrics-urls: http://0.0.0.0:2381
+          advertisedSubnets:
+            - 192.168.40.0/24
   schematic:
     customization:
       systemExtensions:
