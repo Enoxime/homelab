@@ -1,9 +1,0 @@
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-resources:
-  - cilium
-  - local-path-provisioner/local-path-provisioner.yaml
-  - rook-ceph
-  - cert-manager/cert-manager.yaml
-  - prometheus
-  - nvidia-device-plugin

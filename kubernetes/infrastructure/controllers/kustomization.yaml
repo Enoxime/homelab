@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - local-path-provisioner.yaml
+  - metrics-server.yaml
+  - generic-device-plugin.yaml
+  - external-snapshotter.yaml
+  - rook-ceph.yaml
+  - gateway-api.yaml
+  - cert-manager.yaml
+  - prometheus.yaml
+  - cillium.yaml
+  - nvidia-device-plugin.yaml
