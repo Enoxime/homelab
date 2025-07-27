@@ -119,16 +119,71 @@ spec:
         capabilities:
           keepCapNetBindService: true
 ---
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
+apiVersion: cilium.io/v2alpha1
+kind: CiliumBGPClusterConfig
 metadata:
   name: cilium-bgp
-  namespace: kube-system
 spec:
-  interval: 5m
-  path: ./kubernetes/clusters/k8s00/cilium/bgp.yaml
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
+  # nodeSelector:
+  #   matchLabels:
+  #     kubernetes.io/os: linux
+  bgpInstances:
+    - name: "service-k8s00-ipv4-64513"
+      localASN: 64513
+      peers:
+        - name: "opnsense-service-k8s00"
+          peerASN: 64512
+          peerAddress: "192.168.40.1"
+          peerConfigRef:
+            name: "cilium-peer"
+---
+apiVersion: cilium.io/v2alpha1
+kind: CiliumBGPPeerConfig
+metadata:
+  name: cilium-peer
+spec:
+  # timers:
+  #   holdTimeSeconds: 9
+  #   keepAliveTimeSeconds: 3
+  # authSecretRef: bgp-auth-secret
+  # ebgpMultihop: 4
+  gracefulRestart:
+    enabled: true
+    restartTimeSeconds: 15
+  families:
+    - afi: ipv4
+      safi: unicast
+      advertisements:
+        matchLabels:
+          advertise: "bgp"
+    # - afi: ipv6
+    #   safi: unicast
+    #   advertisements:
+    #     matchLabels:
+    #       advertise: "bgp"
+---
+apiVersion: cilium.io/v2alpha1
+kind: CiliumBGPAdvertisement
+metadata:
+  name: bgp-advertisements
+  labels:
+    advertise: bgp
+spec:
+  advertisements:
+    - advertisementType: "Service"
+      service:
+        addresses:
+          - ExternalIP
+      selector:
+        matchExpressions:
+          - {key: bgp, operator: NotIn, values: ['never-used-value']}
+---
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: service-pool
+spec:
+  allowFirstLastIPs: "No"
+  blocks:
+    - cidr: 192.168.90.0/24
+  disabled: false
