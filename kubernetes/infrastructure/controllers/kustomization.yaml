@@ -17,5 +17,5 @@ resources:
   #
   - cert-manager.yaml
   - prometheus.yaml
-  - cillium.yaml
+  - cilium.yaml
   - nvidia-device-plugin.yaml
