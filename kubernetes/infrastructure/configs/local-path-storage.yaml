@@ -3,14 +3,14 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: local-path-storage
-  namespace: flux-system
+  namespace: local-path-storage
 spec:
   interval: 60m
   targetNamespace: local-path-storage
   sourceRef:
     kind: GitRepository
     name: local-path-provisioner
-    namespace: flux-system
+    namespace: local-path-storage
   path: "./deploy"
   prune: true
   timeout: 1m

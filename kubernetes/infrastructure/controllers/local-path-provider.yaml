@@ -1,9 +1,14 @@
 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: local-path-storage
+---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
   name: local-path-provisioner
-  namespace: flux-system
+  namespace: local-path-storage
 spec:
   interval: 1440m
   url: https://github.com/rancher/local-path-provisioner
