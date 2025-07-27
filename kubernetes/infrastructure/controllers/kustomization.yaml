@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - local-path-provisioner.yaml
+  - local-path-provider.yaml
   - metrics-server.yaml
   - generic-device-plugin.yaml
   - external-snapshotter.yaml
