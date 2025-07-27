@@ -1,0 +1,13 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: internal
+spec:
+  controllerName: io.cilium/gateway-controller
+# ---
+# apiVersion: gateway.networking.k8s.io/v1
+# kind: GatewayClass
+# metadata:
+#   name: external
+# spec:
+#   controllerName: io.cilium/gateway-controller
