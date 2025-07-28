@@ -70,7 +70,7 @@ spec:
         storageClassName: rook-ceph-retain
         accessModes:
           - ReadWriteOnce
-        size: 20Gi
+        size: 10Gi
 
     kubeControllerManager:
       enabled: true

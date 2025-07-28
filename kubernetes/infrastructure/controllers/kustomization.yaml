@@ -1,7 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - local-path-provider.yaml
   # metrics-server
   - https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/main/deploy/standalone-install.yaml
   - https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
@@ -9,8 +8,8 @@ resources:
   # generic-device-plugin
   - https://raw.githubusercontent.com/squat/generic-device-plugin/main/manifests/generic-device-plugin.yaml
   #
-  - external-snapshotter.yaml
   - rook-ceph.yaml
+  - external-snapshotter.yaml
   # gateway-api
   - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.3.0/standard-install.yaml
   - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
