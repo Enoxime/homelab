@@ -6,3 +6,11 @@ resources:
   - issuer.yaml
   - gateway-classes.yaml
   - nvidia-device-plugin.yaml
+
+secretGenerator:
+  - name: step-certificates-provisioner-password
+    files:
+      - password=step-certificates-password.encrypted
+
+configurations:
+  - kustomizeconfig.yaml
