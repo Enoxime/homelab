@@ -29,7 +29,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./kubernetes/clusters/k8s00/configs
+  path: ./kubernetes/k8s00/infra-controllers-configs
   prune: true
   wait: true
   decryption:
