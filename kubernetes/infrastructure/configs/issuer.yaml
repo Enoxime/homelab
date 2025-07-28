@@ -3,7 +3,7 @@ apiVersion: certmanager.step.sm/v1beta1
 kind: StepIssuer
 metadata:
   name: step-issuer
-  namespace: cet-manager
+  namespace: cert-manager
 spec:
   url: "${url}"
   caBundle: "${caBundle}"
