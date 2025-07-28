@@ -139,53 +139,21 @@ spec:
           peerConfigRef:
             name: "cilium-peer"
 ---
-apiVersion: cilium.io/v2alpha1
-kind: CiliumBGPPeerConfig
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
 metadata:
-  name: cilium-peer
+  name: infra-controllers-cilium-bgp
+  namespace: flux-system
 spec:
-  # timers:
-  #   holdTimeSeconds: 9
-  #   keepAliveTimeSeconds: 3
-  # authSecretRef: bgp-auth-secret
-  # ebgpMultihop: 4
-  gracefulRestart:
-    enabled: true
-    restartTimeSeconds: 15
-  families:
-    - afi: ipv4
-      safi: unicast
-      advertisements:
-        matchLabels:
-          advertise: "bgp"
-    # - afi: ipv6
-    #   safi: unicast
-    #   advertisements:
-    #     matchLabels:
-    #       advertise: "bgp"
----
-apiVersion: cilium.io/v2alpha1
-kind: CiliumBGPAdvertisement
-metadata:
-  name: bgp-advertisements
-  labels:
-    advertise: bgp
-spec:
-  advertisements:
-    - advertisementType: "Service"
-      service:
-        addresses:
-          - ExternalIP
-      selector:
-        matchExpressions:
-          - {key: bgp, operator: NotIn, values: ['never-used-value']}
----
-apiVersion: "cilium.io/v2alpha1"
-kind: CiliumLoadBalancerIPPool
-metadata:
-  name: service-pool
-spec:
-  allowFirstLastIPs: "No"
-  blocks:
-    - cidr: 192.168.90.0/24
-  disabled: false
+  dependsOn:
+    - name: infra-controllers
+    - name: infra-controllers-configs
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./kubernetes/k8s00/infra-controllers-configs/cilium-bgp
+  prune: true
+  wait: true
