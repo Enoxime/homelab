@@ -4,5 +4,5 @@ resources:
   - generic-device-plugin.yaml
   - cert-manager-step-certificates.yaml
   - issuer.yaml
-  - Gateway-classes.yaml
+  - gateway-classes.yaml
   - nvidia-device-plugin.yaml
