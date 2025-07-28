@@ -9,6 +9,7 @@ resources:
 
 secretGenerator:
   - name: step-certificates-provisioner-password
+    namespace: cert-manager
     files:
       - password=step-certificates-password.encrypted
 
