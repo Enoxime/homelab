@@ -6,6 +6,8 @@ metadata:
   namespace: kube-system
 spec:
   dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
     - name: kube-prometheus-stack
       namespace: monitoring
   interval: 5m

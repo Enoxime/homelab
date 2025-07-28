@@ -123,7 +123,6 @@ controlPlane:
         path: /cluster/apiServer/admissionControl/0/configuration/exemptions/namespaces
         value:
           - kube-system
-          - local-path-storage
           - flux-system
           - rook-ceph
           - monitoring
@@ -142,20 +141,6 @@ controlPlane:
         officialExtensions:
           - siderolabs/i915
           - siderolabs/intel-ucode
-  volumes:
-    - name: EPHEMERAL
-      provisioning:
-        maxSize: 150GB
-        grow: false
-  userVolumes:
-    - name: local-path-provisioner
-      provisioning:
-        diskSelector:
-          match: system_disk
-        maxSize: 100GB
-        grow: false
-      filesystem:
-        type: xfs
   networkInterfaces:
       - interface: enp1s0
         dhcp: false
@@ -178,20 +163,6 @@ worker:
         officialExtensions:
           - siderolabs/amdgpu
           - siderolabs/amd-ucode
-  volumes:
-    - name: EPHEMERAL
-      provisioning:
-        maxSize: 355GB
-        grow: false
-  userVolumes:
-    - name: local-path-provisioner
-      provisioning:
-        diskSelector:
-          match: system_disk
-        maxSize: 100GB
-        grow: false
-      filesystem:
-        type: xfs
   networkInterfaces:
       - interface: enp1s0
         dhcp: false

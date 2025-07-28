@@ -6,7 +6,6 @@ metadata:
   namespace: cet-manager
 spec:
   url: "${url}"
-  # curl --silent --insecure https://ca.service.home.enoxi.me/roots.pem | base64 -w0
   caBundle: "${caBundle}"
   provisioner:
     name: "${name}"
