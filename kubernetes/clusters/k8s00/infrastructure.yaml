@@ -32,10 +32,6 @@ spec:
   path: ./kubernetes/k8s00/infra-controllers-configs
   prune: true
   wait: true
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
