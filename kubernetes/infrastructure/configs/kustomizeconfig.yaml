@@ -1,5 +1,5 @@
 nameReference:
-  - kind: StepIssuer
+  - kind: Secret
     fieldSpecs:
       - path: spec/provisioner/passwordRef/name
-        kind: Secret
+        kind: StepIssuer
