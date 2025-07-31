@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  namespace: jellyfin
+  namespace: yarr
   name: multimedia
   labels:
     type: multimedia
@@ -20,7 +20,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  namespace: jellyfin
+  namespace: yarr
   name: multimedia
 spec:
   accessModes:
