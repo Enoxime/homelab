@@ -11,5 +11,6 @@ spec:
     name: "${name}"
     kid: "${kid}"
     passwordRef:
+      namespace: cert-manager
       name: step-certificates-provisioner-password
       key: password
