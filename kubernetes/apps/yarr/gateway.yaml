@@ -1,0 +1,22 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: yarr
+  namespace: yarr
+  annotations:
+    cert-manager.io/cluster-issuer: step-issuer
+spec:
+  gatewayClassName: internal
+  listeners:
+    - protocol: HTTPS
+      port: 443
+      name: yarr-jellyfin
+      hostname: "${jellyfin_hostname}"
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: yarr-jellyfin-cert
+      allowedRoutes:
+        namespaces:
+          from: yarr

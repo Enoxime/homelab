@@ -1,0 +1,66 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: jellyfin
+  namespace: yarr
+spec:
+  interval: 1440m
+  url: https://jellyfin.github.io/jellyfin-helm
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: yarr
+  namespace: yarr
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: jellyfin
+      version: ">= 2.3.0 < 2.4.0"
+      sourceRef:
+        kind: HelmRepository
+        name: jellyfin
+        namespace: yarr
+      interval: 1m
+  values:
+    affinity:
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+    persistence:
+      config:
+        enabled: true
+        storageClass: rook-ceph-retain
+      media:
+        enabled: true
+    podSecurityContext:
+      # fsGroupChangePolicy: OnRootMismatch
+      fsGroup: 65532
+      # runAsNonRoot: true
+    securityContext:
+      runAsUser: 65532
+      runAsGroup: 65532
+      allowPrivilegeEscalation: false
+      seccompProfile:
+        type: RuntimeDefault
+      capabilities:
+        add:
+          - SYS_ADMIN
+        drop:
+          - ALL
+      readOnlyRootFilesystem: false
+      privileged: false
+    tolerations:
+      - key: nvidia.com/gpu.count
+        operator: Exists
+        effect: NoSchedule
+    volumeMounts:
+      - name: multimedia
+        mountPath: /multimedia
+    volumes:
+      - name: multimedia
+        persistentVolumeClaim:
+          claimName: multimedia
