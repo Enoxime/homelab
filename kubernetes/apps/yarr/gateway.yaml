@@ -20,3 +20,22 @@ spec:
       allowedRoutes:
         namespaces:
           from: yarr
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name:
+  namespace: yarr
+spec:
+  parentRefs:
+    - name: yarr
+  hostnames:
+    - "${jellyfin_hostname}"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: jellyfin
+          port: 80
