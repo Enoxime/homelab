@@ -1,6 +1,6 @@
 # https://github.com/smallstep/step-issuer?tab=readme-ov-file
 apiVersion: certmanager.step.sm/v1beta1
-kind: StepIssuer
+kind: StepClusterIssuer
 metadata:
   name: step-issuer
   namespace: cert-manager
