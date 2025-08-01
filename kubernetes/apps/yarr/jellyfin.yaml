@@ -25,7 +25,6 @@ spec:
         namespace: yarr
       interval: 1m
   values:
-    affinity:
     metrics:
       enabled: true
       serviceMonitor:
@@ -35,7 +34,7 @@ spec:
         enabled: true
         storageClass: rook-ceph-retain
       media:
-        enabled: true
+        enabled: false
     podSecurityContext:
       # fsGroupChangePolicy: OnRootMismatch
       fsGroup: 65532
@@ -43,12 +42,13 @@ spec:
     securityContext:
       runAsUser: 65532
       runAsGroup: 65532
+      runAsNonRoot: true
       allowPrivilegeEscalation: false
       seccompProfile:
         type: RuntimeDefault
       capabilities:
-        add:
-          - SYS_ADMIN
+        # add:
+        #   - SYS_ADMIN
         drop:
           - ALL
       readOnlyRootFilesystem: false
