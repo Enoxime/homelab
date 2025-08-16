@@ -1,0 +1,40 @@
+# ---
+# # https://github.com/smallstep/step-issuer?tab=readme-ov-file
+# apiVersion: certmanager.step.sm/v1beta1
+# kind: StepClusterIssuer
+# metadata:
+#   name: step-issuer
+#   namespace: cert-manager
+# spec:
+#   url: "${url}"
+#   caBundle: "${caBundle}"
+#   provisioner:
+#     name: "${name}"
+#     kid: "${kid}"
+#     passwordRef:
+#       namespace: cert-manager
+#       name: step-certificates-provisioner-password
+#       key: password
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: homelab-internal
+  namespace: cert-manager
+spec:
+  acme:
+    # You must replace this email address with your own.
+    # Let's Encrypt will use this to contact you about expiring
+    # certificates, and issues related to your account.
+    email: "${email}"
+    server: "${url}/acme/acme/directory"
+    # curl --silent --insecure ${url}/roots.pem | base64 -w0
+    caBundle: "${caBundle}"
+    privateKeySecretRef:
+      # Secret resource that will be used to store the account's private key.
+      name: homelab-internal-account-private-key
+    # Add a single challenge solver, HTTP01 using nginx
+    solvers:
+    - http01:
+        ingress:
+          ingressClassName: nginx
