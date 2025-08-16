@@ -86,7 +86,7 @@ flux bootstrap github \
   --owner=Enoxime \
   --repository=homelab \
   --branch=main \
-  --path=kubernetes/k8s00/flux \
+  --path=kubernetes/clusters/k8s00 \
   --private=false \
   --personal=true
 ```
