@@ -57,7 +57,7 @@ spec:
   postBuild:
     substituteFrom:
       - kind: Secret
-        name: step-issuer-secret-values
+        name: cert-manager-issuers-secret-values
   patches:
     - patch: |
         - op: replace

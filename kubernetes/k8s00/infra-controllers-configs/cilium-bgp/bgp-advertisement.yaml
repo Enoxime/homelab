@@ -11,6 +11,7 @@ spec:
       service:
         addresses:
           - ExternalIP
+          - LoadBalancerIP
       selector:
         matchExpressions:
           - {key: bgp, operator: NotIn, values: ['never-used-value']}
