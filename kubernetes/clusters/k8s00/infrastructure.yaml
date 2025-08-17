@@ -14,6 +14,35 @@ spec:
   path: ./kubernetes/infrastructure/controllers
   prune: true
   wait: true
+  patches:
+    - patch: |
+        - op: replace
+          path: /spec/template/spec/containers/0/args
+          value:
+            - --device
+            - |
+              name: video
+              groups:
+                - paths:
+                    - path: /dev/video0
+                  count: 50
+            - --device
+            - |
+              name: hwa
+              groups:
+                - paths:
+                  - path: /dev/dri
+                  count: 50
+            - --device
+            - |
+              name: tun
+              groups:
+                - count: 1000
+                  paths:
+                    - path: /dev/net/tun
+      target:
+        kind: DaemonSet
+        name: generic-device-plugin
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -58,32 +87,3 @@ spec:
     substituteFrom:
       - kind: Secret
         name: cert-manager-issuers-secret-values
-  patches:
-    - patch: |
-        - op: replace
-          path: /spec/template/spec/containers/0/args
-          value:
-            - --device
-            - |
-              name: video
-              groups:
-                - paths:
-                    - path: /dev/video0
-                  count: 50
-            - --device
-            - |
-              name: hwa
-              groups:
-                - paths:
-                  - path: /dev/dri
-                  count: 50
-            - --device
-            - |
-              name: tun
-              groups:
-                - count: 1000
-                  paths:
-                    - path: /dev/net/tun
-      target:
-        kind: DaemonSet
-        name: generic-device-plugin
