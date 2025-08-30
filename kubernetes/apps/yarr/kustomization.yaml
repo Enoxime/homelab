@@ -4,4 +4,12 @@ resources:
   - namespace.yaml
   - volumes.yaml
   - jellyfin.yaml
+  - qbittorrent.yaml
+  - radarr.yaml
+  - sonarr.yaml
+  - prowlarr.yaml
+  - jellysseerr.yaml
+  - bazarr.yaml
+  - flaresolverr.yaml
+  - ingress.yaml
   - gateway.yaml

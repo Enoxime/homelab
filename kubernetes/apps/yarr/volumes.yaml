@@ -33,3 +33,115 @@ spec:
   selector:
     matchLabels:
       type: multimedia
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: yarr
+  name: yarr-qbittorrent-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: rook-ceph-retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: yarr
+  name: yarr-qbittorrent-downloads
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: rook-ceph-delete
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: yarr
+  name: yarr-qbittorrent-gluetun
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: rook-ceph-delete
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: yarr
+  name: yarr-prowlarr-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: rook-ceph-retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: yarr
+  name: yarr-sonarr-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: rook-ceph-retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: yarr
+  name: yarr-radarr-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: rook-ceph-retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: yarr
+  name: yarr-bazarr-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: rook-ceph-retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: yarr
+  name: yarr-jellyseerr-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: rook-ceph-retain

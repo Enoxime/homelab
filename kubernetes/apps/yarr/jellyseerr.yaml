@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: yarr-jellyseerr
+  namespace: yarr
+  labels:
+    app: jellyseerr
+
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: jellyseerr
+  template:
+    metadata:
+      labels:
+        app: jellyseerr
+    spec:
+      securityContext:
+        fsGroup: 65532
+      containers:
+        - name: jellyseerr
+          image: fallenbagel/jellyseerr:latest
+          imagePullPolicy: Always
+          securityContext:
+            capabilities:
+              drop: [ "ALL" ]
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+            readOnlyRootFilesystem: false
+            privileged: false
+            runAsUser: 65532
+            runAsGroup: 65532
+          ports:
+            - containerPort: 5055
+              name: http
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: jellyseerr-env
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: yarr-jellyseerr-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jellyseerr-env
+  namespace: yarr
+data:
+  TZ: ${yarr_timezone}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: yarr-jellyseerr
+  namespace: yarr
+spec:
+  ports:
+    - protocol: TCP
+      port: 5055
+      targetPort: http
+  selector:
+    app: jellyseerr
+  type: ClusterIP

@@ -1,0 +1,142 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: yarr-qbittorrent
+  namespace: yarr
+  labels:
+    app: qbittorrent
+
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: qbittorrent
+  template:
+    metadata:
+      labels:
+        app: qbittorrent
+    spec:
+      securityContext:
+        fsGroup: 65532
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+          - 9.9.9.9
+          - 149.112.112.112
+      initContainers:
+        - name: gluetun
+          image: ghcr.io/qdm12/gluetun:latest
+          imagePullPolicy: Always
+          restartPolicy: Always
+          securityContext:
+            capabilities:
+              # drop: [ "ALL" ]
+              add: [ "NET_ADMIN" ]
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+          ports:
+            - name: http-proxy
+              containerPort: 8888
+              protocol: TCP
+            - name: tcp-shadowsocks
+              containerPort: 8388
+              protocol: TCP
+            - name: udp-shadowsocks
+              containerPort: 8388
+              protocol: UDP
+          envFrom:
+            - secretRef:
+                name: gluetun-env
+          env:
+            - name: FIREWALL_INPUT_PORTS
+              value: "8080"
+            - name: DOT
+              value: "off"
+            - name: DNS_ADDRESS
+              value: "9.9.9.9"
+          resources:
+            limits:
+              squat.ai/tun: "1"
+        - name: ping
+          image: busybox
+          command:
+          - sh
+          - -c
+          - |
+            sleep 30
+            while ! ping -c 1 9.9.9.9; do
+              echo "Ping failed, retrying in 5"
+              sleep 5
+            done
+            echo "ping successfull, exiting"
+      containers:
+        - name: qbittorrent
+          image: lscr.io/linuxserver/qbittorrent:latest
+          imagePullPolicy: Always
+          securityContext:
+            capabilities:
+              drop: [ "ALL" ]
+            allowPrivilegeEscalation: true
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+            readOnlyRootFilesystem: false
+            privileged: true
+            runAsUser: 65532
+            runAsGroup: 65532
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: qbittorrent-env
+          volumeMounts:
+            - name: multimedia
+              mountPath: /multimedia
+            - name: config
+              mountPath: /config
+            - name: downloads
+              mountPath: /downloads
+      volumes:
+        - name: multimedia
+          persistentVolumeClaim:
+            claimName: multimedia
+        - name: config
+          persistentVolumeClaim:
+            claimName: yarr-qbittorrent-config
+        - name: downloads
+          persistentVolumeClaim:
+            claimName: yarr-qbittorrent-downloads
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: qbittorrent-env
+  namespace: yarr
+data:
+  WEBUI_PORT: "8080"
+  PUID: "65532"
+  PGID: "65532"
+  TORRENTING_PORT: "6881"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: yarr-qbittorrent
+  namespace: yarr
+spec:
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: http
+  selector:
+    app: qbittorrent
+  type: ClusterIP

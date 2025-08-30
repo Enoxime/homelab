@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: yarr-sonarr
+  namespace: yarr
+  labels:
+    app: sonarr
+
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: sonarr
+  template:
+    metadata:
+      labels:
+        app: sonarr
+    spec:
+      securityContext:
+        fsGroup: 65532
+      containers:
+        - name: sonarr
+          image: lscr.io/linuxserver/sonarr:latest
+          imagePullPolicy: Always
+          securityContext:
+            capabilities:
+              drop: [ "ALL" ]
+            allowPrivilegeEscalation: true
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+            readOnlyRootFilesystem: false
+            privileged: true
+            runAsUser: 65532
+            runAsGroup: 65532
+          ports:
+            - containerPort: 8989
+              name: http
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: sonarr-env
+          volumeMounts:
+            - name: multimedia
+              mountPath: /multimedia
+            - name: config
+              mountPath: /config
+      volumes:
+        - name: multimedia
+          persistentVolumeClaim:
+            claimName: multimedia
+        - name: config
+          persistentVolumeClaim:
+            claimName: yarr-sonarr-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonarr-env
+  namespace: yarr
+data:
+  TZ: ${yarr_timezone}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: yarr-sonarr
+  namespace: yarr
+spec:
+  ports:
+    - protocol: TCP
+      port: 8989
+      targetPort: http
+  selector:
+    app: sonarr
+  type: ClusterIP

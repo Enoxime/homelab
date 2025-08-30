@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: yarr-flaresolverr
+  namespace: yarr
+  labels:
+    app: flaresolverr
+
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: flaresolverr
+  template:
+    metadata:
+      labels:
+        app: flaresolverr
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: flaresolverr
+          image: ghcr.io/flaresolverr/flaresolverr:latest
+          imagePullPolicy: Always
+          securityContext:
+            capabilities:
+              drop: [ "ALL" ]
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+            readOnlyRootFilesystem: false
+            privileged: false
+            runAsUser: 1000
+            runAsGroup: 1000
+          ports:
+            - containerPort: 8191
+              name: http
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: yarr-flaresolverr
+  namespace: yarr
+spec:
+  ports:
+    - protocol: TCP
+      port: 8191
+      targetPort: http
+  selector:
+    app: flaresolverr
+  type: ClusterIP
