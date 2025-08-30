@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: yarr-radarr
+  namespace: yarr
+  labels:
+    app: radarr
+
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: radarr
+  template:
+    metadata:
+      labels:
+        app: radarr
+    spec:
+      securityContext:
+        fsGroup: 65532
+      containers:
+        - name: radarr
+          image: lscr.io/linuxserver/radarr:latest
+          imagePullPolicy: Always
+          securityContext:
+            capabilities:
+              drop: [ "ALL" ]
+            allowPrivilegeEscalation: true
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+            readOnlyRootFilesystem: false
+            privileged: true
+            runAsUser: 65532
+            runAsGroup: 65532
+          ports:
+            - containerPort: 7878
+              name: http
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: radarr-env
+          volumeMounts:
+            - name: multimedia
+              mountPath: /multimedia
+            - name: config
+              mountPath: /config
+      volumes:
+        - name: multimedia
+          persistentVolumeClaim:
+            claimName: multimedia
+        - name: config
+          persistentVolumeClaim:
+            claimName: yarr-radarr-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: radarr-env
+  namespace: yarr
+data:
+  TZ: ${yarr_timezone}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: yarr-radarr
+  namespace: yarr
+spec:
+  ports:
+    - protocol: TCP
+      port: 7878
+      targetPort: http
+  selector:
+    app: radarr
+  type: ClusterIP

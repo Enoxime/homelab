@@ -1,0 +1,90 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: yarr
+  namespace: yarr
+  annotations:
+    cert-manager.io/cluster-issuer: homelab-internal
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: ${qbittorrent_hostname}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: yarr-qbittorrent
+                port:
+                  number: 8080
+    - host: ${prowlarr_hostname}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: yarr-prowlarr
+                port:
+                  number: 9696
+    - host: ${radarr_hostname}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: yarr-radarr
+                port:
+                  number: 7878
+    - host: ${sonarr_hostname}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: yarr-sonarr
+                port:
+                  number: 8989
+    - host: ${bazarr_hostname}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: yarr-bazarr
+                port:
+                  number: 6767
+    - host: ${jellyseerr_hostname}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: yarr-jellyseerr
+                port:
+                  number: 5055
+  tls:
+    - hosts:
+        - ${qbittorrent_hostname}
+      secretName: qbittorrent-tls
+    - hosts:
+        - ${prowlarr_hostname}
+      secretName: prowlarr-tls
+    - hosts:
+        - ${radarr_hostname}
+      secretName: radarr-tls
+    - hosts:
+        - ${sonarr_hostname}
+      secretName: sonarr-tls
+    - hosts:
+        - ${jellyseerr_hostname}
+      secretName: jellyseerr-tls
+    - hosts:
+        - ${bazarr_hostname}
+      secretName: bazarr-tls

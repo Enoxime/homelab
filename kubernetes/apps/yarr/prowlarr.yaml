@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: yarr-prowlarr
+  namespace: yarr
+  labels:
+    app: prowlarr
+
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: prowlarr
+  template:
+    metadata:
+      labels:
+        app: prowlarr
+    spec:
+      securityContext:
+        fsGroup: 65532
+      containers:
+        - name: prowlarr
+          image: lscr.io/linuxserver/prowlarr:latest
+          imagePullPolicy: Always
+          securityContext:
+            capabilities:
+              drop: [ "ALL" ]
+            allowPrivilegeEscalation: true
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+            readOnlyRootFilesystem: false
+            privileged: true
+            runAsUser: 65532
+            runAsGroup: 65532
+          ports:
+            - containerPort: 9696
+              name: http
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: prowlarr-env
+          volumeMounts:
+            - name: config
+              mountPath: /config
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: yarr-prowlarr-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prowlarr-env
+  namespace: yarr
+data:
+  TZ: ${yarr_timezone}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: yarr-prowlarr
+  namespace: yarr
+spec:
+  ports:
+    - protocol: TCP
+      port: 9696
+      targetPort: http
+  selector:
+    app: prowlarr
+  type: ClusterIP
