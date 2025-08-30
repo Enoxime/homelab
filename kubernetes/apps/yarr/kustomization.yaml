@@ -8,7 +8,7 @@ resources:
   - radarr.yaml
   - sonarr.yaml
   - prowlarr.yaml
-  - jellysseerr.yaml
+  - jellyseerr.yaml
   - bazarr.yaml
   - flaresolverr.yaml
   - ingress.yaml
