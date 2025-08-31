@@ -4,6 +4,7 @@ resources:
   - issuers.yaml
   - gateway-classes.yaml
   - nvidia-device-plugin.yaml
+  - volume-snapshot-class.yaml
 
 secretGenerator:
   - name: step-certificates-provisioner-password
