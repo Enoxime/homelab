@@ -21,4 +21,6 @@ spec:
   postBuild:
     substituteFrom:
       - kind: Secret
+        name: yarr-secret-values
+      - kind: Secret
         name: garage-secret-values
