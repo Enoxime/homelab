@@ -115,7 +115,7 @@ spec:
     schedules:
       midnight:
         disabled: false
-        schedules: "0 0 * * *"
+        schedule: "0 0 * * *"
         template:
           ttl: 720h0m0s  # 30 days
           # # See: https://velero.io/docs/v1.14/resource-filtering/#excludes
@@ -138,7 +138,7 @@ spec:
           datamover: velero
       noon:
         disabled: false
-        schedules: "0 12 * * *"
+        schedule: "0 12 * * *"
         template:
           ttl: 720h0m0s  # 30 days
           # # See: https://velero.io/docs/v1.14/resource-filtering/#excludes
