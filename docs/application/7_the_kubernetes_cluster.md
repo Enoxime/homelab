@@ -99,3 +99,66 @@ cat TO_THE_AGE_KEY | \
     --namespace=flux-system \
     --from-file=age.agekey=/dev/stdin
 ```
+
+### Notes
+
+#### To upgrade Talos
+
+```bash
+talhelper gencommand upgrade
+```
+
+#### To upgrade Kubernetes
+
+> [!IMPORTANT]
+> Check the state of the rook-ceph cluster during the upgrade.
+
+```bash
+talhelper gencommand upgrade-k8s
+
+# Change the version to the one needed and check the state of the rook-ceph
+# cluster during the upgrade process.
+
+kubectl rook-ceph ceph status
+```
+
+#### Test nvidia
+
+```bash
+kubectl run nvidia-test \
+  --restart=Never \
+  -ti \
+  --rm \
+  --namespace nvidia-gpu \
+  --image nvcr.io/nvidia/cuda:12.5.0-base-ubuntu22.04 \
+  --overrides \
+    '{"spec": {"runtimeClassName": "nvidia", "nodeName": "<WORKEN_NAME>"}}' \
+    nvidia-smi
+```
+
+#### Garage
+
+```bash
+# Get status
+kubectl exec --stdin --tty -n garage garage-0 -- ./garage status
+
+# initiate node in layout then apply changes
+kubectl exec --stdin --tty -n garage garage-0 -- ./garage layout assign NODE-ID \
+  -z home \
+  -c 1TB \
+  -t k8s00 \
+  -t nas \
+  -t homelab
+kubectl exec --stdin --tty -n garage garage-0 -- ./garage layout show
+kubectl exec --stdin --tty -n garage garage-0 -- ./garage layout apply \
+  --version 1
+kubectl exec --stdin --tty -n garage garage-0 -- ./garage status
+
+# Set minio-client to browse the object storage
+mc alias set \
+  garage \
+  <endpoint> \ # scheme://something:port
+  <access key> \
+  <secret key> \
+  --api S3v4
+```
