@@ -102,14 +102,16 @@ spec:
           config:
             region: "garage"
             s3ForcePathStyle: true
-            s3Url: https://garage.garage.svc.cluster.local
+            s3Url: http://garage.garage:3900
+            signatureVersion: "4"
       volumeSnapshotLocation:
         - name: velero-snapshots
           provider: aws
           config:
             region: "garage"
             s3ForcePathStyle: true
-            s3Url: https://garage.garage.svc.cluster.local
+            s3Url: http://garage.garage:3900
+            signatureVersion: "4"
     schedules:
       midnight:
         disabled: false
