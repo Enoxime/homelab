@@ -1,0 +1,99 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: garage
+  namespace: flux-system
+spec:
+  interval: 1440m
+  url: https://git.deuxfleurs.fr/Deuxfleurs/garage
+  ref:
+    semver: "v1.2.*"
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: garage
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  chart: ./script/helm/garage
+  reconcileStrategy: ChartVersion
+  sourceRef:
+    kind: GitRepository
+    name: garage
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: garage
+  namespace: garage
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: garage
+      version: ">= 1.2.0 < 1.3.0"
+      sourceRef:
+        kind: HelmChart
+        name: garage
+        namespace: flux-system
+      interval: 1m
+  values:
+    deployment:
+      replicaCount: 1
+    extraVolumeMounts:
+      - name: garage
+        mountPath: /garage-storage
+    extraVolumes:
+      - name: garage
+        persistentVolumeClaim:
+          claimName: garage
+    garage:
+      replicationMode: "1"
+      garageTomlString: |-
+        metadata_dir = "/garage-storage/meta"
+        data_dir = "/garage-storage/data"
+
+        db_engine = "lmdb"
+
+        block_size = 1048576
+
+        replication_mode = "1"
+
+        compression_level = 1
+
+        rpc_bind_addr = "[::]:3901"
+        # rpc_secret will be populated by the init container from a k8s secret object
+        rpc_secret = "__RPC_SECRET_REPLACE__"
+
+        bootstrap_peers = []
+
+        [kubernetes_discovery]
+        namespace = "garage"
+        service_name = "release-name-garage"
+        skip_crd = false
+
+        [s3_api]
+        s3_region = "garage"
+        api_bind_addr = "[::]:3900"
+        root_domain = ".s3.garage.tld"
+
+        [s3_web]
+        bind_addr = "[::]:3902"
+        root_domain = ".web.garage.tld"
+        index = "index.html"
+
+        [admin]
+        api_bind_addr = "[::]:3903"
+    monitoring:
+      metrics:
+        enabled: true
+      serviceMonitor:
+        enabled: true
+    persistence:
+      enabled: false
+    podSecurityContext:
+      fsGroup: 65532
+      runAsGroup: 65532
+      runAsUser: 65532

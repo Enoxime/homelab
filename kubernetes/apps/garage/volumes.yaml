@@ -1,0 +1,35 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: garage
+  name: garage
+  labels:
+    type: garage
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  capacity:
+    storage: 1Ti
+  storageClassName: ""
+  nfs:
+    server: "${nas_ip}"
+    path: "${nfs_garage_path}"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: garage
+  name: garage
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Ti
+  storageClassName: ""
+  selector:
+    matchLabels:
+      type: garage

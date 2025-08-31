@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: garage-secret-values
+  namespace: flux-system
+stringData:
+  nas_ip: ENC[AES256_GCM,data:QX/l3DJR1wuUBfXXmA==,iv:TzFGuVgTPGNX0Buj4f1W/vx35Mc5OcJV9Bn66qxlaCc=,tag:+/PXnpZEyzV1sIBJxc7S9Q==,type:str]
+  nfs_garage_path: ENC[AES256_GCM,data:HJjzttkfuP5qGC/iAfe9cocsv0ik1Vo=,iv:PZM0abXHL2AnMf4LNcOT7AOOEgQKXGBMq44uOdfhfhA=,tag:3zzh5Qochl3fZim1UaytzA==,type:str]
+sops:
+  age:
+    - recipient: age195m7v6w6lce8knleuc9juqwklj56vjflng64q60eh90yrfpsfyjs222pls
+      enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBRSFVIWkY2SXY3c082MFlY
+        NlZTSlc4TmRGazZ6L015VFZnV3NjREVlbG00Cjg4NEtLemtnU0luUlI3NkFJK1d3
+        d2RsN0F5TVZUOFlWb0tiUnJnZVBFVkkKLS0tIE5UdUowcTA4T1FtcUthTVU5Nm1s
+        ZGZzTXN3MGRzdWV4T1FRODZ0OGdUTzQKixihtF5IOHPQ9jQ9EPkRsvOcScwKvCF1
+        omGN9tSlp5ThB+wpj9EKSTShCkzi+UP06ki+tsQ8hkqdofmbcmFbsw==
+        -----END AGE ENCRYPTED FILE-----
+  lastmodified: "2025-08-31T02:07:01Z"
+  mac: ENC[AES256_GCM,data:G5kscTsFrs7U8cEExhU87zkAZkrY4N7kx5i7X1CaD9rm+xspeGwluRBGBikYI3Cmq89J4V4jtobb3LMOW/warBduvi21hTlgB7xiu2vvdj8oUPRJmTdVorruAnTIqhMoA0AmRhq1orBXk00+RWcbKGLu1jSCW3t6egA3P+7c9aI=,iv:5YBYp2tFoumW+e+LIOK/VoGBceP+DcsSsE8xcI4RpQw=,tag:thxCebZDKt1L1HVhxiFdrA==,type:str]
+  encrypted_regex: ^(data|stringData)$
+  version: 3.10.2
