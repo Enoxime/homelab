@@ -159,5 +159,5 @@ spec:
             - velero-snapshots
           snapshotMoveData: true
           datamover: velero
-    deployNodeAgent: true
+    deployNodeAgent: false
     features: EnableCSI
