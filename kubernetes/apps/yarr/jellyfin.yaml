@@ -25,6 +25,8 @@ spec:
         namespace: yarr
       interval: 1m
   values:
+    labels:
+      velero-backup: "true"
     ingress:
       enabled: true
       className: nginx
@@ -47,6 +49,8 @@ spec:
       config:
         enabled: true
         storageClass: rook-ceph-retain
+        annotations:
+          velero.io/csi-volumesnapshot-class: rook-ceph-snapshot
       media:
         enabled: false
     podSecurityContext:

@@ -39,6 +39,10 @@ kind: PersistentVolumeClaim
 metadata:
   namespace: yarr
   name: yarr-qbittorrent-config
+  labels:
+    velero-backup: "true"
+  annotations:
+    velero.io/csi-volumesnapshot-class: rook-ceph-snapshot
 spec:
   accessModes:
     - ReadWriteOnce
@@ -67,6 +71,10 @@ kind: PersistentVolumeClaim
 metadata:
   namespace: yarr
   name: yarr-prowlarr-config
+  labels:
+    velero-backup: "true"
+  annotations:
+    velero.io/csi-volumesnapshot-class: rook-ceph-snapshot
 spec:
   accessModes:
     - ReadWriteOnce
@@ -81,6 +89,10 @@ kind: PersistentVolumeClaim
 metadata:
   namespace: yarr
   name: yarr-sonarr-config
+  labels:
+    velero-backup: "true"
+  annotations:
+    velero.io/csi-volumesnapshot-class: rook-ceph-snapshot
 spec:
   accessModes:
     - ReadWriteOnce
@@ -95,6 +107,10 @@ kind: PersistentVolumeClaim
 metadata:
   namespace: yarr
   name: yarr-radarr-config
+  labels:
+    velero-backup: "true"
+  annotations:
+    velero.io/csi-volumesnapshot-class: rook-ceph-snapshot
 spec:
   accessModes:
     - ReadWriteOnce
@@ -109,6 +125,10 @@ kind: PersistentVolumeClaim
 metadata:
   namespace: yarr
   name: yarr-bazarr-config
+  labels:
+    velero-backup: "true"
+  annotations:
+    velero.io/csi-volumesnapshot-class: rook-ceph-snapshot
 spec:
   accessModes:
     - ReadWriteOnce
@@ -123,6 +143,10 @@ kind: PersistentVolumeClaim
 metadata:
   namespace: yarr
   name: yarr-jellyseerr-config
+  labels:
+    velero-backup: "true"
+  annotations:
+    velero.io/csi-volumesnapshot-class: rook-ceph-snapshot
 spec:
   accessModes:
     - ReadWriteOnce
