@@ -97,21 +97,43 @@ spec:
     configuration:
       backupStorageLocation:
         - name: velero-backups
-          provider: aws
+          provider: velero.io/aws
           bucket: "velero"
+          credential:
+            key: cloud
+            name: garage-creds
           config:
             region: "garage"
             s3ForcePathStyle: true
             s3Url: http://garage.garage:3900
             signatureVersion: "4"
+            profile: "default"
+          default: true
       volumeSnapshotLocation:
         - name: velero-snapshots
-          provider: aws
+          provider: velero.io/aws
+          credential:
+            key: cloud
+            name: garage-creds
           config:
             region: "garage"
-            s3ForcePathStyle: true
-            s3Url: http://garage.garage:3900
-            signatureVersion: "4"
+            profile: "default"
+      features: EnableCSI
+    deployNodeAgent: true
+    # nodeAgent:
+    #   podSecurityContext:
+    #     runAsUser: 1000
+    #     runAsGroup: 1000
+    #     fsGroup: 1000
+    #   containerSecurityContext:
+    #     allowPrivilegeEscalation: false
+    #     capabilities:
+    #       drop: ["ALL"]
+    #     readOnlyRootFilesystem: true
+    #     seccompProfile:
+    #       type: RuntimeDefault
+    #     runAsNonRoot: true
+    #     privileged: false
     schedules:
       midnight:
         disabled: false
@@ -127,7 +149,7 @@ spec:
           # includedNamespaces:
           #   - yarr
           includedResources:
-            - "PersistentVolumeClaim"
+            - "persistentVolumeClaims"
           labelSelector:
             matchLabels:
               velero-backup: "true"
@@ -135,7 +157,6 @@ spec:
           volumeSnapshotLocations:
             - velero-snapshots
           snapshotMoveData: true
-          datamover: velero
       noon:
         disabled: false
         schedule: "0 12 * * *"
@@ -150,7 +171,7 @@ spec:
           # includedNamespaces:
           #   - yarr
           includedResources:
-            - "PersistentVolumeClaim"
+            - "persistentVolumeClaims"
           labelSelector:
             matchLabels:
               velero-backup: "true"
@@ -158,6 +179,3 @@ spec:
           volumeSnapshotLocations:
             - velero-snapshots
           snapshotMoveData: true
-          datamover: velero
-    deployNodeAgent: false
-    features: EnableCSI
