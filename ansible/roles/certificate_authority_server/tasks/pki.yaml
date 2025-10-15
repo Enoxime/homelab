@@ -10,7 +10,7 @@
 - name: Create directories
   ansible.builtin.file:
     path: "{{ cas.mount.path }}/ca"
-    mode: "755"
+    mode: "0755"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     state: directory
@@ -19,12 +19,12 @@
 - name: Check if the root certificate is already created
   ansible.builtin.stat:
     path: "{{ cas.mount.path }}/ca/certs/root_ca.crt"
-  register: cas_this
+  register: certificate_authority_server_this
 
 
 - name: Generate step's certificates and configurations
   when:
-    - not cas_this.stat.exists
+    - not certificate_authority_server_this.stat.exists
   block:
     - name: Generate the password file
       ansible.builtin.copy:

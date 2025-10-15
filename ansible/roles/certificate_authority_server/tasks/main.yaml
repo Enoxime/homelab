@@ -7,7 +7,7 @@
 
 - name: Set variables
   ansible.builtin.set_fact:
-    cas_arch: >-
+    certificate_authority_server_arch: >-
       {% if ansible_architecture == 'x86_64' %}amd64{%
       elif ansible_architecture == 'aarch64' %}arm64{%
       else %}{{ ansible_architecture }}{% endif %}
@@ -19,15 +19,18 @@
       ansible.builtin.uri:
         method: GET
         url: https://api.github.com/repos/smallstep/cli/releases/latest
-      register: step_cli_release
+      register: certificate_authority_server_step_cli_release
 
     - name: Step-cli => Install step-cli
       ansible.builtin.apt:
-        deb: "{{ step_cli_release.json | community.general.json_query(step_cli_json_query) }}"
+        deb: "{{
+          certificate_authority_server_step_cli_release.json
+          | community.general.json_query(step_cli_json_query)
+          }}"
       vars:
         step_cli_json_query: >-
-          assets[?starts_with(name, 'step-cli_{{ step_cli_release.json.tag_name[1:] }}') &&
-          ends_with(name, '{{ cas_arch }}.deb')].browser_download_url | [0]
+          assets[?starts_with(name, 'step-cli_{{ certificate_authority_server_step_cli_release.json.tag_name[1:] }}') &&
+          ends_with(name, '{{ certificate_authority_server_arch }}.deb')].browser_download_url | [0]
 
 
 - name: Install step-ca
@@ -36,14 +39,14 @@
       ansible.builtin.uri:
         method: GET
         url: https://api.github.com/repos/smallstep/certificates/releases/latest
-      register: step_ca_release
+      register: certificate_authority_server_step_ca_release
 
     - name: Step-ca => Install step-ca as deb package
       ansible.builtin.apt:
         deb: >-
           https://github.com/smallstep/certificates/releases/download/{{
-          step_ca_release.json.tag_name }}/step-ca_{{
-          step_ca_release.json.tag_name[1:] }}_{{ cas_arch }}.deb
+          certificate_authority_server_step_ca_release.json.tag_name }}/step-ca_{{
+          certificate_authority_server_step_ca_release.json.tag_name[1:] }}_{{ certificate_authority_server_arch }}.deb
       when:
         - not (cas.yubikey.enabled | default(false))
 
@@ -69,7 +72,7 @@
 
         - name: Step-ca => Download the step-ca tarball
           ansible.builtin.get_url:
-            url: "{{ step_ca_release.json.tarball_url }}"
+            url: "{{ certificate_authority_server_step_ca_release.json.tarball_url }}"
             dest: "{{ certificate_authority_server_temporary_folder_path }}/step-ca.tar.gz"
             mode: "644"
             owner: "{{ ansible_user }}"
@@ -88,16 +91,6 @@
 
         - name: Step-ca => Build step-ca binary
           block:
-            - name: Step-ca => Bootstrap phase
-              community.general.make:
-                chdir: "{{ certificate_authority_server_temporary_folder_path }}/step-ca"
-                file: Makefile
-                target: bootstrap
-              environment:
-                PATH: /usr/local/go/bin:{{ ansible_env.PATH }}
-              become: true
-              become_user: "{{ ansible_user }}"
-
             - name: Step-ca => Build phase
               community.general.make:
                 chdir: "{{ certificate_authority_server_temporary_folder_path }}/step-ca"
@@ -132,9 +125,9 @@
   ansible.builtin.command: /usr/local/go/bin/go install github.com/smallstep/step-kms-plugin@latest
   environment:
     GOPATH: /usr/local
-  register: return_code
-  changed_when: return_code.rc == 0
-  failed_when: return_code.rc != 0
+  register: certificate_authority_server_return_code
+  changed_when: certificate_authority_server_return_code.rc == 0
+  failed_when: certificate_authority_server_return_code.rc != 0
 
 
 - name: Generate PKIs
@@ -149,16 +142,20 @@
 
 - name: Refine configuration if needed
   when:
-    - cas.config.authority | default(false)
+    - cas.config.authority.keys() | length > 0 | default(false)
   block:
     - name: Retrieve the configuration
       ansible.builtin.slurp:
         src: "{{ cas.mount.path }}/ca/config/ca.json"
-      register: cas_authority_remote_config
+      register: certificate_authority_server_remote_config
 
     - name: Register the config as an object
       ansible.builtin.set_fact:
-        cas_authority_config: "{{ cas_authority_remote_config.content | b64decode | from_json | combine(cas.config, recursive=true) }}"
+        certificate_authority_server_config: "{{
+          certificate_authority_server_remote_config.content
+          | b64decode | from_json
+          | combine(cas.config, recursive=true)
+          }}"
 
     - name: Rewrite the remote config
       ansible.builtin.copy:
@@ -166,7 +163,7 @@
         mode: "600"
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
-        content: "{{ cas_authority_config | to_nice_json(indent=2) }}"
+        content: "{{ certificate_authority_server_config | to_nice_json(indent=2) }}"
 
 
 - name: Install step-ca.service

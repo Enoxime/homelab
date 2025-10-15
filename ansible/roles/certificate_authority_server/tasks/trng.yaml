@@ -1,14 +1,14 @@
 - name: Check if infnoise was already installed
   ansible.builtin.stat:
     path: /usr/local/sbin/infnoise
-  register: cas_infnoise_this
+  register: certificate_authority_server_infnoise_this
 
 
 - name: Register latest TRNG release
   ansible.builtin.uri:
     method: GET
     url: https://api.github.com/repos/leetronics/infnoise/releases/latest
-  register: trng_release
+  register: certificate_authority_server_trng_release
 
 
 - name: Create temporary directory
@@ -30,7 +30,7 @@
 
 - name: Download the trng tarball
   ansible.builtin.get_url:
-    url: "{{ trng_release.json.tarball_url }}"
+    url: "{{ certificate_authority_server_trng_release.json.tarball_url }}"
     dest: "{{ certificate_authority_server_temporary_folder_path }}/trng.tar.gz"
     mode: "644"
     owner: "{{ ansible_user }}"
@@ -66,4 +66,4 @@
 - name: Restart the instance
   ansible.builtin.reboot:
   when:
-    not cas_infnoise_this.stat.exists
+    not certificate_authority_server_infnoise_this.stat.exists
