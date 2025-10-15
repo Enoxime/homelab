@@ -3,8 +3,8 @@
 OK now it is finally starting to get interesting. I went with the following
 tutorial on this one
 [Build a Tiny Certificate Authority For Your Homelab](https://smallstep.com/blog/build-a-tiny-ca-with-raspberry-pi-yubikey/)
-and did all the optional parts because it is cool. I choose to go with dietpi as
-the OS.
+and did all the optional parts because it is cool. I choose to go with
+[dietpi](https://dietpi.com/) as the OS.
 
 After testing against the tutorial I went with the "automate everything" way and
 write Ansible roles to do it for me in case of needed changes or just redoing it

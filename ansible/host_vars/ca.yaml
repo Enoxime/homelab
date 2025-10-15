@@ -25,7 +25,7 @@ packages_list:
   # (see: https://github.com/smallstep/certificates/blob/master/CONTRIBUTING.md#build-step-ca-using-cgo)
   - libpcsclite-dev
   - pkg-config
-go_lang_checksum: sha256:f626cdd92fc21a88b31c1251f419c17782933a42903db87a174ce74eeecc66a9
+go_lang_checksum: sha256:9aaeb044bf8dbf50ca2fbf0edc5ebc98b90d5bda8c6b2911526df76f61232919
 certificate_authority_server_temporary_folder_path: "/home/{{ ansible_user }}/cas"
 cas:
   trng:
@@ -48,8 +48,8 @@ cas:
   config:
     authority:
       claims:
-        # 3 months
-        maxTLSCertDuration: 2160h
+        # 1 months
+        maxTLSCertDuration: 720h
       # policy:
       #   x509:
       #     allow:

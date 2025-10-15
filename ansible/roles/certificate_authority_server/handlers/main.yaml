@@ -5,4 +5,12 @@
     state: restarted
     enabled: true
   when:
-    - cas_infnoise_this.stat.exists
+    - certificate_authority_server_infnoise_this.stat.exists
+
+- name: "Restart polkit"
+  ansible.builtin.service:
+    name: "polkit.service"
+    state: restarted
+    enabled: true
+  when:
+    - cas.yubikey.enabled | default(false)

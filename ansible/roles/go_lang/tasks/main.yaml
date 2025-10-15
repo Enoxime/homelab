@@ -1,8 +1,8 @@
 ---
 - name: Set facts
   ansible.builtin.set_fact:
-    go_archive_full_name: "{{ go_lang_version }}.linux-{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}.tar.gz"
-    go_full_download_url: "{{ go_lang_base_url }}/{{ go_lang_version }}.linux-{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}.tar.gz"
+    go_lang_archive_full_name: "{{ go_lang_version }}.linux-{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}.tar.gz"
+    go_lang_full_download_url: "{{ go_lang_base_url }}/{{ go_lang_version }}.linux-{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}.tar.gz"
 
 
 - name: Create temporary directory
@@ -24,7 +24,7 @@
 - name: Register the current Go version (if any)
   ansible.builtin.command: /usr/local/go/bin/go version
   ignore_errors: true
-  register: go_actual_version
+  register: go_lang_actual_version
   changed_when: false
 
 
@@ -32,16 +32,16 @@
   ansible.builtin.file:
     path: /usr/local/go
     state: absent
-  when: go_actual_version or go_lang_version not in go_actual_version.stdout
+  when: (go_lang_actual_version.rc | default(false)) == 0 or (go_lang_version not in go_lang_actual_version.stdout | default(false))
 
 
 - name: Install go
-  when: go_actual_version or go_lang_version not in go_actual_version.stdout
+  when: (go_lang_actual_version.rc | default(false)) == 0 or (go_lang_version not in go_lang_actual_version.stdout | default(false))
   block:
     - name: Download the Go tarball
       ansible.builtin.get_url:
         checksum: "{{ go_lang_checksum }}"
-        url: "{{ go_full_download_url }}"
+        url: "{{ go_lang_full_download_url }}"
         dest: "{{ go_lang_temporary_folder_path }}"
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
@@ -54,7 +54,7 @@
         mode: "755"
         owner: root
         remote_src: true
-        src: "{{ go_lang_temporary_folder_path }}/{{ go_archive_full_name }}"
+        src: "{{ go_lang_temporary_folder_path }}/{{ go_lang_archive_full_name }}"
 
     - name: Add go path
       ansible.builtin.copy:

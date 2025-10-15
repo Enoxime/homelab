@@ -23,7 +23,7 @@
 #   --new-management-key THE_RESULT_OF_THE_HEX_24
 #
 #
-# To import a key (to do before th certificate):
+# To import a key (to do before the certificate):
 # ykman piv keys import \
 #   --pin-policy NEVER \ <= Not necessary
 #   --touch-policy NEVER \
@@ -53,11 +53,11 @@
     - name: Retrieve the configuration
       ansible.builtin.slurp:
         src: "{{ cas.mount.path }}/ca/config/ca.json"
-      register: cas_yubikey_remote_config
+      register: certificate_authority_server_yubikey_remote_config
 
     - name: Register new objects for the remote config
       ansible.builtin.set_fact:
-        cas_yubikey_config:
+        certificate_authority_server_yubikey_config:
           key: "{{ cas.yubikey.intermediate.slot }}"
           kms:
             type: yubikey
@@ -65,7 +65,11 @@
 
     - name: Register the config as an object
       ansible.builtin.set_fact:
-        cas_config: "{{ cas_yubikey_remote_config.content | b64decode | from_json | combine(cas_yubikey_config) }}"
+        certificate_authority_server_config: "{{
+          certificate_authority_server_yubikey_remote_config.content
+          | b64decode | from_json
+          | combine(certificate_authority_server_yubikey_config)
+          }}"
 
     - name: Rewrite the remote config
       ansible.builtin.copy:
@@ -73,7 +77,7 @@
         mode: "600"
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
-        content: "{{ cas_config | to_nice_json(indent=2) }}"
+        content: "{{ certificate_authority_server_config | to_nice_json(indent=2) }}"
 
 
 - name: Create a yubikey udev rule
@@ -88,6 +92,15 @@
 - name: Reload udev rules
   ansible.builtin.command:
     cmd: udevadm control --reload-rules
-  register: return_code
-  failed_when: return_code.rc != 0
-  changed_when: return_code.rc == 0
+  register: certificate_authority_server_return_code
+  failed_when: certificate_authority_server_return_code.rc != 0
+  changed_when: certificate_authority_server_return_code.rc == 0
+
+
+- name: Polkit rules
+  ansible.builtin.template:
+    src: 99-pcscd.rules
+    dest: /etc/polkit-1/rules.d/99-pcscd.rules
+    mode: "0644"
+    owner: root
+    group: root
