@@ -1,0 +1,22 @@
+---
+ansible_host: "{{ inventory_hostname }}.{{ home_domain }}"
+idh:
+  timezone: "{{ local_timezone }}"
+  hostname: print
+  root_ssh_pubkey: "{{ admin_ssh_pub_key }}"
+  default_password: "{{ admin_password }}"
+  net:
+    wifi:
+      name: "{{ home_network.wifi.name }}"
+      password: "{{ home_network.wifi.password }}"
+      country_code: CA
+  softwares:
+    # cups
+    - 187
+packages_list:
+  # cups drivers libs
+  - openprinting-ppds
+  - foomatic-db
+  - ghostscript
+  - gsfonts
+  - printer-driver-brlaser

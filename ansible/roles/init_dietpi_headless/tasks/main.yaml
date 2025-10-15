@@ -11,13 +11,13 @@
       ansible.builtin.stat:
         follow: true
         path: "{{ init_dietpi_headless_device_path }}"
-      register: device_stat
+      register: init_dietpi_headless_device_stat
 
     - name: Fail if the device does not exists
       ansible.builtin.fail:
         msg: "Device on {{ init_dietpi_headless_device_path }} does not exists!"
       when:
-        - not device_stat.stat.exists
+        - not init_dietpi_headless_device_stat.stat.exists
 
     - name: Ensure requirements is installed for debian based
       ansible.builtin.package:
@@ -36,6 +36,7 @@
         state: present
       when:
         - ansible_os_family != 'Debian'
+        - ansible_os_family != 'NixOS'
 
 
 - name: Create a temporary folder
@@ -75,16 +76,16 @@
   block:
     - name: Create list of mounted devices
       ansible.builtin.set_fact:
-        mounted_devices: "{{ ansible_mounts | json_query('[].{device: device, mount: mount}') }}"
+        init_dietpi_headless_mounted_devices: "{{ ansible_mounts | json_query('[].{device: device, mount: mount}') }}"
 
     - name: Unmount sdcard partitions
       become: true
       when:
-        - item.device | regex_search(init_dietpi_headless_device_path+'.+')
+        - item.device | regex_search(init_dietpi_headless_device_path+'.+') is not None
       ansible.posix.mount:
         path: "{{ item.mount }}"
         state: unmounted
-      loop: "{{ mounted_devices }}"
+      loop: "{{ init_dietpi_headless_mounted_devices }}"
 
 
 - name: Remove existing partitions
@@ -94,14 +95,14 @@
       community.general.parted:
         device: "{{ init_dietpi_headless_device_path }}"
         unit: "MiB"
-      register: sdcard_info
+      register: init_dietpi_headless_sdcard_info
 
     - name: Remove all partitions from disk
       community.general.parted:
         device: "{{ init_dietpi_headless_device_path }}"
         number: "{{ item.num }}"
         state: absent
-      loop: "{{ sdcard_info.partitions }}"
+      loop: "{{ init_dietpi_headless_sdcard_info.partitions }}"
 
 
 - name: Install the image into the sdcard
@@ -127,28 +128,49 @@
         group: root
         state: directory
 
+
+    - name: Gather device partitions
+      block:
+        - name: Collect only facts about hardware
+          ansible.builtin.setup:
+            gather_subset:
+              - hardware
+
+        - name: Get partition
+          ansible.builtin.set_fact:
+            init_dietpi_headless_partition_path: "{{
+              ansible_devices[init_dietpi_headless_device_path | basename].partitions.keys()
+              | map('regex_search', (init_dietpi_headless_device_path | basename) + '.*1')
+              | select('string')
+              | list
+              }}"
+
     - name: Mount filesystem
       ansible.posix.mount:
         fstype: vfat
         path: "{{ init_dietpi_headless_temporary_folder_path }}"
-        state: mounted
-        src: "{{ init_dietpi_headless_device_path }}p1"
+        state: ephemeral
+        src: "{{
+          (init_dietpi_headless_device_path | dirname)
+          + '/'
+          + init_dietpi_headless_partition_path[0]
+          }}"
 
     - name: Add config file
       ansible.builtin.template:
-        dest: "{{ init_dietpi_headless_temporary_folder_path }}/dietpi.txt.jinja"
+        dest: "{{ init_dietpi_headless_temporary_folder_path }}/dietpi.txt"
         group: root
         mode: '644'
         owner: root
-        src: dietpi.txt
+        src: dietpi.txt.jinja
 
     - name: Add wifi config file
       ansible.builtin.template:
-        dest: "{{ init_dietpi_headless_temporary_folder_path }}/dietpi-wifi.txt.jinja"
+        dest: "{{ init_dietpi_headless_temporary_folder_path }}/dietpi-wifi.txt"
         group: root
         mode: '644'
         owner: root
-        src: dietpi-wifi.txt
+        src: dietpi-wifi.txt.jinja
       no_log: true
       when:
         - idh.net.wifi is defined
@@ -158,9 +180,8 @@
       ansible.posix.mount:
         path: "{{ init_dietpi_headless_temporary_folder_path }}"
         state: absent
-        src: "{{ init_dietpi_headless_device_path }}p3"
-
-    - name: Remove the folder if it exists
-      ansible.builtin.file:
-        path: "{{ init_dietpi_headless_temporary_folder_path }}"
-        state: absent
+        src: "{{
+          (init_dietpi_headless_device_path | dirname)
+          + '/'
+          + init_dietpi_headless_partition_path[0]
+          }}"

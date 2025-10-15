@@ -3,26 +3,26 @@
   block:
     - name: Check if snap exists
       ansible.builtin.command: command -v snap
-      register: snap_exists
-      changed_when: snap_exists.rc != 0
+      register: base_snap_exists
+      changed_when: base_snap_exists.rc != 0
       ignore_errors: true
 
     - name: Remove snap
       when:
-        - snap_exists.rc == 0
+        - base_snap_exists.rc == 0
       block:
         - name: List snap apps
           ansible.builtin.shell: "set -o pipefail && snap list | awk '{if (NR!=1) { if ($1 !~ /snapd/) { if ($1 !~ /core20/) {print $1} } } }'"
           args:
             executable: /usr/bin/bash
-          register: snap_list
-          changed_when: snap_list == 0
+          register: base_snap_list
+          changed_when: base_snap_list == 0
 
         - name: Remove snap apps except snapd and core20
           community.general.snap:
             name: "{{ item }}"
             state: absent
-          loop: "{{ snap_list.stdout_lines }}"
+          loop: "{{ base_snap_list.stdout_lines }}"
 
         - name: Remove core20
           community.general.snap:
@@ -61,24 +61,24 @@
     - name: Get NTP status
       ansible.builtin.command:
         cmd: timedatectl show
-      register: ntp_status
-      changed_when: ntp_status.rc == 0
+      register: base_ntp_status
+      changed_when: base_ntp_status.rc == 0
 
     - name: Activate NTP
       ansible.builtin.command:
         cmd: timedatectl set-ntp true
-      register: return_code
-      changed_when: return_code.rc == 0
+      register: base_return_code
+      changed_when: base_return_code.rc == 0
       when:
-        - not "NTP=yes" in ntp_status.stdout_lines
+        - not "NTP=yes" in base_ntp_status.stdout_lines
       notify: "Restart systemd-timesyncd"
 
 
 - name: Set timezone
   ansible.builtin.command:
     cmd: "timedatectl set-timezone {{ timezone | quote }}"
-  register: return_code
-  changed_when: return_code.rc == 0
+  register: base_return_code
+  changed_when: base_return_code.rc == 0
   notify: "Restart systemd-timesyncd"
   when:
     - timezone is defined
@@ -123,7 +123,7 @@
 
 - name: Add and configure VLANs
   when:
-    - base.vlan.enabled | bool | default(false)
+    - base.vlan.enabled | default(false) | bool
   block:
     - name: Install VLAN module
       ansible.builtin.apt:

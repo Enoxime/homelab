@@ -1,16 +1,16 @@
 ---
 - name: Set user sudoers rights
   ansible.builtin.set_fact:
-    sudoers_as: "{% if sudo.as is defined %}{{ sudo.as }}{% else %}ALL{% endif %}"
-    sudoers_nopasswd: "{% if sudo.nopasswd is defined %}{% if sudo.nopasswd %}NOPASSWD: {% endif %}{% endif %}"
-    sudoers_cmd: "{% if sudo.cmd is defined %}{{ sudo.cmd | join(', ') }}{% else %}ALL{% endif %}"
+    user_group_sudoers_as: "{% if sudo.as is defined %}{{ sudo.as }}{% else %}ALL{% endif %}"
+    user_group_sudoers_nopasswd: "{% if sudo.nopasswd is defined %}{% if sudo.nopasswd %}NOPASSWD: {% endif %}{% endif %}"
+    user_group_sudoers_cmd: "{% if sudo.cmd is defined %}{{ sudo.cmd | join(', ') }}{% else %}ALL{% endif %}"
 
 
 - name: Create sudoers file
   ansible.builtin.lineinfile:
     create: true
     group: root
-    line: "{{ sudo.name }} ALL=({{ sudoers_as }}) {{ sudoers_nopasswd }}{{ sudoers_cmd }}"
+    line: "{{ sudo.name }} ALL=({{ user_group_sudoers_as }}) {{ user_group_sudoers_nopasswd }}{{ user_group_sudoers_cmd }}"
     mode: "440"
     owner: root
     path: "/etc/sudoers.d/{{ sudo.name }}"
