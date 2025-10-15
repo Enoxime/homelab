@@ -9,7 +9,11 @@ home:
     dietpi:
       hosts:
         ca:
+        print:
+          admin_host_groups:
+            - lpadmin
       vars:
+        need_sudo: true
         package_mgr: apt
         pkg_flags: --quiet --yes
         python: python3
@@ -41,10 +45,12 @@ home:
           name: "{{ admin_username }}"
           key: "{{ admin_ssh_pub_key }}"
           password: "{{ admin_password }}"
+          groups: "{{ admin_host_groups | default([]) }}"
         - create_home: true
           group: "ansible"
           name: "ansible"
           key: "{{ ansible_ssh_pub_key }}"
+          groups: "{{ ansible_host_groups | default([]) }}"
       sudo:
         - name: "{{ admin_username }}"
         - name: ansible

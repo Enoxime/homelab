@@ -16,7 +16,7 @@
         group: "{{ user.group | default(omit) }}"
         groups: "{{ user.groups | default(omit) }}"
         name: "{{ user.name }}"
-        password: "{{ user.password | default(omit) | password_hash(hashtype='sha512', rounds=4096) }}"
+        password: "{{ user.password | password_hash(hashtype='sha512', rounds=4096) | default(omit) }}"
         shell: "{{ user.shell | default('/bin/bash') }}"
         update_password: "on_create"
       loop: "{{ user_group.users | default([]) }}"
