@@ -48,7 +48,7 @@ cas:
   config:
     authority:
       claims:
-        # 1 months
+        # 1 month
         maxTLSCertDuration: 720h
       # policy:
       #   x509:

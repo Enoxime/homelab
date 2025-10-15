@@ -32,11 +32,11 @@
   ansible.builtin.file:
     path: /usr/local/go
     state: absent
-  when: (go_lang_actual_version.rc | default(false)) == 0 or (go_lang_version not in go_lang_actual_version.stdout | default(false))
+  when: (go_lang_actual_version.rc | default(false)) != 0 or (go_lang_version not in go_lang_actual_version.stdout | default(false))
 
 
 - name: Install go
-  when: (go_lang_actual_version.rc | default(false)) == 0 or (go_lang_version not in go_lang_actual_version.stdout | default(false))
+  when: (go_lang_actual_version.rc | default(false)) != 0 or (go_lang_version not in go_lang_actual_version.stdout | default(false))
   block:
     - name: Download the Go tarball
       ansible.builtin.get_url:
