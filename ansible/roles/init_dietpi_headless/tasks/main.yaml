@@ -81,7 +81,7 @@
     - name: Unmount sdcard partitions
       become: true
       when:
-        - item.device | regex_search(init_dietpi_headless_device_path+'.+') != None
+        - item.device | regex_search(init_dietpi_headless_device_path+'.+') is not None
       ansible.posix.mount:
         path: "{{ item.mount }}"
         state: unmounted
