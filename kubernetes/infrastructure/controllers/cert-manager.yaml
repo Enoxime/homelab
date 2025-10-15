@@ -13,16 +13,6 @@ spec:
   interval: 1440m
   url: https://charts.jetstack.io
 ---
-# https://github.com/smallstep/step-issuer?tab=readme-ov-file
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: smallstep
-  namespace: cert-manager
-spec:
-  interval: 1440m
-  url: https://smallstep.github.io/helm-charts
----
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -48,5 +38,9 @@ spec:
         enabled: true
     config:
       enableGatewayAPI: true
+      featureGates:
+        # Disable the use of Exact PathType in Ingress resources, to work around a bug in ingress-nginx
+        # https://github.com/kubernetes/ingress-nginx/issues/11176
+        ACMEHTTP01IngressPathTypeExact: false
     extraArgs:
       - --enable-gateway-api
