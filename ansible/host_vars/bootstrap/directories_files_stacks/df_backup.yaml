@@ -11,7 +11,7 @@ directories_files_backup:
       content: |
         BACKUP_CRON_EXPRESSION='@daily'
         BACKUP_SOURCES="/custom_backup/unifi_mongo"
-        BACKUP_ARCHIVE="/bootstap_backup/unifi/mongo"
+        BACKUP_ARCHIVE="/bootstrap_backup/unifi/mongo"
         BACKUP_RETENTION_DAYS="30"
         EXEC_LABEL="database-mongodb"
     - dest: "/home/{{ ansible_user }}/docker_volume_backup_config/unifi_config.env"
@@ -20,7 +20,7 @@ directories_files_backup:
       content: |
         BACKUP_CRON_EXPRESSION='@daily'
         BACKUP_SOURCES="/custom_backup/unifi_config"
-        BACKUP_ARCHIVE="/bootstap_backup/unifi/config"
+        BACKUP_ARCHIVE="/bootstrap_backup/unifi/config"
         BACKUP_RETENTION_DAYS="30"
     - dest: "/home/{{ ansible_user }}/docker_volume_backup_config/semaphore.env"
       owner: "{{ ansible_user }}"
@@ -28,7 +28,7 @@ directories_files_backup:
       content: |
         BACKUP_CRON_EXPRESSION='@daily'
         BACKUP_SOURCES="/custom_backup/semaphore"
-        BACKUP_ARCHIVE="/bootstap_backup/semaphore/semaphore"
+        BACKUP_ARCHIVE="/bootstrap_backup/semaphore/semaphore"
         BACKUP_RETENTION_DAYS="30"
     - dest: "/home/{{ ansible_user }}/docker_volume_backup_config/semaphore_db.env"
       owner: "{{ ansible_user }}"
@@ -36,6 +36,6 @@ directories_files_backup:
       content: |
         BACKUP_CRON_EXPRESSION='@daily'
         BACKUP_SOURCES="/custom_backup/semaphore_db"
-        BACKUP_ARCHIVE="/bootstap_backup/semaphore/semaphore_db"
+        BACKUP_ARCHIVE="/bootstrap_backup/semaphore/semaphore_db"
         BACKUP_RETENTION_DAYS="30"
         EXEC_LABEL="database-postgres-semaphore"

@@ -3,7 +3,7 @@ docker_misc_volumes:
   - name: traefik_acme
   - name: netbootxyz_config
   - name: netbootxyz_assets
-  - name: dvb_bootstap_backup
+  - name: dvb_bootstrap_backup
     driver_options:
       type: nfs
       device: :/mnt/nas/backups/bootstrap_backup
