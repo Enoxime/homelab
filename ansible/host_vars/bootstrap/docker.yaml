@@ -1,6 +1,6 @@
 ---
 docker_mgmt:
-  debug: true
+  debug: false
   networks:
     - name: traefik
     - name: unifi
