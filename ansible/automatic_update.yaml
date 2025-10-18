@@ -24,19 +24,19 @@
 
 
 # pikvm update
-- name: Update pikvm
-  hosts:
-    - pikvm
-  gather_facts: false
-  become: true
-  pre_tasks:
-    - name: Set the system as read-write
-      ansible.builtin.raw: /usr/bin/rw
-      register: rw
-      changed_when: rw.rc == 0
-  tasks:
-    - name: Run pikvm-update
-      ansible.builtin.command: pikvm-update
-      register: pikvm_update
-      failed_when: pikvm_update.rc != 0
-      changed_when: pikvm_update == 0
+# - name: Update pikvm
+#   hosts:
+#     - pikvm
+#   gather_facts: false
+#   become: true
+#   pre_tasks:
+#     - name: Set the system as read-write
+#       ansible.builtin.raw: /usr/bin/rw
+#       register: rw
+#       changed_when: rw.rc == 0
+#   tasks:
+#     - name: Run pikvm-update
+#       ansible.builtin.command: pikvm-update
+#       register: pikvm_update
+#       failed_when: pikvm_update.rc != 0
+#       changed_when: pikvm_update == 0
