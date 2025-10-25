@@ -43,6 +43,10 @@ spec:
       target:
         kind: DaemonSet
         name: generic-device-plugin
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: external-dns-values
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
