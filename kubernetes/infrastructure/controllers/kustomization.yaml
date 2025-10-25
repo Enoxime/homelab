@@ -18,3 +18,4 @@ resources:
   - prometheus.yaml
   - cilium.yaml
   - nvidia-device-plugin.yaml
+  - external-dns.yaml
