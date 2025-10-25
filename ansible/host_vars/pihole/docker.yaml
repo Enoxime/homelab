@@ -5,7 +5,7 @@ docker_mgmt:
     - name: traefik
   volumes:
     - name: traefik_acme
-    - name: dvb_bootstap_backup
+    - name: dvb_bootstrap_backup
     - name: pihole_mgmt
     - name: pihole_service
     - name: pihole_k8s00
@@ -60,7 +60,7 @@ docker_mgmt:
     #   volumes:
     #     - /var/run/docker.sock:/var/run/docker.sock:ro
     #     - "/home/{{ ansible_user }}/docker_volume_backup_config:/etc/dockervolumebackup/conf.d"
-    #     - dvb_bootstap_backup:/bootstap_backup
+    #     - dvb_bootstrap_backup:/bootstap_backup
     #     - pihole_mgmt:/custom_backup/unifi_mongo:ro
     #     - pihole_service:/custom_backup/unifi_config:ro
     #     - pihole_k8s00:/custom_backup/semaphore/semaphore_data:ro
