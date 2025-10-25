@@ -43,7 +43,7 @@
       register: ro
       changed_when: ro.rc == 0
 
-- name: Set up Piholes DNS servers
+- name: Set up Pi-hole DNS servers
   hosts:
     - pihole
   gather_facts: true
