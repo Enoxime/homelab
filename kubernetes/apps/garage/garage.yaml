@@ -63,15 +63,41 @@ spec:
         [s3_api]
         s3_region = "garage"
         api_bind_addr = "[::]:3900"
-        root_domain = ".s3.garage.tld"
+        root_domain = ".${s3_api_hostname}"
 
         [s3_web]
         bind_addr = "[::]:3902"
-        root_domain = ".web.garage.tld"
+        root_domain = ".${s3_web_hostname}"
         index = "index.html"
 
         [admin]
         api_bind_addr = "[::]:3903"
+    ingress:
+      s3:
+        api:
+          enabled: true
+          className: nginx
+          annotations:
+            nginx.ingress.kubernetes.io/proxy-body-size: 500m
+            cert-manager.io/cluster-issuer: homelab-internal
+          hosts:
+            - ${s3_api_hostname}
+          tls:
+            - hosts:
+                - "${s3_api_hostname}"
+              secretName: garage-api-tls
+        web:
+          enabled: true
+          className: nginx
+          annotations:
+            nginx.ingress.kubernetes.io/proxy-body-size: 500m
+            cert-manager.io/cluster-issuer: homelab-internal
+          hosts:
+            - ${s3_web_hostname}
+          tls:
+            - hosts:
+                - "${s3_web_hostname}"
+              secretName: garage-web-tls
     monitoring:
       metrics:
         enabled: true
