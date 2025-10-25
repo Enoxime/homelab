@@ -42,3 +42,13 @@
       ansible.builtin.raw: /usr/bin/ro
       register: ro
       changed_when: ro.rc == 0
+
+- name: Set up Pi-hole DNS servers
+  hosts:
+    - pihole
+  gather_facts: true
+  become: true
+  roles:
+    - base
+    - directories_files
+    - docker_mgmt

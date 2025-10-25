@@ -1,0 +1,185 @@
+---
+docker_mgmt:
+  debug: false
+  networks:
+    - name: traefik
+  volumes:
+    - name: traefik_acme
+    - name: dvb_bootstrap_backup
+    - name: pihole_mgmt
+    - name: pihole_service
+    - name: pihole_k8s00
+    - name: pihole_casa
+  containers:
+    # watchtower
+    - command:
+        - "--cleanup"
+        - "--label-enable"
+        - "--rolling-restart"
+      image: docker.io/beatkind/watchtower:latest
+      labels:
+        com.centurylinklabs.watchtower.enable: "true"
+      name: watchtower
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+
+    # traefik
+    - image: docker.io/traefik:latest
+      labels:
+        com.centurylinklabs.traefik.enable: "true"
+        traefik.enable: "true"
+        traefik.http.routers.dashboard.entrypoints: mgmt,mgmtsecure
+        traefik.http.routers.dashboard.rule: "Host(`traefik.pihole.{{ mgmt_domain }}`)"
+        traefik.http.routers.dashboard.service: api@internal
+        traefik.http.routers.dashboard.tls: "true"
+        traefik.http.routers.dashboard.tls.certresolver: cainternal
+        traefik.http.routers.prometheus.entrypoints: monitoring
+        traefik.http.routers.prometheus.rule: "Host(`traefik.pihole.monitoring.{{ base_domain }}`)"
+        traefik.http.routers.prometheus.service: prometheus@internal
+      name: traefik
+      networks:
+        - name: traefik
+      ports:
+        - 192.168.0.8:80:80
+        - 192.168.0.8:443:443
+        - 192.168.40.8:80:81
+        - 192.168.40.8:443:444
+        - 192.168.70.8:8082:8082
+      volumes:
+        - traefik_acme:/certificates
+        - /var/run/docker.sock:/var/run/docker.sock
+        - /etc/ssl/certs/homelab.pem:/etc/ssl/certs/homelab.pem:ro
+        - "/home/{{ ansible_user }}/traefik_config/traefik.yml:/etc/traefik/traefik.yaml"
+        - "/home/{{ ansible_user }}/traefik_config/ignorecert.yaml:/etc/traefik/ignorecert.yaml"
+
+    # Docker volume backup
+    # - image: docker.io/offen/docker-volume-backup:latest
+    #   labels:
+    #     com.centurylinklabs.watchtower.enable: "true"
+    #   name: docker-volume-backup
+    #   volumes:
+    #     - /var/run/docker.sock:/var/run/docker.sock:ro
+    #     - "/home/{{ ansible_user }}/docker_volume_backup_config:/etc/dockervolumebackup/conf.d"
+    #     - dvb_bootstrap_backup:/bootstap_backup
+    #     - pihole_mgmt:/custom_backup/unifi_mongo:ro
+    #     - pihole_service:/custom_backup/unifi_config:ro
+    #     - pihole_k8s00:/custom_backup/semaphore/semaphore_data:ro
+    #     - pihole_casa:/custom_backup/semaphore/semaphore_config:ro
+
+    # Prometheus node exporter
+    - image: quay.io/prometheus/node-exporter:latest
+      labels:
+        com.centurylinklabs.watchtower.enable: "true"
+      name: node_exporter
+      network_mode: host
+      pid_mode: host
+      volumes:
+        - /:/host:ro,rslave
+
+    # pihole mgmt
+    - env:
+        TZ: "{{ local_timezone }}"
+        FTLCONF_webserver_api_password: "{{ admin_password }}"
+        FTLCONF_dns_upstreams: "192.168.0.1"
+        # FTLCONF_dns_upstreams: 192.168.0.8#5353;pihole_k8s00;192.168.0.1
+        FTLCONF_dns_listeningMode: 'all'
+      image: docker.io/pihole/pihole:latest
+      labels:
+        com.centurylinklabs.watchtower.enable: "true"
+        traefik.enable: "true"
+        traefik.docker.network: traefik
+        traefik.http.routers.piholemgmtweb.entrypoints: mgmt,mgmtsecure
+        traefik.http.routers.piholemgmtweb.rule: "Host(`piholemgmt.pihole.mgmt.{{ domain }}`)"
+        traefik.http.routers.piholemgmtweb.tls: "true"
+        traefik.http.routers.piholemgmtweb.tls.certresolver: cainternal
+        traefik.http.services.piholemgmtweb.loadbalancer.server.port: "80"
+      name: pihole_mgmt
+      networks:
+        - name: traefik
+      ports:
+        - 192.168.0.8:53:53/tcp
+        - 192.168.0.8:53:53/udp
+      volumes:
+        - pihole_mgmt:/etc/pihole
+
+    # pihole service
+    - env:
+        TZ: "{{ local_timezone }}"
+        FTLCONF_webserver_api_password: "{{ admin_password }}"
+        FTLCONF_dns_upstreams: "192.168.30.1"
+        # FTLCONF_dns_upstreams: 192.168.30.8#5353;pihole_k8s00;192.168.30.1
+        FTLCONF_dns_listeningMode: 'all'
+      image: docker.io/pihole/pihole:latest
+      labels:
+        com.centurylinklabs.watchtower.enable: "true"
+        traefik.enable: "true"
+        traefik.docker.network: traefik
+        traefik.http.routers.piholeserviceweb.entrypoints: mgmt,mgmtsecure
+        traefik.http.routers.piholeserviceweb.rule: "Host(`piholeservice.pihole.mgmt.{{ domain }}`)"
+        traefik.http.routers.piholeserviceweb.tls: "true"
+        traefik.http.routers.piholeserviceweb.tls.certresolver: cainternal
+        traefik.http.services.piholeserviceweb.loadbalancer.server.port: "80"
+      name: pihole_service
+      networks:
+        - name: traefik
+      ports:
+        - 192.168.30.8:53:53/tcp
+        - 192.168.30.8:53:53/udp
+      volumes:
+        - pihole_service:/etc/pihole
+
+    # pihole k8s00
+    - env:
+        TZ: "{{ local_timezone }}"
+        FTLCONF_webserver_api_password: "{{ admin_password }}"
+        FTLCONF_dns_upstreams: "192.168.40.1"
+        # FTLCONF_dns_upstreams: 192.168.40.8#5353;192.168.40.1
+        FTLCONF_dns_listeningMode: 'all'
+      image: docker.io/pihole/pihole:latest
+      labels:
+        com.centurylinklabs.watchtower.enable: "true"
+        traefik.enable: "true"
+        traefik.docker.network: traefik
+        traefik.http.routers.piholek8s00web.entrypoints: mgmt,mgmtsecure
+        traefik.http.routers.piholek8s00web.rule: "Host(`piholek8s00.pihole.mgmt.{{ domain }}`)"
+        traefik.http.routers.piholek8s00web.tls: "true"
+        traefik.http.routers.piholek8s00web.tls.certresolver: cainternal
+        traefik.http.services.piholek8s00web.loadbalancer.server.port: "80"
+        traefik.http.routers.piholek8s00admin.entrypoints: k8s00,k8s00secure
+        traefik.http.routers.piholek8s00admin.rule: "Host(`piholek8s00.pihole.k8s00.{{ domain }}`)"
+        traefik.http.routers.piholek8s00admin.tls: "true"
+        traefik.http.routers.piholek8s00admin.tls.certresolver: cainternal
+      name: pihole_k8s00
+      networks:
+        - name: traefik
+      ports:
+        - 192.168.40.8:53:53/tcp
+        - 192.168.40.8:53:53/udp
+      volumes:
+        - pihole_k8s00:/etc/pihole
+
+    # pihole casa
+    - env:
+        TZ: "{{ local_timezone }}"
+        FTLCONF_webserver_api_password: "{{ admin_password }}"
+        FTLCONF_dns_upstreams: "192.168.50.1"
+        # FTLCONF_dns_upstreams: 192.168.50.8#5353;pihole_k8s00;192.168.50.1
+        FTLCONF_dns_listeningMode: 'all'
+      image: docker.io/pihole/pihole:latest
+      labels:
+        com.centurylinklabs.watchtower.enable: "true"
+        traefik.enable: "true"
+        traefik.docker.network: traefik
+        traefik.http.routers.piholecasaweb.entrypoints: mgmt,mgmtsecure
+        traefik.http.routers.piholecasaweb.rule: "Host(`piholecasa.pihole.mgmt.{{ domain }}`)"
+        traefik.http.routers.piholecasaweb.tls: "true"
+        traefik.http.routers.piholecasaweb.tls.certresolver: cainternal
+        traefik.http.services.piholecasaweb.loadbalancer.server.port: "80"
+      name: pihole_casa
+      networks:
+        - name: traefik
+      ports:
+        - 192.168.50.8:53:53/tcp
+        - 192.168.50.8:53:53/udp
+      volumes:
+        - pihole_casa:/etc/pihole
