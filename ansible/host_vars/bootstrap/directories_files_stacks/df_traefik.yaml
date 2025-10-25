@@ -10,8 +10,8 @@ directories_files_traefik:
       group: "{{ ansible_user }}"
       content: |
         global:
-        checkNewVersion: false
-        sendAnonymousUsage: false
+          checkNewVersion: false
+          sendAnonymousUsage: false
 
         entryPoints:
           mgmt:
