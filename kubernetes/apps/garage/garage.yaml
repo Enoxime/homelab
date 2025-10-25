@@ -81,7 +81,10 @@ spec:
             nginx.ingress.kubernetes.io/proxy-body-size: 500m
             cert-manager.io/cluster-issuer: homelab-internal
           hosts:
-            - ${s3_api_hostname}
+            - host: ${s3_api_hostname}
+              paths:
+                - path: /
+                  pathType: Prefix
           tls:
             - hosts:
                 - "${s3_api_hostname}"
@@ -93,7 +96,10 @@ spec:
             nginx.ingress.kubernetes.io/proxy-body-size: 500m
             cert-manager.io/cluster-issuer: homelab-internal
           hosts:
-            - ${s3_web_hostname}
+            - host: ${s3_web_hostname}
+              paths:
+                - path: /
+                  pathType: Prefix
           tls:
             - hosts:
                 - "${s3_web_hostname}"
