@@ -1,0 +1,63 @@
+---
+base:
+  vlan:
+    enabled: true
+    vlans_definition: |
+      auto eth0.30
+      iface eth0.30 inet static
+        address 192.168.30.8
+        netmask 255.255.255.0
+        gateway 192.168.30.1
+        vlan-raw-device eth0
+
+      auto eth0.40
+      iface eth0.40 inet static
+        address 192.168.40.8
+        netmask 255.255.255.0
+        gateway 192.168.40.1
+        vlan-raw-device eth0
+
+      auto eth0.50
+      iface eth0.50 inet static
+        address 192.168.50.8
+        netmask 255.255.255.0
+        gateway 192.168.50.1
+        vlan-raw-device eth0
+
+      auto eth0.70
+      iface eth0.70 inet static
+        address 192.168.70.8
+        netmask 255.255.255.0
+        gateway 192.168.70.1
+        vlan-raw-device eth0
+idh:
+  timezone: "{{ local_timezone }}"
+  hostname: pihole
+  root_ssh_pubkey: "{{ admin_ssh_pub_key }}"
+  default_password: "{{ admin_password }}"
+  softwares:
+    # Docker
+    - 162
+packages_list:
+  - dnsutils
+  - python3-requests
+unbound:
+  port: 5353
+  interfaces:
+    - "192.168.0.8"
+    - "192.168.30.8"
+    - "192.168.40.8"
+    - "192.168.50.8"
+  access_control:
+    - cidr: 172.16.0.0/12
+      rule: allow
+    - cidr: 127.0.0.0/8
+      rule: allow
+    - cidr: 192.168.0.8/32
+      rule: allow
+    - cidr: 192.168.30.8/32
+      rule: allow
+    - cidr: 192.168.40.8/32
+      rule: allow
+    - cidr: 192.168.50.8/32
+      rule: allow

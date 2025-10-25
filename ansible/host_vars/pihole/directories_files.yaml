@@ -1,0 +1,76 @@
+---
+directories_files:
+  directories:
+    - path: "/home/{{ ansible_user }}/traefik_config"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+  contents:
+    - dest: "/home/{{ ansible_user }}/traefik_config/traefik.yml"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: "0644"
+      content: |
+        global:
+          checkNewVersion: false
+          sendAnonymousUsage: false
+
+        entryPoints:
+          mgmt:
+            address: :80
+          mgmtsecure:
+            address: :443
+          k8s00:
+            address: :81
+          k8s00secure:
+            address: :444
+          monitoring:
+            address: :8082
+
+        providers:
+          docker:
+            exposedByDefault: false
+            network: traefik
+            watch: true
+          file:
+            filename: /etc/traefik/ignorecert.yaml
+
+        api:
+          insecure: false
+          dashboard: true
+          disableDashboardAd: true
+
+        metrics:
+          addInternals: true
+          prometheus:
+            addEntryPointsLabels: true
+            addRoutersLabels: true
+            addServicesLabels: true
+            entryPoint: monitoring
+
+        certificatesResolvers:
+          cainternal:
+            acme:
+              email: {{ cas_root_ca_provisioner }}
+              caServer: https://ca.{{ mgmt_domain }}/acme/acme/directory
+              caCertificates:
+                - /etc/ssl/certs/homelab.pem
+              caSystemCertPool: true
+              storage: /certificates/acme.json
+              keytype: EC384
+              certificatesDuration: 2160
+              httpchallenge:
+                entrypoint: mgmt
+              tlschallenge: {}
+    - dest: "/home/{{ ansible_user }}/traefik_config/ignorecert.yaml"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      content: |
+        http:
+          serversTransports:
+            ignorecert:
+              insecureSkipVerify: true
+    - dest: /etc/ssl/certs/homelab.pem
+      owner: root
+      group: root
+      mode: "0644"
+      content: "{{ root_ca_certificate }}"

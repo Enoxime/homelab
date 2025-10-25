@@ -12,6 +12,7 @@ home:
         print:
           admin_host_groups:
             - lpadmin
+        pihole:
       vars:
         need_sudo: true
         package_mgr: apt

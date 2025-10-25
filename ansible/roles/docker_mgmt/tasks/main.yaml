@@ -1,4 +1,11 @@
 ---
+- name: Ensure docker service is running
+  ansible.builtin.service:
+    enabled: true
+    name: docker.service
+    state: started
+
+
 - name: Setup networks
   community.docker.docker_network:
     driver: "{{ net.driver | default('bridge') }}"
@@ -32,6 +39,7 @@
     name: "{{ container.name }}"
     network_mode: "{{ container.network_mode | default(omit) }}"
     networks: "{{ container.networks | default(omit) }}"
+    pid_mode: "{{ container.pid_mode | default(omit) }}"
     privileged: "{{ container.privileged | default(omit) }}"
     published_ports: "{{ container.ports | default(omit) }}"
     restart_policy: "{{ container.restart_policy | default('unless-stopped') }}"
