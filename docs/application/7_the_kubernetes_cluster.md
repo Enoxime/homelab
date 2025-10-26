@@ -159,8 +159,8 @@ mkdir -p $HOME/.aws
 
 cat <<EOD > $HOME/.aws/credentials
 [default]
-aws_access_key_id=<access_key>
-aws_secret_access_key=<secret_key>
+aws_access_key_id=<AWS_ACCESS_KEY_ID>    # Replace with your AWS access key ID
+aws_secret_access_key=<AWS_SECRET_ACCESS_KEY>    # Replace with your AWS secret access key
 EOD
 
 cat <<EOD > $HOME/.aws/config
