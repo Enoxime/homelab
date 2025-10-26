@@ -166,6 +166,6 @@ EOD
 cat <<EOD > $HOME/.aws/config
 [default]
 region=garage
-endpoint_url=http://127.0.0.1:3900
+endpoint_url=<endpoint_url> # scheme://host:port
 EOD
 ```
