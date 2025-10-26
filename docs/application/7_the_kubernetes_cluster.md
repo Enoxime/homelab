@@ -157,13 +157,13 @@ kubectl exec --stdin --tty -n garage garage-0 -- ./garage status
 # Set aws-cli to browse the object storage
 mkdir -p $HOME/.aws
 
-cat <<EOD >> $HOME/.aws/credentials
+cat <<EOD > $HOME/.aws/credentials
 [default]
 aws_access_key_id=<access_key>
 aws_secret_access_key=<secret_key>
 EOD
 
-cat <<EOD >> $HOME/.aws/config
+cat <<EOD > $HOME/.aws/config
 [default]
 region=garage
 endpoint_url=http://127.0.0.1:3900
