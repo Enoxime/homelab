@@ -155,7 +155,7 @@ kubectl exec --stdin --tty -n garage garage-0 -- ./garage layout apply \
 kubectl exec --stdin --tty -n garage garage-0 -- ./garage status
 
 # Set aws-cli to browse the object storage
-mkdir $HOME/.aws
+mkdir -p $HOME/.aws
 
 cat <<EOD >> $HOME/.aws/credentials
 [default]
