@@ -159,8 +159,8 @@ mkdir -p $HOME/.aws
 
 cat <<EOD >> $HOME/.aws/credentials
 [default]
-aws_access_key_id=xxxx
-aws_secret_access_key=xxxx
+aws_access_key_id=<access_key>
+aws_secret_access_key=<secret_key>
 EOD
 
 cat <<EOD >> $HOME/.aws/config
