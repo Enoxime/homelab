@@ -154,11 +154,18 @@ kubectl exec --stdin --tty -n garage garage-0 -- ./garage layout apply \
   --version 1
 kubectl exec --stdin --tty -n garage garage-0 -- ./garage status
 
-# Set minio-client to browse the object storage
-mc alias set \
-  garage \
-  <endpoint> \ # scheme://something:port
-  <access key> \
-  <secret key> \
-  --api S3v4
+# Set aws-cli to browse the object storage
+mkdir -p $HOME/.aws
+
+cat <<EOD > $HOME/.aws/credentials
+[default]
+aws_access_key_id=<AWS_ACCESS_KEY_ID>    # Replace with your AWS access key ID
+aws_secret_access_key=<AWS_SECRET_ACCESS_KEY>    # Replace with your AWS secret access key
+EOD
+
+cat <<EOD > $HOME/.aws/config
+[default]
+region=garage
+endpoint_url=<endpoint_url> # scheme://host:port
+EOD
 ```
