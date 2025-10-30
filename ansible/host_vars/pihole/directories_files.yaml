@@ -4,6 +4,9 @@ directories_files:
     - path: "/home/{{ ansible_user }}/traefik_config"
       owner: "{{ ansible_user }}"
       group: "{{ ansible_user }}"
+    - path: "/home/{{ ansible_user }}/docker_volume_backup_config"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
   contents:
     - dest: "/home/{{ ansible_user }}/traefik_config/traefik.yml"
       owner: "{{ ansible_user }}"
@@ -74,3 +77,35 @@ directories_files:
       group: root
       mode: "0644"
       content: "{{ root_ca_certificate }}"
+    - dest: "/home/{{ ansible_user }}/docker_volume_backup_config/pihole_mgmt.env"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      content: |
+        BACKUP_CRON_EXPRESSION='@daily'
+        BACKUP_SOURCES="/custom_backup/pihole_mgmt"
+        BACKUP_RETENTION_DAYS="30"
+        AWS_S3_PATH="pihole_mgmt"
+    - dest: "/home/{{ ansible_user }}/docker_volume_backup_config/pihole_service.env"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      content: |
+        BACKUP_CRON_EXPRESSION='@daily'
+        BACKUP_SOURCES="/custom_backup/pihole_service"
+        BACKUP_RETENTION_DAYS="30"
+        AWS_S3_PATH="pihole_service"
+    - dest: "/home/{{ ansible_user }}/docker_volume_backup_config/pihole_k8s00.env"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      content: |
+        BACKUP_CRON_EXPRESSION='@daily'
+        BACKUP_SOURCES="/custom_backup/pihole_k8s00"
+        BACKUP_RETENTION_DAYS="30"
+        AWS_S3_PATH="pihole_k8s00"
+    - dest: "/home/{{ ansible_user }}/docker_volume_backup_config/pihole_casa.env"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      content: |
+        BACKUP_CRON_EXPRESSION='@daily'
+        BACKUP_SOURCES="/custom_backup/pihole_casa"
+        BACKUP_RETENTION_DAYS="30"
+        AWS_S3_PATH="pihole_casa"
