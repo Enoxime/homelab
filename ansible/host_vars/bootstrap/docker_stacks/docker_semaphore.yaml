@@ -11,9 +11,8 @@ docker_semaphore_stack:
       POSTGRES_PASSWORD: "{{ semaphore_db_password }}"
       POSTGRES_USER: semaphore
       POSTGRES_DB: semaphore
-    image: docker.io/postgres:latest
+    image: docker.io/postgres:18
     labels:
-      com.centurylinklabs.watchtower.enable: "true"
       docker-volume-backup.archive-pre: >-
         /bin/sh -c 'export PGPASSWORD="${POSTGRES_PASSWORD}"
         && pg_dump -U "${POSTGRES_USER}" "${POSTGRES_DB}"
@@ -23,7 +22,7 @@ docker_semaphore_stack:
     networks:
       - name: semaphore
     volumes:
-      - semaphore_postgres:/var/lib/postgresql/data
+      - semaphore_postgres:/var/lib/postgresql/18/docker
       - semaphore_postgres_backup:/backup
 
   # semaphore

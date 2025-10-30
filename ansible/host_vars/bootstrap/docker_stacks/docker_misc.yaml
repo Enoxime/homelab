@@ -3,7 +3,6 @@ docker_misc_volumes:
   - name: traefik_acme
   - name: netbootxyz_config
   - name: netbootxyz_assets
-  - name: dvb_bootstrap_backup
     driver_options:
       type: nfs
       device: :/mnt/nas/backups/bootstrap_backup
@@ -98,23 +97,23 @@ docker_misc_stack:
 
   # docker-volume-backup
   # https://offen.github.io/docker-volume-backup/reference/
-  # - env:
-  #     AWS_S3_BUCKET_NAME: bootstrap-backup
-  #     AWS_ACCESS_KEY_ID: "{{ s3.bootstrap.backup.access_key }}"
-  #     AWS_SECRET_ACCESS_KEY: "{{ s3.bootstrap.backup.secret_key }}"
-  #     AWS_ENDPOINT: "s3.service.k8s00.{{ domain }}"
-  #     AWS_ENDPOINT_PROTO: https
-  #     AWS_ENDPOINT_INSECURE: "false"
-  #     AWS_ENDPOINT_CA_CERT: /etc/ssl/certs/homelab.pem
-  #     # NOTIFICATION_URLS: "ntfy://ntfy.service.k8s00.{{ domain }}/backups"
-  - image: docker.io/offen/docker-volume-backup:latest
+  - env:
+      AWS_S3_BUCKET_NAME: bootstrap-backup
+      AWS_ACCESS_KEY_ID: "{{ s3.bootstrap.backup.access_key }}"
+      AWS_SECRET_ACCESS_KEY: "{{ s3.bootstrap.backup.secret_key }}"
+      AWS_ENDPOINT: "api.s3.service.k8s00.{{ domain }}"
+      AWS_ENDPOINT_PROTO: https
+      AWS_ENDPOINT_INSECURE: "false"
+      AWS_ENDPOINT_CA_CERT: /etc/ssl/certs/homelab.pem
+      # NOTIFICATION_URLS: "ntfy://ntfy.service.k8s00.{{ domain }}/backups"
+    image: ghcr.io/offen/docker-volume-backup:v2
     labels:
       com.centurylinklabs.watchtower.enable: "true"
     name: docker-volume-backup
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/ssl:/etc/ssl:ro
       - "/home/{{ ansible_user }}/docker_volume_backup_config:/etc/dockervolumebackup/conf.d"
-      - dvb_bootstap_backup:/bootstap_backup
       - unifi_mongo_backup:/custom_backup/unifi_mongo:ro
       - unifi_config:/custom_backup/unifi_config:ro
       - semaphore_data:/custom_backup/semaphore/semaphore_data:ro
