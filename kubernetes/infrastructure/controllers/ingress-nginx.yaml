@@ -32,7 +32,7 @@ spec:
   values:
     controller:
       metrics:
-        enabled: true
+        enabled: false
         serviceMonitor:
           enabled: true
         prometheusRule:
