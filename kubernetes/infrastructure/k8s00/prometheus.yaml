@@ -7,6 +7,8 @@ metadata:
 spec:
   interval: 30m
   timeout: 10m
+  install:
+    createNamespace: true
   chart:
     spec:
       chart: kube-prometheus-stack

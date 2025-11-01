@@ -1,14 +1,9 @@
 ---
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: ingress-nginx
----
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: ingress-nginx
-  namespace: ingress-nginx
+  namespace: flux-system
 spec:
   interval: 1440m
   url: https://kubernetes.github.io/ingress-nginx
@@ -27,7 +22,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: ingress-nginx
-        namespace: ingress-nginx
+        namespace: flux-system
       interval: 1m
   values:
     controller:
