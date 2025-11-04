@@ -3,3 +3,30 @@ kind: Kustomization
 resources:
   # multus
   - https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick.yml
+
+patches:
+  # See https://docs.siderolabs.com/kubernetes-guides/cni/multus#patching-the-daemonset
+  - target:
+      kind: DaemonSet
+      name: kube-multus-ds
+    patch: |-
+      apiVersion: apps/v1
+      kind: DaemonSet
+      metadata:
+        name: kube-multus-ds
+        namespace: kube-system
+        labels:
+          tier: node
+          app: multus
+          name: multus
+      spec:
+        template:
+          spec:
+            containers:
+              - name: kube-multus
+                volumeMounts:
+                  - mountPath: /run/netns
+                    $patch: delete
+                  - name: host-run-netns
+                    mountPath: /var/run/netns/
+                    mountPropagation: HostToContainer
