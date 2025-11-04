@@ -22,11 +22,7 @@ patches:
       spec:
         template:
           spec:
-            containers:
-              - name: kube-multus
-                volumeMounts:
-                  - mountPath: /run/netns
-                    $patch: delete
-                  - name: host-run-netns
-                    mountPath: /var/run/netns/
-                    mountPropagation: HostToContainer
+            volumes:
+              - hostPath:
+                  path: /var/run/netns/
+                name: host-run-netns
