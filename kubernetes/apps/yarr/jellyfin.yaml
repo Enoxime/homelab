@@ -16,18 +16,18 @@ metadata:
 spec:
   interval: 30m
   postRenderers:
-    kustomize:
-      patches:
-        - patch: |
-            apiVersion: v1
-            kind: PersistentVolumeClaim
-            metadata:
-              labels:
-                velero-backup: "true"
-              annotations:
-                velero.io/csi-volumesnapshot-class: rook-ceph-snapshot
-              name: yarr-jellyfin-config
-              namespace: yarr
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: v1
+              kind: PersistentVolumeClaim
+              metadata:
+                labels:
+                  velero-backup: "true"
+                annotations:
+                  velero.io/csi-volumesnapshot-class: rook-ceph-snapshot
+                name: yarr-jellyfin-config
+                namespace: yarr
   chart:
     spec:
       chart: jellyfin
