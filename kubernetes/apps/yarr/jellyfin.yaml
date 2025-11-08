@@ -18,7 +18,7 @@ spec:
   postRenderers:
     - kustomize:
         patches:
-          - patch: |
+          - patch: |-
               apiVersion: v1
               kind: PersistentVolumeClaim
               metadata:
@@ -27,7 +27,6 @@ spec:
                 annotations:
                   velero.io/csi-volumesnapshot-class: rook-ceph-snapshot
                 name: yarr-jellyfin-config
-                namespace: yarr
   chart:
     spec:
       chart: jellyfin
