@@ -5,7 +5,7 @@ metadata:
   name: multus-install-cni
   namespace: kube-system
 data:
-  install-cni.sh:
+  install-cni.sh: |
     #!/usr/bin/env bash
 
     set -euo pipefail;
