@@ -39,7 +39,7 @@ patches:
                 && grep "cni-plugins-linux-amd64-${__version}.tgz" "cni-plugins-linux-amd64-${__version}.tgz.sha256" | sha256sum -c -
                 && tar xvfz "cni-plugins-linux-amd64-${__version}.tgz"
                 && rm "cni-plugins-linux-amd64-${__version}.tgz" "cni-plugins-linux-amd64-${__version}.tgz.sha256" LICENSE README.md
-                && cp * /host/opt/cni/bin'
+                && find . -type f -executable -exec cp {} /host/opt/cni/bin \;'
               image: alpine/k8s:1.33.5
               name: install-cni
               securityContext:
