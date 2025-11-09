@@ -26,7 +26,7 @@ data:
     curl -LO "https://github.com/containernetworking/plugins/releases/download/${__version}/cni-plugins-linux-amd64-${__version}.tgz"
     curl -LO "https://github.com/containernetworking/plugins/releases/download/${__version}/cni-plugins-linux-amd64-${__version}.tgz.sha256"
 
-    sha256sum -c "cni-plugins-linux-amd64-${__version}.tgz.sha256"
+    grep "cni-plugins-linux-amd64-${__version}.tgz" "cni-plugins-linux-amd64-${__version}.tgz.sha256" | sha256sum -c -
 
     tar xvfz "cni-plugins-linux-amd64-${__version}.tgz"
 
