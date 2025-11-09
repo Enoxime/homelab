@@ -18,7 +18,7 @@ data:
         https://github.com/containernetworking/plugins.git \
       | cut -d/ -f3- \
       | grep -v 'rc' \
-      | tail -n 1\
+      | tail -n 1
     )
 
     curl -LO "https://github.com/containernetworking/plugins/releases/download/${__version}/cni-plugins-linux-amd64-${__version}.tgz"
