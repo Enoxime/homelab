@@ -4,6 +4,8 @@ kind: ConfigMap
 metadata:
   name: multus-install-cni
   namespace: kube-system
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
 data:
   install-cni.sh: |
     #!/usr/bin/env bash
@@ -24,7 +26,7 @@ data:
     curl -LO "https://github.com/containernetworking/plugins/releases/download/${__version}/cni-plugins-linux-amd64-${__version}.tgz"
     curl -LO "https://github.com/containernetworking/plugins/releases/download/${__version}/cni-plugins-linux-amd64-${__version}.tgz.sha256"
 
-    grep "cni-plugins-linux-amd64-${__version}.tgz" "cni-plugins-linux-amd64-${__version}.tgz.sha256" | sha256sum -c -
+    sha256sum -c "cni-plugins-linux-amd64-${__version}.tgz.sha256"
 
     tar xvfz "cni-plugins-linux-amd64-${__version}.tgz"
 
