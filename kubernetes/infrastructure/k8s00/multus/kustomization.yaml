@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   # multus
   - https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick.yml
+  - install-cni.configmap.yaml
 
 patches:
   # See https://docs.siderolabs.com/kubernetes-guides/cni/multus#patching-the-daemonset
@@ -19,6 +20,9 @@ patches:
               - hostPath:
                   path: /var/run/netns/
                 name: host-run-netns
+              - name: install-cni
+                ConfigMap:
+                  name: multus-install-cni
   - patch: |-
       apiVersion: apps/v1
       kind: DaemonSet
@@ -30,18 +34,7 @@ patches:
           spec:
             initContainers:
             - command:
-                - bash
-                - -c
-              args:
-                - >
-                  'set -euo pipefail;
-                  export __version=$(git ls-remote --refs --sort="version:refname" --tags https://github.com/containernetworking/plugins.git | cut -d/ -f3- | grep -v 'rc' | tail -n 1)
-                  && curl -LO "https://github.com/containernetworking/plugins/releases/download/${__version}/cni-plugins-linux-amd64-${__version}.tgz"
-                  && curl -LO "https://github.com/containernetworking/plugins/releases/download/${__version}/cni-plugins-linux-amd64-${__version}.tgz.sha256"
-                  && grep "cni-plugins-linux-amd64-${__version}.tgz" "cni-plugins-linux-amd64-${__version}.tgz.sha256" | sha256sum -c -
-                  && tar xvfz "cni-plugins-linux-amd64-${__version}.tgz"
-                  && rm "cni-plugins-linux-amd64-${__version}.tgz" "cni-plugins-linux-amd64-${__version}.tgz.sha256" LICENSE README.md
-                  && find . -type f -executable -exec cp {} /host/opt/cni/bin \;'
+                - install-cni.sh
               image: alpine/k8s:1.33.5
               name: install-cni
               securityContext:
@@ -50,3 +43,6 @@ patches:
                 - mountPath: /host/opt/cni/bin
                   mountPropagation: Bidirectional
                   name: cnibin
+                - mountPath: /install-cni.sh
+                  name: install-cni
+                  subPath: install-cni.sh
