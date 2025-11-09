@@ -4,6 +4,8 @@ kind: ConfigMap
 metadata:
   name: multus-install-cni
   namespace: kube-system
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
 data:
   install-cni.sh: |
     #!/usr/bin/env bash
