@@ -53,6 +53,8 @@ spec:
     cni:
       exclusive: false
     devices: br0
+    bpf:
+      masquerade: true
     # ingressController:
     #   enabled: true
     #   default: false
@@ -120,19 +122,3 @@ spec:
       securityContext:
         capabilities:
           keepCapNetBindService: true
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: cilium-bgp
-  namespace: flux-system
-spec:
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  path: ./kubernetes/infrastructure/k8s00/cilium-bgp
-  prune: true
-  wait: true

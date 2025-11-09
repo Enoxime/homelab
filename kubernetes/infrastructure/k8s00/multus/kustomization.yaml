@@ -6,19 +6,12 @@ resources:
 
 patches:
   # See https://docs.siderolabs.com/kubernetes-guides/cni/multus#patching-the-daemonset
-  - target:
-      kind: DaemonSet
-      name: kube-multus-ds
-    patch: |-
+  - patch: |-
       apiVersion: apps/v1
       kind: DaemonSet
       metadata:
         name: kube-multus-ds
         namespace: kube-system
-        labels:
-          tier: node
-          app: multus
-          name: multus
       spec:
         template:
           spec:
@@ -26,3 +19,30 @@ patches:
               - hostPath:
                   path: /var/run/netns/
                 name: host-run-netns
+  - patch: |-
+      apiVersion: apps/v1
+      kind: DaemonSet
+      metadata:
+        name: kube-multus-ds
+        namespace: kube-system
+      spec:
+        template:
+          spec:
+            initContainers:
+            - command:
+                - bash
+                - -c
+              args: >
+                'export __version=$(git ls-remote --refs --sort="version:refname" --tags https://github.com/containernetworking/plugins.git | cut -d/ -f3- | grep -v 'rc' | tail -n 1)
+                && curl -LO "https://github.com/containernetworking/plugins/releases/download/${__version}/cni-plugins-linux-amd64-${__version}.tgz"
+                && tar xvfz "cni-plugins-linux-amd64-${__version}.tgz"
+                && rm "cni-plugins-linux-amd64-${__version}.tgz" LICENSE README.md
+                && cp * /host/opt/cni/bin'
+              image: alpine/k8s:1.33.5
+              name: install-cni
+              securityContext:
+                privileged: true
+              volumeMounts:
+                - mountPath: /host/opt/cni/bin
+                  mountPropagation: Bidirectional
+                  name: cnibin
