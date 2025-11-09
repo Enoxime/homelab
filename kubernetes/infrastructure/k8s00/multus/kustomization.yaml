@@ -33,7 +33,8 @@ patches:
                 - bash
                 - -c
               args: >
-                'export __version=$(git ls-remote --refs --sort="version:refname" --tags https://github.com/containernetworking/plugins.git | cut -d/ -f3- | grep -v 'rc' | tail -n 1)
+                'set -euo pipefail;
+                export __version=$(git ls-remote --refs --sort="version:refname" --tags https://github.com/containernetworking/plugins.git | cut -d/ -f3- | grep -v 'rc' | tail -n 1)
                 && curl -LO "https://github.com/containernetworking/plugins/releases/download/${__version}/cni-plugins-linux-amd64-${__version}.tgz"
                 && curl -LO "https://github.com/containernetworking/plugins/releases/download/${__version}/cni-plugins-linux-amd64-${__version}.tgz.sha256"
                 && grep "cni-plugins-linux-amd64-${__version}.tgz" "cni-plugins-linux-amd64-${__version}.tgz.sha256" | sha256sum -c -
