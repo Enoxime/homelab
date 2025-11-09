@@ -23,7 +23,7 @@ patches:
               - name: install-cni
                 configMap:
                   name: multus-install-cni
-                  defaultMode: 0500
+                  defaultMode: 0555
   - patch: |-
       apiVersion: apps/v1
       kind: DaemonSet
