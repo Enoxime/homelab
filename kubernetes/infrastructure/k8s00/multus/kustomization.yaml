@@ -36,7 +36,7 @@ patches:
             initContainers:
             - command:
                 - /scripts/install-cni.sh
-              image: alpine/k8s:1.33.5
+              image: alpine/k8s:1.33.6
               name: install-cni
               securityContext:
                 privileged: true

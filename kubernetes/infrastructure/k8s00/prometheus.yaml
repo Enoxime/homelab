@@ -17,13 +17,16 @@ spec:
   chart:
     spec:
       chart: kube-prometheus-stack
-      version: ">= 75.15.1 < 75.16"
+      version: ">= 79.7.1 < 80.0"
       sourceRef:
         kind: HelmRepository
         name: prometheus-community
         namespace: flux-system
       interval: 1440m
   values:
+    crds:
+      upgradeJob:
+        enabled: true
     grafana:
       ## Deploy GrafanaDashboard CRDs that reference dashboards from ConfigMaps when grafana-operator is used
       ## These settings control how dashboards are integrated with the Grafana Operator
