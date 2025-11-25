@@ -30,13 +30,15 @@ spec:
   chart:
     spec:
       chart: jellyfin
-      version: ">= 2.3.0 < 2.4.0"
+      version: ">= 2.4.0 < 2.5.0"
       sourceRef:
         kind: HelmRepository
         name: jellyfin
         namespace: yarr
       interval: 1m
   values:
+    deploymentStrategy:
+      type: Recreate
     labels:
       velero-backup: "true"
     ingress:
