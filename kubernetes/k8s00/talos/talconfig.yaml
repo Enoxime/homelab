@@ -1,7 +1,7 @@
 clusterName: k8s00
 endpoint: https://endpoint.${subdomain}:6443
-kubernetesVersion: "1.33.5"
-talosVersion: v1.11.3
+kubernetesVersion: "1.33.6"
+talosVersion: v1.11.5
 nodes:
   - hostname: cp00.${subdomain}
     ipAddress: cp00.${subdomain}
@@ -65,8 +65,8 @@ nodes:
             - enp5s0
           stp:
             enabled: true
-          # vlan:
-          #   vlanFiltering: true
+          vlan:
+            vlanFiltering: true
         dhcp: true
   # - hostname: wk04.${subdomain}
   #   ipAddress: wk04.${subdomain}
@@ -117,18 +117,25 @@ patches:
         nodeIP:
           validSubnets:
             - "${cidr}"
+  - |-
+    machine:
+      features:
+        hostDNS:
+          enabled: true
+          forwardKubeDNSToHost: false
 controlPlane:
   patches:
     - |-
       - op: add
         path: /cluster/apiServer/admissionControl/0/configuration/exemptions/namespaces
         value:
-          - kube-system
+          - admin-tools
+          - cnpg-system
           - flux-system
-          - rook-ceph
+          - kube-system
           - monitoring
           - nvidia-gpu
-          - admin-tools
+          - rook-ceph
     - |-
       cluster:
         etcd:
@@ -177,6 +184,6 @@ worker:
             - enp1s0
           stp:
             enabled: true
-          # vlan:
-          #   vlanFiltering: true
+          vlan:
+            vlanFiltering: true
         dhcp: true
