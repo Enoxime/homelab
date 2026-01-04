@@ -58,6 +58,9 @@ patches:
             containers:
               - name: kube-multus
                 resources:
+                  requests:
+                    cpu: 200m
+                    memory: 100Mi
                   limits:
                     cpu: 200m
                     memory: 100Mi
