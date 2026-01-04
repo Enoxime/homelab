@@ -8,10 +8,13 @@ stringData:
   TZ: ENC[AES256_GCM,data:aIBvVJ2jNHhhR67SXMeU,iv:J1Gj4EIt0ugxOFbYm/Y8+d0Wx/DfY15EqFGjveLU60k=,tag:Is4IvPIH7CkL5eQjVivhPA==,type:str]
   VPN_SERVICE_PROVIDER: ENC[AES256_GCM,data:aimm1OeN,iv:g17Wgb8yCP5oYzLY+DAtMkoPBEwN571UNysgp7HGEIg=,tag:v9aNWQcZhASj1xv6aEZX0g==,type:str]
   VPN_TYPE: ENC[AES256_GCM,data:U6LAsZROXkSV,iv:dhsoJ/x8W0ON7dS5YCgLYKx+XEe6HFCZl5DpO83x9pM=,tag:2E5Rf5/FJP+5doATPMcnoA==,type:str]
-  WIREGUARD_ENDPOINT_IP: ENC[AES256_GCM,data:SFPbks/uc5unHxrl1A==,iv:gFPnjpg+sDEzWe1/FSlqH3ihMuKdq2ABpk0rSEda04E=,tag:+PhLlVUqC3cH+zsL87fzJg==,type:str]
+  #ENC[AES256_GCM,data:uxMut8uc0L9TvPJwfDKGpdRQotw319TEb/1asBKYygLFywGE,iv:Ymnj9+ldKoIh5rgXn2NJYNI4TgnOHjtcJVDKT9dmQLA=,tag:oD9BQmntspsOf9eb2Fik4A==,type:comment]
+  WIREGUARD_ENDPOINT_IP: ENC[AES256_GCM,data:0kmF1R4Z/KWvw5yM,iv:nKTtsqyWa9f7Y0SbIfEDwXuMVU+t1OZctMWrpCy9P+M=,tag:bnXj55xCtWMclt2yiCXUSg==,type:str]
   WIREGUARD_ENDPOINT_PORT: ENC[AES256_GCM,data:GFm2tRY=,iv:YxBfLYDWnHQjEM8LL9qRDEXR2c32zRX7JVTpClcsr8w=,tag:cbeYQmFhVNGL6zaGfoh6fQ==,type:str]
-  WIREGUARD_PUBLIC_KEY: ENC[AES256_GCM,data:lk9yH7e0UQo4B6w5ZmCyeyBfLHd/0SmoLche6f0ahat+8CH10cOhjAzzkuA=,iv:xG6qAMofLLNXbRvKRH0zjXy8V0rdjyvD6/HIbekCgco=,tag:ZMEaQrUKw1mcLzHp4uXABw==,type:str]
-  WIREGUARD_PRIVATE_KEY: ENC[AES256_GCM,data:YoBS33DkhYGU06kkcu7bWRzGSe0e8puHCgZpSAyHxlpbdngo1v0L8N+USTs=,iv:wBAaJgTRZf+Mv6xNcboSaJQMG4n7TDRvZKu/I1a5VRk=,tag:NTI4OthLb0IdTmEj3QRggA==,type:str]
+  #ENC[AES256_GCM,data:fngNzw5Rzw2M+pD4E7zEDc3CqTqFVsSPOBLbDA+rPzhrRYhZKqoeXBPhoUI307rHc+xMNaueAj1U5OLrVOhw9xXw,iv:BpO2wk0NUWb2l/89BL3UPl9klHQ8h0zoC3SoNbga8Ao=,tag:FPVs+Q8oqNDf0gdNumixcA==,type:comment]
+  WIREGUARD_PUBLIC_KEY: ENC[AES256_GCM,data:93t/hFrgGZz1iL0AVRLqmoIcNsPqGij7S3Ju01fWZqHBzSUNR+hJjnNRq4s=,iv:A9fvreUfLj6t39RSHdsZsn4e+AVB1g9Ve3bk2LyYNNk=,tag:aR9PY8wY+vw/IcYPcSITlg==,type:str]
+  #ENC[AES256_GCM,data:seCHEueRbbtsi7dBDh7089GKTD5tGwUQOqPzWqCmWlzzIdqzqYBdsfLrvRBnYqjuQP+SpEkPQBw6rMWzWUjTI0xu9g==,iv:aWwNsADYRTx8exW30ayn2lcGNxZY2x552AK7MB2WfBM=,tag:1IBSeLWv5d8475VPV7swhA==,type:comment]
+  WIREGUARD_PRIVATE_KEY: ENC[AES256_GCM,data:qUd4JtPIBZIuPFJ6lzkXNjXJ/klKaTy9BFr4QrvjXjjeje4u9sDNgwvVMnQ=,iv:/3xB6rMUA6VLsODv+DeSKbalr4rNbRMNr3QV9MXSsjk=,tag:+N+MqGghomyic0CV37qQNw==,type:str]
   WIREGUARD_ADDRESSES: ENC[AES256_GCM,data:Ivo6UuTFihBxk3A=,iv:OACIRau3oFmptEGOivArnu7g6EpIi0gJqTRTUWl6lu8=,tag:BPBF9bJuwnsswXxq4usTIg==,type:str]
 sops:
   age:
@@ -24,7 +27,7 @@ sops:
         R0dHeEJxaW9WSDhHandXd3lNTmRKZ2sKimfh0DqS9VbLPHUw5XNzUV24X+pGvSal
         y7BCK5zqUj5C5Nsmd2A6P6tzVQc5qPrJHxB4nDS30+wSHkrnQ9X7Mg==
         -----END AGE ENCRYPTED FILE-----
-  lastmodified: "2025-08-23T01:38:51Z"
-  mac: ENC[AES256_GCM,data:M6IsQE7CBf/5N4uvEQFzB9kIDVF8j6tg6jn6V6YDWddg9NtO2UsiBv+HGilrkspjziDF+bQTtWPC+75gieeby8p/URGUn9cUTbvr1TRyPHttMH4QLo7siHR8hqpWEu7uQbkhJxwwczd1QqGpboZQqILbOgo1s6Jre9LkRCJIxE0=,iv:33j9zgv1chcyOMuhT3ArbBBTsYO2preJaaEjPny3I8c=,tag:0Q/19ievj6iI3jFBXv2+pw==,type:str]
+  lastmodified: "2026-01-04T22:36:43Z"
+  mac: ENC[AES256_GCM,data:vSTKhQzTlQrnG+674LKXz+y0+QZIZinu7uBkzqrpuSrVrwyNZmOdkfpnqTFZbauqLzQIQXHhx3AYwIqjz9xQFosGNhfLPfbAxGic+UP8nEHwhhpG/INRHRQwNN1lCNXKQ/h6TC3eqJh3r6KBGlU9isYzZbW/K4d+wp7KbRKkFNg=,iv:p/x62POxNadG6zDhxRhJnvU6NKY8xCUPjnBoMv/5G5g=,tag:m4Ps/5qz/uUu6sTmEMg4xw==,type:str]
   encrypted_regex: ^(data|stringData)$
-  version: 3.10.2
+  version: 3.11.0
