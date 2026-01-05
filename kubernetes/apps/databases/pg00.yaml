@@ -1,0 +1,298 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: two-times-a-day
+  namespace: database
+spec:
+  suspend: false
+  immediate: true
+  schedule: "0 0 0,12 * * *"
+  cluster:
+    name: pg00
+  backupOwnerReference: self
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
+---
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: garage-home
+  namespace: database
+spec:
+  configuration:
+    destinationPath: s3://k8s00-pg00/
+    s3Credentials:
+      accessKeyId:
+        name: cnpg-pg00-backup-creds
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: cnpg-pg00-backup-creds
+        key: ACCESS_SECRET_KEY
+      region:
+        name: cnpg-pg00-backup-creds
+        key: region
+    endpointURL: http://garage.garage:3900
+    wal:
+      compression: gzip
+    data:
+      compression: gzip
+  retentionPolicy: 30d
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: pg00
+  namespace: database
+spec:
+  description: Main database for k8s00
+  inheritedMetadata:
+    labels:
+    annotations:
+  imageCatalogRef:
+    apiGroup: postgresql.cnpg.io
+    kind: ClusterImageCatalog
+    name: postgresql-system-trixie
+    major: 18
+  postgresUID: 26
+  postgresGID: 26
+  instances: 3
+  superuserSecret:
+    name: cnpg-pg00-super-user-creds
+  enableSuperuserAccess: true
+  storage:
+    size: 10Gi
+    storageClass: rook-ceph-retain
+  walStorage:
+    size: 10Gi
+    storageClass: rook-ceph-retain
+  resources: {}
+  primaryUpdateStrategy: unsupervised
+  primaryUpdateMethod: switchover
+  monitoring:
+    disableDefaultQueries: false
+  managed:
+    roles:
+      - name: kaizoku
+        ensure: present
+        passwordSecret:
+          name: kaizoku-postgres-credentials
+        superuser: false
+        createdb: false
+        createrole: false
+        login: true
+      - name: linkwarden
+        ensure: present
+        passwordSecret:
+          name: linkwarden-postgres-credentials
+        superuser: false
+        createdb: false
+        createrole: false
+        login: true
+  enablePDB: true
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      enabled: true
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: garage-home
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: kaizoku-db
+  namespace: database
+spec:
+  cluster:
+    name: pg00
+  name: kaizoku
+  owner: kaizoku
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: linkwarden-db
+  namespace: database
+spec:
+  cluster:
+    name: pg00
+  name: linkwarden
+  owner: linkwarden
+  databaseReclaimPolicy: retain
+---
+# apiVersion: monitoring.coreos.com/v1
+# kind: PrometheusRule
+# metadata:
+#   labels:
+#     app.kubernetes.io/name: pg00
+#     app.kubernetes.io/part-of: cloudnative-pg
+#   name: pg00-alert-rules
+#   namespace: database
+# spec:
+#   groups:
+#     - name: cloudnative-pg/pg00
+#       rules:
+#         - alert: CNPGClusterHACritical
+#           annotations:
+#             summary: CNPG Cluster has no standby replicas!
+#             description: |-
+#               CloudNativePG Cluster "{{ $labels.job }}" has no ready standby replicas. Your cluster at a severe
+#               risk of data loss and downtime if the primary instance fails.
+
+#               The primary instance is still online and able to serve queries, although connections to the `-ro` endpoint
+#               will fail. The `-r` endpoint os operating at reduced capacity and all traffic is being served by the main.
+
+#               This can happen during a normal fail-over or automated minor version upgrades in a cluster with 2 or less
+#               instances. The replaced instance may need some time to catch-up with the cluster primary instance.
+
+#               This alarm will be always trigger if your cluster is configured to run with only 1 instance. In this
+#               case you may want to silence it.
+#             runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/CNPGClusterHACritical.md
+#           expr: |
+#             max by (job) (cnpg_pg_replication_streaming_replicas{namespace="database"} - cnpg_pg_replication_is_wal_receiver_up{namespace="database"}) < 1
+#           for: 5m
+#           labels:
+#             severity: critical
+#             namespace: database
+#             cnpg_cluster: pg00
+#         - alert: CNPGClusterHAWarning
+#           annotations:
+#             summary: CNPG Cluster less than 2 standby replicas.
+#             description: |-
+#               CloudNativePG Cluster "{{ $labels.job }}" has only {{ $value }} standby replicas, putting
+#               your cluster at risk if another instance fails. The cluster is still able to operate normally, although
+#               the `-ro` and `-r` endpoints operate at reduced capacity.
+
+#               This can happen during a normal fail-over or automated minor version upgrades. The replaced instance may
+#               need some time to catch-up with the cluster primary instance.
+
+#               This alarm will be constantly triggered if your cluster is configured to run with less than 3 instances.
+#               In this case you may want to silence it.
+#             runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/CNPGClusterHAWarning.md
+#           expr: |
+#             max by (job) (cnpg_pg_replication_streaming_replicas{namespace="database"} - cnpg_pg_replication_is_wal_receiver_up{namespace="database"}) < 2
+#           for: 5m
+#           labels:
+#             severity: warning
+#             namespace: database
+#             cnpg_cluster: pg00
+#         - alert: CNPGClusterHighConnectionsCritical
+#           annotations:
+#             summary: CNPG Instance maximum number of connections critical!
+#             description: |-
+#               CloudNativePG Cluster "database/pg00" instance {{ $labels.pod }} is using {{ $value }}% of
+#               the maximum number of connections.
+#             runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/CNPGClusterHighConnectionsCritical.md
+#           expr: |
+#             sum by (pod) (cnpg_backends_total{namespace="database", pod=~"{{ .podSelector }}"}) / max by (pod) (cnpg_pg_settings_setting{name="max_connections", namespace="database", pod=~"{{ .podSelector }}"}) * 100 > 95
+#           for: 5m
+#           labels:
+#             severity: critical
+#             namespace: database
+#             cnpg_cluster: pg00
+#         - alert: CNPGClusterHighConnectionsWarning
+#           annotations:
+#             summary: CNPG Instance is approaching the maximum number of connections.
+#             description: |-
+#               CloudNativePG Cluster "{{ .namespace }}/{{ .cluster }}" instance {{ .labels.pod }} is using {{ .value }}% of
+#               the maximum number of connections.
+#             runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/CNPGClusterHighConnectionsWarning.md
+#           expr: |
+#             sum by (pod) (cnpg_backends_total{namespace="{{ .namespace }}", pod=~"{{ .podSelector }}"}) / max by (pod) (cnpg_pg_settings_setting{name="max_connections", namespace="{{ .namespace }}", pod=~"{{ .podSelector }}"}) * 100 > 80
+#           for: 5m
+#           labels:
+#             severity: warning
+#             namespace: databse
+#             cnpg_cluster: pg00
+#         - alert: CNPGClusterHighReplicationLag
+#           annotations:
+#             summary: CNPG Cluster high replication lag
+#             description: |-
+#               CloudNativePG Cluster "{{ .namespace }}/{{ .cluster }}" is experiencing a high replication lag of
+#               {{ .value }}ms.
+
+#               High replication lag indicates network issues, busy instances, slow queries or suboptimal configuration.
+#             runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/CNPGClusterHighReplicationLag.md
+#           expr: |
+#             max(cnpg_pg_replication_lag{namespace="{{ .namespace }}",pod=~"{{ .podSelector }}"}) * 1000 > 1000
+#           for: 5m
+#           labels:
+#             severity: warning
+#             namespace: database
+#             cnpg_cluster: pg00
+#         - alert: CNPGClusterInstancesOnSameNode
+#           annotations:
+#             summary: CNPG Cluster instances are located on the same node.
+#             description: |-
+#               CloudNativePG Cluster "{{ .namespace }}/{{ .cluster }}" has {{ .value }}
+#               instances on the same node {{ .labels.node }}.
+
+#               A failure or scheduled downtime of a single node will lead to a potential service disruption and/or data loss.
+#             runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/CNPGClusterInstancesOnSameNode.md
+#           expr: |
+#             count by (node) (kube_pod_info{namespace="{{ .namespace }}", pod=~"{{ .podSelector }}"}) > 1
+#           for: 5m
+#           labels:
+#             severity: warning
+#             namespace: database
+#             cnpg_cluster: pg00
+#         - alert: CNPGClusterLowDiskSpaceCritical
+#           annotations:
+#             summary: CNPG Instance is running out of disk space!
+#             description: |-
+#               CloudNativePG Cluster "{{ .namespace }}/{{ .cluster }}" is running extremely low on disk space. Check attached PVCs!
+#             runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/CNPGClusterLowDiskSpaceCritical.md
+#           expr: |
+#             max(max by(persistentvolumeclaim) (1 - kubelet_volume_stats_available_bytes{namespace="{{ .namespace }}", persistentvolumeclaim=~"{{ .podSelector }}"} / kubelet_volume_stats_capacity_bytes{namespace="{{ .namespace }}", persistentvolumeclaim=~"{{ .podSelector }}"})) > 0.9 OR
+#             max(max by(persistentvolumeclaim) (1 - kubelet_volume_stats_available_bytes{namespace="{{ .namespace }}", persistentvolumeclaim=~"{{ .podSelector }}-wal"} / kubelet_volume_stats_capacity_bytes{namespace="{{ .namespace }}", persistentvolumeclaim=~"{{ .podSelector }}-wal"})) > 0.9 OR
+#             max(sum by (namespace,persistentvolumeclaim) (kubelet_volume_stats_used_bytes{namespace="{{ .namespace }}", persistentvolumeclaim=~"{{ .podSelector }}-tbs.*"})
+#                 /
+#                 sum by (namespace,persistentvolumeclaim) (kubelet_volume_stats_capacity_bytes{namespace="{{ .namespace }}", persistentvolumeclaim=~"{{ .podSelector }}-tbs.*"})
+#                 *
+#                 on(namespace, persistentvolumeclaim) group_left(volume)
+#                 kube_pod_spec_volumes_persistentvolumeclaims_info{pod=~"{{ .podSelector }}"}
+#             ) > 0.9
+#           for: 5m
+#           labels:
+#             severity: critical
+#             namespace: database
+#             cnpg_cluster: pg00
+#         - alert: CNPGClusterLowDiskSpaceWarning
+#           annotations:
+#             summary: CNPG Instance is running out of disk space.
+#             description: |-
+#               CloudNativePG Cluster "{{ .namespace }}/{{ .cluster }}" is running low on disk space. Check attached PVCs.
+#             runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/CNPGClusterLowDiskSpaceWarning.md
+#           expr: |
+#             max(max by(persistentvolumeclaim) (1 - kubelet_volume_stats_available_bytes{namespace="{{ .namespace }}", persistentvolumeclaim=~"{{ .podSelector }}"} / kubelet_volume_stats_capacity_bytes{namespace="{{ .namespace }}", persistentvolumeclaim=~"{{ .podSelector }}"})) > 0.7 OR
+#             max(max by(persistentvolumeclaim) (1 - kubelet_volume_stats_available_bytes{namespace="{{ .namespace }}", persistentvolumeclaim=~"{{ .podSelector }}-wal"} / kubelet_volume_stats_capacity_bytes{namespace="{{ .namespace }}", persistentvolumeclaim=~"{{ .podSelector }}-wal"})) > 0.7 OR
+#             max(sum by (namespace,persistentvolumeclaim) (kubelet_volume_stats_used_bytes{namespace="{{ .namespace }}", persistentvolumeclaim=~"{{ .podSelector }}-tbs.*"})
+#                 /
+#                 sum by (namespace,persistentvolumeclaim) (kubelet_volume_stats_capacity_bytes{namespace="{{ .namespace }}", persistentvolumeclaim=~"{{ .podSelector }}-tbs.*"})
+#                 *
+#                 on(namespace, persistentvolumeclaim) group_left(volume)
+#                 kube_pod_spec_volumes_persistentvolumeclaims_info{pod=~"{{ .podSelector }}"}
+#             ) > 0.7
+#           for: 5m
+#           labels:
+#             severity: warning
+#             namespace: database
+#             cnpg_cluster: pg00
+#         - alert: CNPGClusterOffline
+#           annotations:
+#             summary: CNPG Cluster has no running instances!
+#             description: |-
+#               CloudNativePG Cluster "{{ .namespace }}/{{ .cluster }}" has no ready instances.
+
+#               Having an offline cluster means your applications will not be able to access the database, leading to
+#               potential service disruption and/or data loss.
+#             runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/CNPGClusterOffline.md
+#           expr: |
+#             (count(cnpg_collector_up{namespace="{{ .namespace }}",pod=~"{{ .podSelector }}"}) OR on() vector(0)) == 0
+#           for: 5m
+#           labels:
+#             severity: critical
+#             namespace: database
+#             cnpg_cluster: pg00
