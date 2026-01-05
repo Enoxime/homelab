@@ -37,6 +37,19 @@ data:
           }
         }
     }
+  config_distro.py: |
+    CA_FILE = '/etc/ssl/certs/ca-certificates.crt'
+    LOG_FILE = '/dev/null'
+    HELP_PATH = '../../docs'
+    DEFAULT_BINARY_PATHS = {
+            'pg': '/usr/local/pgsql-18',
+            'pg-18': '/usr/local/pgsql-18',
+            'pg-17': '/usr/local/pgsql-17',
+            'pg-16': '/usr/local/pgsql-16',
+            'pg-15': '/usr/local/pgsql-15',
+            'pg-14': '/usr/local/pgsql-14',
+            'pg-13': '/usr/local/pgsql-13'
+    }
 ---
 apiVersion: v1
 kind: Service
@@ -46,22 +59,33 @@ metadata:
 spec:
   ports:
     - protocol: TCP
-      port: 80
+      port: 8080
       targetPort: http
   selector:
     app: pgadmin
   type: ClusterIP
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pgadmin-data
+  namespace: admin
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+  storageClassName: rook-ceph-retain
+---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: pgadmin
   namespace: admin
 spec:
-  serviceName: pgadmin-service
-  podManagementPolicy: Parallel
   replicas: 1
-  updateStrategy:
+  strategy:
     type: RollingUpdate
   selector:
     matchLabels:
@@ -79,37 +103,55 @@ spec:
           image: dpage/pgadmin4:9.11
           imagePullPolicy: Always
           env:
-          - name: PGADMIN_DEFAULT_EMAIL
-            value: admin@enoxi.me
-          - name: PGADMIN_DEFAULT_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: pgadmin-creds
-                key: pgadmin-password
+            - name: PGADMIN_DEFAULT_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: pgadmin-creds
+                  key: pgadmin-username
+            - name: PGADMIN_DEFAULT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pgadmin-creds
+                  key: pgadmin-password
+            - name: PGADMIN_DISABLE_POSTFIX
+              value: "true"
+            - name: PGADMIN_LISTEN_PORT
+              value: "8080"
           ports:
-          - name: http
-            containerPort: 80
-            protocol: TCP
+            - name: http
+              containerPort: 8080
+              protocol: TCP
           volumeMounts:
-          - name: pgadmin-config
-            mountPath: /pgadmin4/servers.json
-            subPath: servers.json
-            readOnly: true
-          - name: pgadmin-data
-            mountPath: /var/lib/pgadmin
+            - name: pgadmin-config
+              mountPath: /pgadmin4/servers.json
+              subPath: servers.json
+              readOnly: true
+            - name: pgadmin-data
+              mountPath: /var/lib/pgadmin
+            - name: pgadmin-config
+              mountPath: /pgadmin4/config_distro.py
+              subPath: config_distro.py
+            - name: tmp
+              mountPath: /tmp
+          securityContext:
+            # capabilities:
+            #   drop:
+            #   - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 5050
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
       volumes:
-      - name: pgadmin-config
-        configMap:
-          name: pgadmin-config
-  volumeClaimTemplates:
-    - metadata:
-        name: pgadmin-data
-      spec:
-        storageClassName: rook-ceph-retain
-        accessModes: [ "ReadWriteOnce" ]
-        resources:
-          requests:
-            storage: 500Mi
+        - name: pgadmin-config
+          configMap:
+            name: pgadmin-config
+        - name: pgadmin-data
+          persistentVolumeClaim:
+            claimName: pgadmin-data
+        - name: tmp
+          emptyDir: {}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -128,7 +170,7 @@ spec:
               service:
                 name: pgadmin-http
                 port:
-                  number: 80
+                  number: 8080
             path: /
             pathType: Prefix
   tls:
