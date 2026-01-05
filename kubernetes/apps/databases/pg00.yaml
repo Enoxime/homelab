@@ -47,9 +47,9 @@ metadata:
   namespace: database
 spec:
   description: Main database for k8s00
-  inheritedMetadata:
-    labels:
-    annotations:
+  # inheritedMetadata:
+  #   labels:
+  #   annotations:
   imageCatalogRef:
     apiGroup: postgresql.cnpg.io
     kind: ClusterImageCatalog
