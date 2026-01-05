@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: global-variables
+  namespace: flux-system
+stringData:
+  serviceDomain: ENC[AES256_GCM,data:6pUEIa8JYshjU+cHROHr7RnbupoMq7s1WLO0,iv:olNt9IoBHJuhmg+n1YLglCaJFt+lIGO6ZukSfY2RuGQ=,tag:elWLZS3lye0YIfPlaAAt6g==,type:str]
+sops:
+  age:
+    - recipient: age195m7v6w6lce8knleuc9juqwklj56vjflng64q60eh90yrfpsfyjs222pls
+      enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBPQ0RKS3NldlgzdUJBdkVq
+        S01HWWNTZVRNbVFDRElzelg5dCtiU0MvTWpRClVvdlVCV0gxWXp1eHdDaGpoeEpi
+        cC93TysrUkdoV052aEJaR2s0MGthOFkKLS0tIDU5V3VPS0RCdVR3SFdzY2pjVVFx
+        WldtNFVua1oxSGVYVUZhdTFKd09YeDQKPRdyxqTs2nAtziEEaxh4ggAVia5UKUeQ
+        wRwnpZN5B7Zs9dj28BzILiiu5NiKonj1QoPe3Sl/38mltB9Tdw2Kjw==
+        -----END AGE ENCRYPTED FILE-----
+  lastmodified: "2026-01-05T17:53:14Z"
+  mac: ENC[AES256_GCM,data:blTfvEvrJASp0ew3AB2FNEsKvYbn1fQGHf8uh31GMAhXxvh86EpFWVTNfVJBV6JNXDqouUmHaWkDFdXKbi8inz5/cudVAVhk9P2G/jBtGHfF0pEz6PETMMQPfeItrwuLaHUh2+BLdSoOKdwlcMeb1G1lPXLYGEjgFjgtkamhvN4=,iv:JD3uHY0/S2UZ1QgBv/hZ5VLF6mvhlQEQr9DgVi4joyc=,tag:+RgElQQ3dG1kQWC4hEG0Lw==,type:str]
+  encrypted_regex: ^(data|stringData)$
+  version: 3.11.0
