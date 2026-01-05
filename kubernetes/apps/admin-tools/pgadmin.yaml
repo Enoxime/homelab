@@ -1,0 +1,137 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pgadmin-config
+  namespace: admin
+data:
+  servers.json: |
+    {
+        "Servers": {
+          "1": {
+            "Name": "pg00",
+            "Group": "k8s00",
+            "Port": 5432,
+            "Username": "postgres",
+            "Host": "pg00-rw.database",
+            "SSLMode": "prefer",
+            "MaintenanceDB": "postgres"
+          },
+          "2": {
+            "Name": "immich-pg",
+            "Group": "k8s00",
+            "Port": 5432,
+            "Username": "immich",
+            "Host": "immich-pg-rw.immich",
+            "SSLMode": "prefer",
+            "MaintenanceDB": "postgres"
+          },
+          "3": {
+            "Name": "harbor-pg",
+            "Group": "k8s00",
+            "Port": 5432,
+            "Username": "harbor",
+            "Host": "harbor-pg-rw.harbor",
+            "SSLMode": "prefer",
+            "MaintenanceDB": "postgres"
+          }
+        }
+    }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgadmin-http
+  namespace: admin
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: http
+  selector:
+    app: pgadmin
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: pgadmin
+  namespace: admin
+spec:
+  serviceName: pgadmin-service
+  podManagementPolicy: Parallel
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: pgadmin
+  template:
+    metadata:
+      labels:
+        app: pgadmin
+    spec:
+      terminationGracePeriodSeconds: 10
+      securityContext:
+        fsGroup: 5050
+      containers:
+        - name: pgadmin
+          image: dpage/pgadmin4:9.11
+          imagePullPolicy: Always
+          env:
+          - name: PGADMIN_DEFAULT_EMAIL
+            value: admin@enoxi.me
+          - name: PGADMIN_DEFAULT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: pgadmin-creds
+                key: pgadmin-password
+          ports:
+          - name: http
+            containerPort: 80
+            protocol: TCP
+          volumeMounts:
+          - name: pgadmin-config
+            mountPath: /pgadmin4/servers.json
+            subPath: servers.json
+            readOnly: true
+          - name: pgadmin-data
+            mountPath: /var/lib/pgadmin
+      volumes:
+      - name: pgadmin-config
+        configMap:
+          name: pgadmin-config
+  volumeClaimTemplates:
+    - metadata:
+        name: pgadmin-data
+      spec:
+        storageClassName: rook-ceph-retain
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 500Mi
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: homelab-internal
+  name: pgadmin-ingress
+  namespace: admin
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: pgadmin.${serviceDomain}
+      http:
+        paths:
+          - backend:
+              service:
+                name: pgadmin-http
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - pgadmin.${serviceDomain}
+      secretName: pgadmin.${serviceDomain}-tls
