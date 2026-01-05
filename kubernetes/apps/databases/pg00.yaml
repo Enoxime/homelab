@@ -22,7 +22,7 @@ metadata:
   namespace: database
 spec:
   configuration:
-    destinationPath: s3://k8s00-pg00/
+    destinationPath: s3://k8s00-cnpg-backup/
     s3Credentials:
       accessKeyId:
         name: cnpg-pg00-backup-creds
