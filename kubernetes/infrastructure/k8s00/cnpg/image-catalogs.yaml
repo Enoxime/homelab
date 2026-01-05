@@ -1,0 +1,43 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: cnpg-image-catalogs
+  namespace: database
+spec:
+  interval: 1440m
+  url: https://github.com/cloudnative-pg/artifacts
+  ref:
+    branch: main
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cnpg-image-catalogs
+  namespace: database
+spec:
+  interval: 1440m
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: cnpg-image-catalogs
+  path: ./image-catalogs
+  prune: true
+  wait: true
+---
+# cloudnative-vectorchord
+apiVersion: postgresql.cnpg.io/v1
+kind: ClusterImageCatalog
+metadata:
+  name: vectorchord
+  labels:
+    images.cnpg.io/family: vectorchord
+    images.cnpg.io/publisher: vectorchord.ai
+spec:
+  images:
+  - major: 18
+    image: ghcr.io/tensorchord/cloudnative-vectorchord:18.1@sha256:84b8d3bd377ea6d5d7338d152ad6a0655222a49c20015fdd7dd98e3ba8bb60fb
+  - major: 16
+    # image: ghcr.io/tensorchord/cloudnative-vectorchord:16.11@sha256:e2a43005f44613c8c9634a3c00e01ed7f9bd5fe7c3e09aa5961b47d584b8810c
+    image: ghcr.io/tensorchord/cloudnative-vectorchord:16.9-0.4.3
