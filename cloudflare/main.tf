@@ -36,7 +36,7 @@ resource "cloudflare_dns_record" "home" {
 
 resource "cloudflare_dns_record" "photos" {
   name = "photos"
-  ttl = 60
+  ttl = 1
   type = "CNAME"
   zone_id = var.zone_id
   content = "${cloudflare_zero_trust_tunnel_cloudflared.immich.id}.cfargotunnel.com"
