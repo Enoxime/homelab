@@ -35,7 +35,7 @@ resource "cloudflare_dns_record" "home" {
 }
 
 resource "cloudflare_dns_record" "photos" {
-  name = "photos.${var.domain}"
+  name = "photos"
   ttl = 60
   type = "CNAME"
   zone_id = var.zone_id
