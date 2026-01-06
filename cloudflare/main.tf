@@ -33,3 +33,12 @@ resource "cloudflare_dns_record" "home" {
   content = var.domain
   proxied = false
 }
+
+resource "cloudflare_dns_record" "photos" {
+  name = "photos.${var.domain}"
+  ttl = 60
+  type = "CNAME"
+  zone_id = var.zone_id
+  content = "${cloudflare_zero_trust_tunnel_cloudflared.immich.id}.cfargotunnel.com"
+  proxied = true
+}
