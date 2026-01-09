@@ -1,0 +1,95 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: two-times-a-day
+  namespace: immich
+spec:
+  suspend: false
+  immediate: true
+  schedule: "0 0 0,12 * * *"
+  cluster:
+    name: immich-pg
+  backupOwnerReference: self
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
+---
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: garage-home-cnpg
+  namespace: immich
+spec:
+  configuration:
+    destinationPath: s3://k8s00-cnpg-backup
+    s3Credentials:
+      accessKeyId:
+        name: cnpg-immich-pg-backup-creds
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: cnpg-immich-pg-backup-creds
+        key: ACCESS_SECRET_KEY
+      region:
+        name: cnpg-immich-pg-backup-creds
+        key: region
+    endpointURL: http://garage.garage:3900
+    wal:
+      compression: gzip
+    data:
+      compression: gzip
+  retentionPolicy: 30d
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: immich-pg
+  namespace: immich
+spec:
+  description: Main database for immich
+  # inheritedMetadata:
+  #   labels:
+  #   annotations:
+  imageCatalogRef:
+    apiGroup: postgresql.cnpg.io
+    kind: ClusterImageCatalog
+    name: vectorchord
+    major: 16
+  postgresUID: 26
+  postgresGID: 26
+  instances: 3
+  postgresql:
+    shared_preload_libraries:
+      - "vchord.so"
+  bootstrap:
+    initdb:
+      database: immich
+      postInitApplicationSQL:
+        # Commands based on: https://immich.app/docs/administration/postgres-standalone/#without-superuser-permission
+        # TODO: Check why it doesn't apply
+        - CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
+        - CREATE EXTENSION IF NOT EXISTS earthdistance CASCADE;
+      owner: immich
+      secret:
+        name: immich-postgres-credentials
+      dataChecksums: true
+      encoding: 'UTF8'
+  enableSuperuserAccess: true
+  storage:
+    size: 5Gi
+    storageClass: rook-ceph-retain
+  walStorage:
+    size: 5Gi
+    storageClass: rook-ceph-retain
+  resources: {}
+  primaryUpdateStrategy: unsupervised
+  primaryUpdateMethod: switchover
+  monitoring:
+    disableDefaultQueries: false
+  enablePDB: true
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      enabled: true
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: garage-home-cnpg

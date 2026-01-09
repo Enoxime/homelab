@@ -1,0 +1,70 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: immich
+  name: immich-upload
+  labels:
+    type: immich-upload
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  capacity:
+    storage: 1Ti
+  storageClassName: ""
+  nfs:
+    server: "${nasIp}"
+    path: ${nasNfsPath}/apps/photos/upload
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: immich
+  name: immich-upload
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Ti
+  storageClassName: ""
+  selector:
+    matchLabels:
+      type: immich-upload
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: immich
+  name: immich-library
+  labels:
+    type: immich-library
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  capacity:
+    storage: 1Ti
+  storageClassName: ""
+  nfs:
+    server: "${nasIp}"
+    path: ${nasNfsPath}/apps/photos/library
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: immich
+  name: immich-library
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Ti
+  storageClassName: ""
+  selector:
+    matchLabels:
+      type: immich-library

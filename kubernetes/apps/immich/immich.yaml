@@ -1,0 +1,151 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: immich
+  namespace: immich
+spec:
+  interval: 1440m
+  url: https://enoxime.github.io/immich-chart
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: immich
+  namespace: immich
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: immich
+      version: "*"
+      sourceRef:
+        kind: HelmRepository
+        name: immich
+        namespace: immich
+      interval: 1m
+  values:
+    image:
+      tag: v2.4.1
+
+    securityContext:
+      capabilities:
+        drop:
+        - ALL
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      runAsUser: 65532
+      allowPrivilegeEscalation: false
+      seccompProfile:
+        type: RuntimeDefault
+
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: homelab-internal
+      hosts:
+        - host: immich.${serviceDomain}
+          paths:
+            - path: /
+              pathType: Prefix
+        - host: photos.${mainDomain}
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: immich-tls-int
+          hosts:
+            - immich.${serviceDomain}
+        - secretName: immich-tls-ext
+          hosts:
+            - photos.${mainDomain}
+
+    persistence:
+      enabled: true
+      storageClassName: rook-ceph-retain
+      upload:
+        enabled: true
+        existingClaim:
+          name: immich-upload
+      library:
+        enabled: true
+        existingClaim:
+          name: immich-library
+
+    volumes:
+      - name: upload
+        persistentVolumeClaim:
+          claimName: immich-upload
+      - name: library
+        persistentVolumeClaim:
+          claimName: immich-library
+
+    volumeMounts:
+      - name: upload
+        mountPath: /usr/src/app/upload
+      - name: library
+        mountPath: /usr/src/app/library
+
+    timezone: America/Toronto
+
+    ai:
+      runtimeClass:
+        enabled: true
+        name: nvidia
+      # resources:
+      #   limits:
+      #     nvidia.com/gpu: 1
+      podSecurityContext:
+        fsGroup: 65532
+      securityContext:
+        capabilities:
+          drop:
+          - ALL
+        readOnlyRootFilesystem: false
+        runAsNonRoot: true
+        runAsUser: 65532
+        allowPrivilegeEscalation: false
+        seccompProfile:
+          type: RuntimeDefault
+      service:
+        type: ClusterIP
+        port: 3003
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: nvidia.com/gpu.count
+                operator: In
+                values:
+                - "1"
+
+    microservices:
+      runtimeClass:
+        enabled: true
+        name: nvidia
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: nvidia.com/gpu.count
+                operator: In
+                values:
+                - "1"
+
+    postgresql:
+      hostname: immich-pg-rw
+      username: immich
+      databaseName: immich
+      password:
+        name: immich
+        key: pg_password
+
+    redis:
+      hostname: immich-valkey
+      username: immich
+      password:
+        name: immich
+        key: redis_password
