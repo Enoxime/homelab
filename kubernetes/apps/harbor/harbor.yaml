@@ -59,7 +59,8 @@ spec:
           #rootdirectory: /s3/object/name/prefix
           #storageclass: STANDARD
     # TODO: See https://github.com/goharbor/harbor-helm/issues/2207
-    existingSecretAdminPassword: ${harborPassword}
+    harborAdminPassword: ${harborPassword}
+    # existingSecretAdminPassword: harbor-admin-creds
     # existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
     # existingSecretSecretKey: harbor-secrets
     metrics:
