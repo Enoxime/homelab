@@ -1,0 +1,142 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: harbor
+  namespace: harbor
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: harbor
+      version: ">= 1.8.1 < 1.9.0"
+      sourceRef:
+        kind: HelmRepository
+        name: harbor
+        namespace: harbor
+      interval: 1m
+  values:
+    expose:
+      type: ingress
+      ingress:
+        hosts:
+          core: harbor.${serviceDomain}
+        className: nginx
+        annotations:
+          cert-manager.io/cluster-issuer: homelab-internal
+          ingress.kubernetes.io/ssl-redirect: "true"
+          ingress.kubernetes.io/proxy-body-size: "0"
+          nginx.ingress.kubernetes.io/ssl-redirect: "true"
+          nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    externalURL: https://harbor.${serviceDomain}
+    persistence:
+      enabled: true
+      resourcePolicy: "keep"
+      persistentVolumeClaim:
+        registry:
+          storageClass: rook-ceph-retain
+          size: 20Gi
+        jobservice:
+          jobLog:
+            storageClass: rook-ceph-delete
+            size: 1Gi
+        trivy:
+          storageClass: rook-ceph-delete
+          size: 5Gi
+      imageChartStorage:
+        disableredirect: true
+        type: s3
+        s3:
+          # Set an existing secret for S3 accesskey and secretkey
+          # keys in the secret should be REGISTRY_STORAGE_S3_ACCESSKEY and REGISTRY_STORAGE_S3_SECRETKEY for registry
+          existingSecret: harbor-s3-creds
+          region: garage
+          bucket: k8s00-harbor
+          regionendpoint: http://garage.garage:3900
+          encrypt: false
+          #skipverify: false
+          #v4auth: true
+          #rootdirectory: /s3/object/name/prefix
+          #storageclass: STANDARD
+    # TODO: See https://github.com/goharbor/harbor-helm/issues/2207
+    harborAdminPassword: ${harborPassword}
+    # existingSecretAdminPassword: harbor-admin-creds
+    # existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
+    # existingSecretSecretKey: harbor-secrets
+    metrics:
+      enabled: true
+      core:
+        path: /metrics
+        port: 8001
+      registry:
+        path: /metrics
+        port: 8001
+      jobservice:
+        path: /metrics
+        port: 8001
+      exporter:
+        path: /metrics
+        port: 8001
+      serviceMonitor:
+        enabled: true
+    containerSecurityContext:
+      privileged: false
+      allowPrivilegeEscalation: false
+      seccompProfile:
+        type: RuntimeDefault
+      runAsNonRoot: true
+      capabilities:
+        drop:
+          - ALL
+    portal:
+      image:
+        repository: docker.io/goharbor/harbor-portal
+        tag: v2.14.1
+    core:
+      image:
+        repository: docker.io/goharbor/harbor-core
+        tag: v2.14.1
+    jobservice:
+      image:
+        repository: docker.io/goharbor/harbor-jobservice
+        tag: v2.14.1
+    registry:
+      registry:
+        image:
+          repository: docker.io/goharbor/registry-photon
+          tag: v2.14.1
+      controller:
+        image:
+          repository: docker.io/goharbor/harbor-registryctl
+          tag: v2.14.1
+    trivy:
+      # enabled the flag to enable Trivy scanner
+      enabled: true
+      image:
+        # repository the repository for Trivy adapter image
+        repository: docker.io/goharbor/trivy-adapter-photon
+        # tag the tag for Trivy adapter image
+        tag: v2.14.1
+    database:
+      type: external
+      external:
+        host: harbor-pg-rw
+        port: "5432"
+        coreDatabase: "registry"
+        username: harbor
+        password: ${harborPgPassword}
+        # TODO: See https://github.com/goharbor/harbor-helm/issues/2207
+        # existingSecret: harbor-postgres-credentials
+    redis:
+      # type: internal
+      type: external
+      external:
+        addr: harbor-valkey:6379
+        username: harbor
+        password: ${harborValkeyPassword}
+        # TODO: See https://github.com/goharbor/harbor-helm/issues/2207
+        # existingSecret: harbor-secrets
+    exporter:
+      image:
+        repository: docker.io/goharbor/harbor-exporter
+        tag: v2.14.1

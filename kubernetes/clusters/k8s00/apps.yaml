@@ -26,3 +26,5 @@ spec:
         name: yarr-secret-values
       - kind: Secret
         name: garage-secret-values
+      - kind: Secret
+        name: harbor-secret-values
