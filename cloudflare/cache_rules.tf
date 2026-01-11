@@ -1,5 +1,5 @@
 resource "cloudflare_ruleset" "photos_immich" {
-  kind = "custom"
+  kind = "zone"
   name = "No caching on /share/video for immich"
   phase = "http_request_cache_settings"
   account_id = var.account_id
