@@ -16,7 +16,7 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "immich_tunnel_config
     ingress = [ {
       hostname = "photos.${var.domain}"
       service = "http://immich-public-proxy:3000"
-      path = "share"
+      path = "/share"
     },
     {
       hostname = "photos.${var.domain}"
