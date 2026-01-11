@@ -135,6 +135,33 @@ spec:
                 values:
                 - "1"
 
+    ipp:
+      enable: true
+      image:
+        repository: alangrainger/immich-public-proxy
+        pullPolicy: IfNotPresent
+        tag: "1.14.2"
+      podSecurityContext:
+        fsGroup: 65532
+      securityContext:
+        capabilities:
+          drop:
+          - ALL
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 65532
+        allowPrivilegeEscalation: false
+        seccompProfile:
+          type: RuntimeDefault
+      publicBaseUrl:
+        enabled: true
+        url: https://photos.enoxi.me
+      config:
+        enabled: true
+        singleImageGallery: true
+        downloadOriginalPhoto: true
+        allowDownloadAll: 1
+
     postgresql:
       hostname: immich-pg-rw
       username: immich
