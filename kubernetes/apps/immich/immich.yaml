@@ -136,7 +136,7 @@ spec:
                 - "1"
 
     ipp:
-      enable: true
+      enabled: true
       image:
         repository: alangrainger/immich-public-proxy
         pullPolicy: IfNotPresent
