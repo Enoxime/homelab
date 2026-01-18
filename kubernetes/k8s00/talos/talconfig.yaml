@@ -1,7 +1,7 @@
 clusterName: k8s00
 endpoint: https://endpoint.${subdomain}:6443
 kubernetesVersion: "1.33.6"
-talosVersion: v1.11.5
+talosVersion: v1.12.1
 nodes:
   - hostname: cp00.${subdomain}
     ipAddress: cp00.${subdomain}
@@ -57,9 +57,11 @@ nodes:
       - interface: enp5s0
         dhcp: false
       - interface: br0
-        routes:
-          - network: 0.0.0.0/0
-            gateway: "${gateway}"
+        # routes:
+        #   - network: 0.0.0.0/0
+        #     gateway: "${gateway}"
+        #   - network: ::/0
+        #     gateway: "${ipv6_gateway}"
         bridge:
           interfaces:
             - enp5s0
@@ -68,6 +70,9 @@ nodes:
           vlan:
             vlanFiltering: true
         dhcp: true
+        dhcpOptions:
+          ipv4: true
+          # ipv6: true
   # - hostname: wk04.${subdomain}
   #   ipAddress: wk04.${subdomain}
   #   controlPlane: false
@@ -89,6 +94,18 @@ nodes:
   #       machine:
   #         sysctls:
   #           net.core.bpf_jit_harden: 1
+  # - hostname: wk05.${subdomain}
+  #   ipAddress: wk05.${subdomain}
+  #   controlPlane: false
+  #   installDisk: /dev/DISK
+  # - hostname: wk06.${subdomain}
+  #   ipAddress: wk06.${subdomain}
+  #   controlPlane: false
+  #   installDisk: /dev/DISK
+  # - hostname: wk07.${subdomain}
+  #   ipAddress: wk07.${subdomain}
+  #   controlPlane: false
+  #   installDisk: /dev/DISK
 cniConfig:
   name: none
 patches:
@@ -117,25 +134,30 @@ patches:
         nodeIP:
           validSubnets:
             - "${cidr}"
+            - "${ipv6_cidr}"
   - |-
     machine:
       features:
         hostDNS:
           enabled: true
           forwardKubeDNSToHost: false
+        rbac: true
 controlPlane:
   patches:
     - |-
-      - op: add
-        path: /cluster/apiServer/admissionControl/0/configuration/exemptions/namespaces
-        value:
-          - admin-tools
-          - cnpg-system
-          - flux-system
-          - kube-system
-          - monitoring
-          - nvidia-gpu
-          - rook-ceph
+      cluster:
+        apiServer:
+          admissionControl:
+            - name: PodSecurity
+              configuration:
+                exemptions:
+                  namespaces:
+                    - admin
+                    - database
+                    - flux-system
+                    - monitoring
+                    - nvidia-gpu
+                    - rook-ceph
     - |-
       cluster:
         etcd:
@@ -143,7 +165,8 @@ controlPlane:
             # for prometheus
             listen-metrics-urls: http://0.0.0.0:2381
           advertisedSubnets:
-            - 192.168.40.0/24
+            - "${cidr}"
+            - "${ipv6_cidr}"
   schematic:
     customization:
       systemExtensions:
@@ -154,9 +177,11 @@ controlPlane:
       - interface: enp1s0
         dhcp: false
       - interface: br0
-        routes:
-          - network: 0.0.0.0/0
-            gateway: "${gateway}"
+        # routes:
+        #   - network: 0.0.0.0/0
+        #     gateway: "${gateway}"
+        #   - network: ::/0
+        #     gateway: "${ipv6_gateway}"
         bridge:
           interfaces:
             - enp1s0
@@ -165,6 +190,9 @@ controlPlane:
           # vlan:
           #   vlanFiltering: true
         dhcp: true
+        dhcpOptions:
+          ipv4: true
+          # ipv6: true
 worker:
   schematic:
     customization:
@@ -176,9 +204,11 @@ worker:
       - interface: enp1s0
         dhcp: false
       - interface: br0
-        routes:
-          - network: 0.0.0.0/0
-            gateway: "${gateway}"
+        # routes:
+        #   - network: 0.0.0.0/0
+        #     gateway: "${gateway}"
+        #   - network: ::/0
+        #     gateway: "${ipv6_gateway}"
         bridge:
           interfaces:
             - enp1s0
@@ -187,3 +217,6 @@ worker:
           vlan:
             vlanFiltering: true
         dhcp: true
+        dhcpOptions:
+          ipv4: true
+          # ipv6: true
