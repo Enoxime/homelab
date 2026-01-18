@@ -1,6 +1,8 @@
 subdomain: ENC[AES256_GCM,data:Djl+/CBfy/lfxYxnb2wWPM1kug==,iv:5kgA3ZDDqUomU6Etp8ISUBCCLuCoWQbleUenfQv0pu0=,tag:KQ1QPIeO3M8H7XWbHXrlkQ==,type:str]
 gateway: ENC[AES256_GCM,data:cfjzldMpvoCiI1xp,iv:f+I4+Ut2nuDvwYAoKm895bu5QlMrmQzqE1fxHiUnoRg=,tag:vdQE7HRSts0m1RmU6MCL8A==,type:str]
 cidr: ENC[AES256_GCM,data:IlxyRHVIyNq0/ygDLkJe,iv:5lFlci5X8ewTZiXTBM6N8m2A2NqzBsH4UhC8cxVp6p4=,tag:J31cbY/xU7SVi7FowHACmg==,type:str]
+ipv6_gateway: ENC[AES256_GCM,data:dkGnrPyCXD1iHuoHHoWmEF7NIXWHXR0ZamwLl99cONXVGKZHZFU=,iv:uTMujVCj4ecqXgTgaji9V5uuwsnlpOJ1KAzQdvSV27k=,tag:rfVzkvdFF3fCR6N+ijBR1A==,type:str]
+ipv6_cidr: ENC[AES256_GCM,data:BKxbDhvj9fFrN+rF8NIfyyyjWNIwwOOg,iv:wxUZ+7iseED6/0HcY4zSfmGDjoHrAMonalKitheVumE=,tag:XYHCMrmHriPcB/LvDdSSLA==,type:str]
 sops:
   age:
     - recipient: age195m7v6w6lce8knleuc9juqwklj56vjflng64q60eh90yrfpsfyjs222pls
@@ -12,7 +14,7 @@ sops:
         MEkrV00weS9XSml2Vkt5Y3VJaWo0dTAKZVikX4Ygqe54+sHd1UTAma2ZB8hlUqIm
         ZQxu+8jZrW9Cyn5saPtjmmvdxmIPQsDIxKYp4PlkOh/lY3SkUjBn6g==
         -----END AGE ENCRYPTED FILE-----
-  lastmodified: "2025-11-18T02:09:35Z"
-  mac: ENC[AES256_GCM,data:/yeInJAxYq1j4ezQkztMr1Sor2Q27wPRhS0df05sgiHTJG7wiN0L3WZ55afe7irrOWKIuoNTUoni0t6dDqieVj3qzIr6PPUa3gcKm2DrcWZ9/supU8l+ikTkwpLAelbnVNtR33hLt7ANGhUzRArKuvnEFIf+fzvFoxI1p2jYodg=,iv:RO7IayX0Z3jOVepnIdis9IVpmlorMdpQz3Z3k+8vDNM=,tag:nUUO4DP7p1Rh1sjSPOWY/g==,type:str]
+  lastmodified: "2025-11-27T03:22:39Z"
+  mac: ENC[AES256_GCM,data:k6Vo8w0pFkPP6Dv/i56i60Zl0fWIu9polByvJ1X+sWZiFean6QFYbLM3EInl6RG5PPSAzK0UKtoW++3lXVdN6pjvfXGVNTPqlR/xVoMnYt79LgAEyVxnHo9ixiqeUkXnsewipz8bqU13Q/xX7+p8lYDFhe57M0whTRiWNdMr3m8=,iv:CEFF9Rn9kANeR4ACVQUDVdpUp+4St0N/SysoLxQhX/g=,tag:kUOZalah/rP1Ge9zIKTzOw==,type:str]
   unencrypted_suffix: _unencrypted
   version: 3.11.0
