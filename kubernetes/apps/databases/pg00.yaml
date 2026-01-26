@@ -90,6 +90,14 @@ spec:
         createdb: false
         createrole: false
         login: true
+      - name: tranga
+        ensure: present
+        passwordSecret:
+          name: tranga-postgres-credentials
+        superuser: false
+        createdb: false
+        createrole: false
+        login: true
   enablePDB: true
   plugins:
     - name: barman-cloud.cloudnative-pg.io
@@ -120,6 +128,18 @@ spec:
     name: pg00
   name: linkwarden
   owner: linkwarden
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: tranga-db
+  namespace: database
+spec:
+  cluster:
+    name: pg00
+  name: tranga
+  owner: tranga
   databaseReclaimPolicy: retain
 ---
 # apiVersion: monitoring.coreos.com/v1
