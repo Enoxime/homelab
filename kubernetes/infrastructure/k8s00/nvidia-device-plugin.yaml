@@ -47,6 +47,7 @@ spec:
               resources:
                 - name: nvidia.com/gpu
                   replicas: 10
+      default: default
     runtimeClassName: nvidia
     gfd:
       enabled: true
