@@ -35,6 +35,18 @@ spec:
         name: nvdp
       interval: 60m
   values:
+    config:
+      map:
+        default: |-
+          version: v1
+          flags:
+            migStrategy: "single"
+            failOnInitError: true
+          sharing:
+            timeSlicing:
+              resources:
+                - name: nvidia.com/gpu
+                  replicas: 10
     runtimeClassName: nvidia
     gfd:
       enabled: true
