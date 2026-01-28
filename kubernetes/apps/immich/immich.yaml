@@ -18,7 +18,7 @@ spec:
   chart:
     spec:
       chart: immich
-      version: ">= 0.1.0 < 0.3"
+      version: ">= 0.2.0 < 0.3"
       sourceRef:
         kind: HelmRepository
         name: immich
@@ -26,7 +26,7 @@ spec:
       interval: 1m
   values:
     image:
-      tag: v2.4.1
+      tag: v2.5.0
 
     securityContext:
       capabilities:
@@ -90,12 +90,14 @@ spec:
     timezone: America/Toronto
 
     ai:
+      image:
+        tag: v2.5.0
       runtimeClass:
         enabled: true
         name: nvidia
-      # resources:
-      #   limits:
-      #     nvidia.com/gpu: 1
+      resources:
+        limits:
+          nvidia.com/gpu: 1
       podSecurityContext:
         fsGroup: 65532
       securityContext:
@@ -111,29 +113,14 @@ spec:
       service:
         type: ClusterIP
         port: 3003
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: nvidia.com/gpu.count
-                operator: In
-                values:
-                - "1"
 
     microservices:
       runtimeClass:
         enabled: true
         name: nvidia
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: nvidia.com/gpu.count
-                operator: In
-                values:
-                - "1"
+      resources:
+        limits:
+          nvidia.com/gpu: 1
 
     ipp:
       enabled: true
