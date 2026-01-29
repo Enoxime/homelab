@@ -6,7 +6,7 @@ metadata:
   namespace: immich
 spec:
   interval: 1440m
-  url: https://enoxime.github.io/immich-chart
+  url: https://enoxime.github.io/homelab-charts
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
