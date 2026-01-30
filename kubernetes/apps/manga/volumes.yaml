@@ -1,0 +1,35 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: manga
+  name: manga-library
+  labels:
+    type: manga-library
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  capacity:
+    storage: 1Ti
+  storageClassName: ""
+  nfs:
+    server: "${nasIp}"
+    path: "${nasNfsPath}/apps/manga/library"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: manga
+  name: manga-library
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Ti
+  storageClassName: ""
+  selector:
+    matchLabels:
+      type: manga-library
