@@ -54,6 +54,6 @@ spec:
             - path: /
               pathType: Prefix
       tls:
-        - secretName: immich-tls
+        - secretName: kavita-tls
           hosts:
             - kavita.${serviceDomain}
