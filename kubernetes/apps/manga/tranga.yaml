@@ -78,6 +78,6 @@ spec:
             - path: /
               pathType: Prefix
       tls:
-        - secretName: immich-tls
+        - secretName: tranga-tls
           hosts:
             - tranga.${serviceDomain}
