@@ -114,5 +114,5 @@ spec:
       enabled: false
     podSecurityContext:
       fsGroup: ${groupId}
-      runAsGroup: ${userId}
-      runAsUser: ${groupId}
+      runAsGroup: ${groupId}
+      runAsUser: ${userId}
