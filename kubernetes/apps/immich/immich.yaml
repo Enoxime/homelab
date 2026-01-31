@@ -25,7 +25,7 @@ spec:
         - ALL
       readOnlyRootFilesystem: true
       runAsNonRoot: true
-      runAsUser: 65532
+      runAsUser: ${userId}
       allowPrivilegeEscalation: false
       seccompProfile:
         type: RuntimeDefault
@@ -90,14 +90,14 @@ spec:
         limits:
           nvidia.com/gpu: 1
       podSecurityContext:
-        fsGroup: 65532
+        fsGroup: ${groupId}
       securityContext:
         capabilities:
           drop:
           - ALL
         readOnlyRootFilesystem: false
         runAsNonRoot: true
-        runAsUser: 65532
+        runAsUser: ${userId}
         allowPrivilegeEscalation: false
         seccompProfile:
           type: RuntimeDefault
@@ -120,14 +120,14 @@ spec:
         pullPolicy: IfNotPresent
         tag: "1.15.1"
       podSecurityContext:
-        fsGroup: 65532
+        fsGroup: ${groupId}
       securityContext:
         capabilities:
           drop:
           - ALL
         readOnlyRootFilesystem: true
         runAsNonRoot: true
-        runAsUser: 65532
+        runAsUser: ${userId}
         allowPrivilegeEscalation: false
         seccompProfile:
           type: RuntimeDefault
