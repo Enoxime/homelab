@@ -67,3 +67,17 @@ spec:
       password:
         name: tranga-pg-creds
         key: password
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: homelab-internal
+      hosts:
+        - host: tranga.${serviceDomain}
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: tranga-tls
+          hosts:
+            - tranga.${serviceDomain}
