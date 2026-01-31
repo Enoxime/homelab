@@ -113,6 +113,6 @@ spec:
     persistence:
       enabled: false
     podSecurityContext:
-      fsGroup: 65532
-      runAsGroup: 65532
-      runAsUser: 65532
+      fsGroup: ${groupId}
+      runAsGroup: ${groupId}
+      runAsUser: ${userId}

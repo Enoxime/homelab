@@ -23,7 +23,7 @@ spec:
         app: qbittorrent
     spec:
       securityContext:
-        fsGroup: 65532
+        fsGroup: ${groupId}
       dnsPolicy: None
       dnsConfig:
         nameservers:
@@ -89,8 +89,8 @@ spec:
               type: RuntimeDefault
             readOnlyRootFilesystem: false
             privileged: true
-            runAsUser: 65532
-            runAsGroup: 65532
+            runAsUser: ${userId}
+            runAsGroup: ${groupId}
           ports:
             - containerPort: 8080
               name: http

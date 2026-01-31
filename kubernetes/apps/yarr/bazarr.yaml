@@ -35,8 +35,8 @@ spec:
               type: RuntimeDefault
             readOnlyRootFilesystem: false
             privileged: true
-            runAsUser: 65532
-            runAsGroup: 65532
+            runAsUser: ${userId}
+            runAsGroup: ${groupId}
           ports:
             - containerPort: 6767
               name: http

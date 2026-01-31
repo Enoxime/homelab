@@ -69,11 +69,11 @@ spec:
         enabled: false
     podSecurityContext:
       # fsGroupChangePolicy: OnRootMismatch
-      fsGroup: 65532
+      fsGroup: ${groupId}
       # runAsNonRoot: true
     securityContext:
-      runAsUser: 65532
-      runAsGroup: 65532
+      runAsUser: ${userId}
+      runAsGroup: ${groupId}
       runAsNonRoot: true
       allowPrivilegeEscalation: false
       seccompProfile:
