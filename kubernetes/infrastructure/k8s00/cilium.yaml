@@ -14,7 +14,7 @@ spec:
   chart:
     spec:
       chart: cilium
-      version: ">=1.18.4 <1.19.0"
+      version: ">=1.19.0 <1.20.0"
       sourceRef:
         kind: HelmRepository
         name: cilium
@@ -106,9 +106,9 @@ spec:
           # #  - secretName: chart-example-tls
           # #    hosts:
           # #      - chart-example.local
-    # ipv6:
-    #   # -- Enable IPv6 support.
-    #   enabled: true
+    ipv6:
+      # -- Enable IPv6 support.
+      enabled: true
     prometheus:
       metricsService: true
       enabled: true
