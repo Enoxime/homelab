@@ -108,7 +108,7 @@ spec:
           # #      - chart-example.local
     ipv6:
       # -- Enable IPv6 support.
-      enabled: true
+      enabled: false
     prometheus:
       metricsService: true
       enabled: true
