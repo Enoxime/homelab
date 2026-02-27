@@ -25,15 +25,19 @@ spec:
   chart:
     spec:
       chart: cert-manager
-      version: ">= v1.19.1 < v1.20.0"
+      version: ">= v1.19.4 < v1.20.0"
       sourceRef:
         kind: HelmRepository
         name: jetstack
         namespace: flux-system
       interval: 1m
   values:
+    global:
+      leaderElection:
+        namespace: cert-manager
     crds:
       enabled: true
+    replicaCount: 3
     prometheus:
       enabled: true
       servicemonitor:
@@ -46,3 +50,8 @@ spec:
         ACMEHTTP01IngressPathTypeExact: false
     extraArgs:
       - --enable-gateway-api
+    webhook:
+      replicaCount: 3
+    cainjector:
+      enabled: true
+      replicaCount: 3
