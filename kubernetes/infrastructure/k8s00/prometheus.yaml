@@ -31,7 +31,7 @@ spec:
       operator:
         ## Enable references to ConfigMaps containing dashboards in GrafanaDashboard CRs
         ## Set to true to allow dashboards to be loaded from ConfigMap references
-        dashboardsConfigMapRefEnabled: true
+        dashboardsConfigMapRefEnabled: false
       defaultDashboardsTimezone: America/Toronto
       ## Configure additional grafana datasources (passed through tpl)
       ## ref: https://grafana.com/docs/grafana/latest/administration/provisioning/#datasources
