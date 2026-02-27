@@ -13,11 +13,14 @@ home:
           admin_host_groups:
             - lpadmin
         pihole:
+          admin_host_groups:
+            - docker
       vars:
         need_sudo: true
         package_mgr: apt
         pkg_flags: --quiet --yes
         python: python3
+        ansible_python_interpreter: /usr/bin/python3
     flatcar:
       hosts:
         bootstrap:
