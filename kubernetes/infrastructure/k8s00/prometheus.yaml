@@ -17,7 +17,7 @@ spec:
   chart:
     spec:
       chart: kube-prometheus-stack
-      version: ">= 79.7.1 < 80.0"
+      version: ">= 80.0 < 90.0"
       sourceRef:
         kind: HelmRepository
         name: prometheus-community
@@ -28,34 +28,10 @@ spec:
       upgradeJob:
         enabled: true
     grafana:
-      ## Deploy GrafanaDashboard CRDs that reference dashboards from ConfigMaps when grafana-operator is used
-      ## These settings control how dashboards are integrated with the Grafana Operator
-      ## Note: End user still need to create is own kind: GrafanaDataSource for Prometheus
-      ## eg:
-      ## apiVersion: grafana.integreatly.org/v1beta1
-      ## kind: GrafanaDatasource
-      ## metadata:
-      ##   name: prometheus
-      ##   annotations: {}
-      ## spec:
-      ##   allowCrossNamespaceImport: true
-      ##   instanceSelector:
-      ##     matchLabels:
-      ##       app: grafana
-      ##   datasource:
-      ##     name: prometheus
-      ##     type: prometheus
-      ##     access: proxy
-      ##     url: http://prometheus-operated.prometheus-stack.svc.cluster.local:9090
-      ##     isDefault: true
-      ##     jsonData:
-      ##       "tlsSkipVerify": true
-      ##       "timeInterval": "5s"
-      ##
       operator:
         ## Enable references to ConfigMaps containing dashboards in GrafanaDashboard CRs
         ## Set to true to allow dashboards to be loaded from ConfigMap references
-        dashboardsConfigMapRefEnabled: false
+        dashboardsConfigMapRefEnabled: true
       defaultDashboardsTimezone: America/Toronto
       ## Configure additional grafana datasources (passed through tpl)
       ## ref: https://grafana.com/docs/grafana/latest/administration/provisioning/#datasources
@@ -79,6 +55,11 @@ spec:
         accessModes:
           - ReadWriteOnce
         size: 10Gi
+      admin:
+        ## Name of the secret. Can be templated.
+        existingSecret: ""
+        userKey: admin-user
+        passwordKey: admin-password
 
     kubeControllerManager:
       enabled: true

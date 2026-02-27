@@ -25,7 +25,7 @@ spec:
   chart:
     spec:
       chart: rook-ceph
-      version: ">=1.19.0 <1.20.0"
+      version: ">=1.19.2 <1.20.0"
       sourceRef:
         kind: HelmRepository
         name: rook-ceph
@@ -45,7 +45,7 @@ spec:
   chart:
     spec:
       chart: rook-ceph-cluster
-      version: ">=1.19.0 <1.20.0"
+      version: ">=1.19.2 <1.20.0"
       sourceRef:
         kind: HelmRepository
         name: rook-ceph
