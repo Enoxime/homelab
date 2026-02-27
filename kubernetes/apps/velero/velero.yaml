@@ -25,6 +25,10 @@ spec:
         namespace: velero
       interval: 1m
   values:
+    # See https://github.com/vmware-tanzu/helm-charts/issues/698#issuecomment-3770151508
+    kubectl:
+      image:
+        repository: public.ecr.aws/bitnami/kubectl
     initContainers:
       - name: velero-plugin-for-aws
         image: velero/velero-plugin-for-aws:v1.13.1
