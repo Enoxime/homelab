@@ -1,0 +1,632 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: searxng
+  namespace: searxng
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: searxng
+      version: ">= 0.1.0 < 0.2"
+      sourceRef:
+        kind: HelmRepository
+        name: homelab
+        namespace: flux-system
+      interval: 1m
+  values:
+    podSecurityContext:
+      fsGroup: 977
+
+    securityContext:
+      capabilities:
+        drop:
+        - ALL
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      runAsUser: 977
+      allowPrivilegeEscalation: false
+      seccompProfile:
+        type: RuntimeDefault
+
+    settings:
+      openMetrics:
+        key: openMetrics
+        name: searxng
+      secretKey:
+        key: secretKey
+        name: searxng
+      engines:
+        keepOnly:
+          # books
+          - openlibrary
+          # currency
+          - currency
+          # translate
+          - translate
+          # web
+          - brave
+          - duckduckgo
+          - mojeek
+          - qwant
+          - wiby
+          # wikimedia
+          - wikibooks
+          - wikisource
+          - wikispecies
+          - wikiversity
+          - wikivoyage
+          # images
+          - selfhst.icons
+          - brave.images
+          - duckduckgo.images
+          - mojeek.images
+          - qwant.images
+          - deviantart
+          - flickr
+          - imgur
+          - pinterest
+          - pixabay
+          - public domain image archive
+          - unsplash
+          - wikicommons.images
+          # videos
+          - brave.videos
+          - duckduckgo.videos
+          - qwant.videos
+          - wikicommons.videos
+          - pixabay.videos
+          - youtube
+          - ina
+          # news
+          - mojeek.news
+          - wikinews
+          - brave.news
+          - duckduckgo.news
+          - qwant.news
+          # music
+          - wikicommons.audio
+          - genius
+          - radio browser
+          # it
+          - pkg.go.dev
+          - pypi
+          - askubuntu
+          - stackoverflow
+          - superuser
+          - gitea.com
+          - forgejo.com
+          - github
+          - gitlab
+          - huggingface
+          - ollama
+          - arch linux wiki
+          - hackernews
+          - national vulnerability database
+          # science
+          - arxiv
+          - crossref
+          - openalex
+          - pubmed
+          - semantic scholar
+          # files
+          - wikicommons.files
+          - annas archive
+          - nyaa
+        add:
+          # books
+          - name: openlibrary
+            engine: openlibrary
+            shortcut: ol
+            categories:
+              - book
+              - articles
+              - general
+            timeout: 10
+            disabled: false
+            safesearch: false
+          # currency
+          - name: currency
+            engine: currency_convert
+            shortcut: cc
+            categories:
+              - general
+            disabled: false
+          # translate
+          - name: translate
+            engine: mozhi
+            shortcut: mzi
+            categories:
+              - general
+            disabled: false
+          # web
+          - name: brave
+            engine: brave
+            shortcut: br
+            categories:
+              - general
+              - web
+            disabled: false
+            safesearch: false
+            brave_category: search
+            time_range_support: true
+          - name: duckduckgo
+            engine: duckduckgo
+            shortcut: ddg
+            categories:
+              - general
+              - web
+            disabled: false
+            safesearch: false
+          - name: mojeek
+            engine: mojeek
+            shortcut: mjk
+            categories:
+              - general
+              - web
+            disabled: false
+            safesearch: false
+          - name: qwant
+            engine: qwant
+            shortcut: qw
+            categories:
+              - general
+              - web
+            disabled: false
+            safesearch: false
+            qwant_categ: web
+          - name: wiby
+            engine: json_engine
+            shortcut: wib
+            categories:
+              - general
+              - web
+            disabled: false
+            safesearch: false
+            search_url: https://wiby.me/json/?q={query}&p={pageno}
+            url_query: URL
+            title_query: Title
+            content_query: Snippet
+            about:
+              website: https://wiby.me/
+          # wikimedia
+          - name: wikibooks
+            engine: mediawiki
+            shortcut: wb
+            categories:
+              - books
+            disabled: false
+            safesearch: false
+            base_url: https://{language}.wikibooks.org/
+          - name: wikisource
+            engine: mediawiki
+            shortcut: ws
+            categories:
+              - general
+              - web
+            disabled: false
+            safesearch: false
+            base_url: https://{language}.wikisource.org/
+          - name: wikispecies
+            engine: mediawiki
+            shortcut: wsp
+            categories:
+              - general
+              - web
+            disabled: false
+            safesearch: false
+            base_url: https://species.wikimedia.org/
+          - name: wikiversity
+            engine: mediawiki
+            shortcut: wv
+            categories:
+              - general
+              - web
+            disabled: false
+            safesearch: false
+            base_url: https://{language}.wikiversity.org/
+          - name: wikivoyage
+            engine: mediawiki
+            shortcut: wy
+            categories:
+              - general
+              - web
+            disabled: false
+            safesearch: false
+            base_url: https://{language}.wikivoyage.org/
+          # images
+          - name: selfhst.icons
+            engine: selfhst
+            shortcut: si
+            categories:
+              - images
+              - icons
+            disabled: false
+            safesearch: false
+          - name: brave.images
+            engine: brave
+            shortcut: bri
+            categories:
+              - images
+            disabled: false
+            safesearch: false
+            brave_category: images
+          - name: duckduckgo.images
+            engine: duckduckgo
+            shortcut: ddgi
+            categories:
+              - images
+            disabled: false
+            safesearch: false
+            ddg_category: images
+          - name: mojeek.images
+            engine: mojeek
+            shortcut: mjkimg
+            categories:
+              - images
+            disabled: false
+            safesearch: false
+            search_type: images
+          - name: qwant.images
+            engine: qwant
+            shortcut: qwi
+            categories:
+              - images
+            disabled: false
+            safesearch: false
+            qwant_categ: images
+          - name: deviantart
+            engine: deviantart
+            shortcut: da
+            categories:
+              - images
+            disabled: false
+            safesearch: false
+          - name: flickr
+            engine: flickr_noapi
+            shortcut: fl
+            categories:
+              - images
+            disabled: false
+            safesearch: false
+          - name: imgur
+            engine: imgur
+            shortcut: img
+            categories:
+              - images
+            disabled: false
+            safesearch: false
+          - name: pinterest
+            engine: pinterest
+            shortcut: pin
+            categories:
+              - images
+            disabled: false
+            safesearch: false
+          - name: pixabay
+            engine: pixabay
+            shortcut: pixi
+            categories:
+              - images
+            disabled: false
+            safesearch: false
+          - name: public domain image archive
+            engine: public_domain_image_archive
+            shortcut: pdia
+            categories:
+              - images
+            disabled: false
+            safesearch: false
+          - name: unsplash
+            engine: unsplash
+            shortcut: us
+            categories:
+              - images
+            disabled: false
+            safesearch: false
+          - name: wikicommons.images
+            engine: wikicommons
+            shortcut: wcii
+            categories:
+              - images
+            disabled: false
+            safesearch: false
+            wc_search_type: image
+          # videos
+          - name: brave.videos
+            engine: brave
+            shortcut: brv
+            categories:
+              - videos
+            disabled: false
+            safesearch: false
+            brave_category: videos
+          - name: duckduckgo.videos
+            engine: duckduckgo
+            shortcut: ddgv
+            categories:
+              - videos
+            disabled: false
+            safesearch: false
+            ddg_category: videos
+          - name: qwant.videos
+            engine: qwant
+            shortcut: qwv
+            categories:
+              - videos
+            disabled: false
+            safesearch: false
+            qwant_categ: videos
+          - name: wikicommons.videos
+            engine: wikicommons
+            shortcut: wciv
+            categories:
+              - videos
+            disabled: false
+            safesearch: false
+            wc_search_type: video
+          - name: pixabay.videos
+            engine: pixabay
+            shortcut: pixiv
+            categories:
+              - videos
+            disabled: false
+            safesearch: false
+            pixabay_type: videos
+          - name: youtube
+            engine: youtube_noapi
+            shortcut: yt
+            categories:
+              - videos
+              - music
+            disabled: false
+            safesearch: false
+          - name: ina
+            engine: ina
+            shortcut: in
+            categories:
+              - videos
+            disabled: false
+            safesearch: false
+          # news
+          - name: mojeek.news
+            engine: mojeek
+            shortcut: mjknews
+            categories:
+              - news
+            disabled: false
+            safesearch: false
+            search_type: news
+          - name: wikinews
+            engine: mediawiki
+            shortcut: wn
+            categories:
+              - news
+            disabled: false
+            safesearch: false
+            base_url: https://{language}.wikinews.org/
+          - name: brave.news
+            engine: brave
+            shortcut: brnews
+            categories:
+              - news
+            disabled: false
+            safesearch: false
+            brave_category: news
+          - name: duckduckgo.news
+            engine: duckduckgo
+            shortcut: ddgnews
+            categories:
+              - news
+            disabled: false
+            safesearch: false
+            ddg_category: news
+          - name: qwant.news
+            engine: qwant
+            shortcut: qwn
+            categories:
+              - news
+            disabled: false
+            safesearch: false
+            qwant_categ: news
+          # map
+          - name: openstreetmap
+            engine: openstreetmap
+            shortcut: osm
+            categories:
+              - map
+            disabled: false
+          # music
+          - name: wikicommons.audio
+            engine: wikicommons
+            shortcut: wcia
+            categories:
+              - music
+            disabled: false
+            safesearch: false
+            wc_search_type: audio
+          - name: genius
+            engine: genius
+            shortcut: gen
+            categories:
+              - music
+              - lyrics
+            disabled: false
+          - name: radio browser
+            engine: radio_browser
+            shortcut: rb
+            categories:
+              - music
+              - radio
+            disabled: false
+          # it
+          - name: pkg.go.dev
+            engine: pkg_go_dev
+            shortcut: pgo
+            categories:
+              - it
+              - packages
+            disabled: false
+          - name: pypi
+            engine: pypi
+            shortcut: pypi
+            categories:
+              - it
+              - packages
+            disabled: false
+          - name: askubuntu
+            engine: stackexchange
+            shortcut: ubuntu
+            categories:
+              - it
+              - q&a
+            disabled: false
+            api_site: askubuntu
+          - name: stackoverflow
+            engine: stackexchange
+            shortcut: st
+            categories:
+              - it
+              - q&a
+            disabled: false
+            api_site: stackoverflow
+          - name: superuser
+            engine: stackexchange
+            shortcut: su
+            categories:
+              - it
+              - q&a
+            disabled: false
+            api_site: superuser
+          - name: gitea.com
+            engine: gitea
+            shortcut: gitea
+            categories:
+              - it
+              - repos
+            disabled: false
+            base_url: https://gitea.com
+          - name: forgejo.com
+            engine: gitea
+            shortcut: fg
+            categories:
+              - it
+              - repos
+            disabled: false
+            base_url: https://code.forgejo.org
+          - name: github
+            engine: github
+            shortcut: gh
+            categories:
+              - it
+              - repos
+            disabled: false
+          - name: gitlab
+            engine: gitlab
+            shortcut: gl
+            categories:
+              - it
+              - repos
+            disabled: false
+            base_url: https://gitlab.com
+          - name: huggingface
+            engine: huggingface
+            shortcut: hf
+            categories:
+              - it
+              - repos
+            disabled: false
+            huggingface_endpoint: models
+          - name: ollama
+            engine: ollama
+            shortcut: ollama
+            categories:
+              - it
+              - repos
+            disabled: false
+          - name: arch linux wiki
+            engine: archlinux
+            shortcut: al
+            categories:
+              - it
+            disabled: false
+          - name: hackernews
+            engine: hackernews
+            shortcut: hn
+            categories:
+              - it
+              - news
+            disabled: false
+          - name: national vulnerability database
+            engine: nvd
+            shortcut: nvd
+            categories:
+              - it
+              - news
+            disabled: false
+          # science
+          - name: arxiv
+            engine: arxiv
+            shortcut: arx
+            categories:
+              - science
+            disabled: false
+          - name: crossref
+            engine: crossref
+            shortcut: cr
+            categories:
+              - science
+            disabled: false
+          - name: openalex
+            engine: openalex
+            shortcut: oa
+            categories:
+              - science
+              - scientific publications
+            disabled: false
+          - name: pubmed
+            engine: pubmed
+            shortcut: pub
+            categories:
+              - science
+            disabled: false
+          - name: semantic scholar
+            engine: semantic_scholar
+            shortcut: se
+            categories:
+              - science
+            disabled: false
+          # files
+          - name: wikicommons.files
+            engine: wikicommons
+            shortcut: wcif
+            categories:
+              - files
+            disabled: false
+            safesearch: false
+            wc_search_type: file
+          - name: annas archive
+            engine: annas_archive
+            shortcut: aa
+            categories:
+              - files
+              - book
+              - articles
+              - general
+            timeout: 10
+            disabled: false
+            safesearch: false
+          - name: nyaa
+            engine: nyaa
+            shortcut: nt
+            categories:
+              - files
+            timeout: 10
+            disabled: false
+            safesearch: false
+          # social media
+
+      ui:
+        theme_args:
+          simple_style: dark
