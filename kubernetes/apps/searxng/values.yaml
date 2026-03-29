@@ -16,6 +16,9 @@ spec:
         namespace: flux-system
       interval: 1m
   values:
+    image:
+      # see: https://github.com/searxng/searxng/pkgs/container/searxng
+      tag: 2026.3.28-cf5389afd
     podSecurityContext:
       fsGroup: 977
 

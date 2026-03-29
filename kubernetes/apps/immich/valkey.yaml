@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: valkey
-      version: ">= 0.9.2 < 0.10"
+      version: ">= 0.9.3 < 0.10"
       sourceRef:
         kind: HelmRepository
         name: valkey

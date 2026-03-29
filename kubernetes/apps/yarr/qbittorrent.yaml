@@ -31,7 +31,7 @@ spec:
           - 149.112.112.112
       initContainers:
         - name: gluetun
-          image: ghcr.io/qdm12/gluetun:latest
+          image: ghcr.io/qdm12/gluetun:v3
           imagePullPolicy: Always
           restartPolicy: Always
           securityContext:
@@ -78,7 +78,7 @@ spec:
             echo "ping successfull, exiting"
       containers:
         - name: qbittorrent
-          image: lscr.io/linuxserver/qbittorrent:latest
+          image: lscr.io/linuxserver/qbittorrent:5.1.4-r2-ls446
           imagePullPolicy: Always
           securityContext:
             capabilities:

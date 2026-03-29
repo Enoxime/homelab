@@ -17,7 +17,7 @@ spec:
       interval: 1m
   values:
     image:
-      tag: v2.5.6
+      tag: v2.6.3
 
     securityContext:
       capabilities:
@@ -82,7 +82,7 @@ spec:
 
     ai:
       image:
-        tag: v2.5.6
+        tag: v2.6.3
       runtimeClass:
         enabled: true
         name: nvidia
@@ -118,7 +118,7 @@ spec:
       image:
         repository: alangrainger/immich-public-proxy
         pullPolicy: IfNotPresent
-        tag: "1.15.1"
+        tag: "1.15.5"
       podSecurityContext:
         fsGroup: ${groupId}
       securityContext:
