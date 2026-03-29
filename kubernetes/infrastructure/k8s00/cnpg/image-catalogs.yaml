@@ -37,6 +37,9 @@ metadata:
 spec:
   images:
   - major: 18
-    image: ghcr.io/tensorchord/cloudnative-vectorchord:18.1@sha256:84b8d3bd377ea6d5d7338d152ad6a0655222a49c20015fdd7dd98e3ba8bb60fb
+    image: ghcr.io/tensorchord/cloudnative-vectorchord:18.3@sha256:392b53675b403d6a2c72b673cc488a7c272514755dd818c622fb9ce4665193c4
+  - major: 17
+    image: ghcr.io/tensorchord/cloudnative-vectorchord:17.9
+  # Mainly for Immich. See: https://docs.immich.app/administration/postgres-standalone/#prerequisites
   - major: 16
     image: ghcr.io/tensorchord/cloudnative-vectorchord:16.9-0.4.3
