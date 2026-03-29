@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: harbor
-      version: ">= 1.18.2 < 1.19.0"
+      version: ">= 1.18.3 < 1.19.0"
       sourceRef:
         kind: HelmRepository
         name: harbor
@@ -91,24 +91,24 @@ spec:
     portal:
       image:
         repository: docker.io/goharbor/harbor-portal
-        tag: v2.14.1
+        tag: v2.15.0
     core:
       image:
         repository: docker.io/goharbor/harbor-core
-        tag: v2.14.1
+        tag: v2.15.0
     jobservice:
       image:
         repository: docker.io/goharbor/harbor-jobservice
-        tag: v2.14.1
+        tag: v2.15.0
     registry:
       registry:
         image:
           repository: docker.io/goharbor/registry-photon
-          tag: v2.14.1
+          tag: v2.15.0
       controller:
         image:
           repository: docker.io/goharbor/harbor-registryctl
-          tag: v2.14.1
+          tag: v2.15.0
     trivy:
       # enabled the flag to enable Trivy scanner
       enabled: true
@@ -116,7 +116,7 @@ spec:
         # repository the repository for Trivy adapter image
         repository: docker.io/goharbor/trivy-adapter-photon
         # tag the tag for Trivy adapter image
-        tag: v2.14.1
+        tag: v2.15.0
     database:
       type: external
       external:
@@ -139,4 +139,4 @@ spec:
     exporter:
       image:
         repository: docker.io/goharbor/harbor-exporter
-        tag: v2.14.1
+        tag: v2.15.0

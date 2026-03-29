@@ -16,6 +16,8 @@ spec:
         namespace: flux-system
       interval: 1m
   values:
+    image:
+      tag: 0.8.9.1
     podSecurityContext:
       fsGroup: ${groupId}
     securityContext:
