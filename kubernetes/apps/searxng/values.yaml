@@ -18,7 +18,7 @@ spec:
   values:
     image:
       # see: https://github.com/searxng/searxng/pkgs/container/searxng
-      tag: 2026.3.28-cf5389afd
+      tag: 2026.3.6-0716de6bc
     podSecurityContext:
       fsGroup: 977
 
