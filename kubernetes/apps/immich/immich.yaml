@@ -17,7 +17,7 @@ spec:
       interval: 1m
   values:
     image:
-      tag: v2.6.3
+      tag: v2.7.4
 
     securityContext:
       capabilities:
@@ -82,7 +82,7 @@ spec:
 
     ai:
       image:
-        tag: v2.6.3
+        tag: v2.7.4
       runtimeClass:
         enabled: true
         name: nvidia
