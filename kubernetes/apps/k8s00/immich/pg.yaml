@@ -50,6 +50,7 @@ spec:
   # inheritedMetadata:
   #   labels:
   #   annotations:
+  # See: https://docs.immich.app/administration/postgres-standalone/#prerequisites
   imageCatalogRef:
     apiGroup: postgresql.cnpg.io
     kind: ClusterImageCatalog
