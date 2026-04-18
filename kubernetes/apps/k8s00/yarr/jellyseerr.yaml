@@ -23,7 +23,7 @@ spec:
         fsGroup: ${groupId}
       containers:
         - name: jellyseerr
-          image: seerr/seerr:v3.1.0
+          image: seerr/seerr:v3.2.0
           imagePullPolicy: Always
           securityContext:
             capabilities:
