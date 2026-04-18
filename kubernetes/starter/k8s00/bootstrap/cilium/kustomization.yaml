@@ -5,7 +5,7 @@ helmCharts:
     repo: https://helm.cilium.io/
     releaseName: cilium
     namespace: kube-system
-    version: 1.19.2
+    version: 1.19.3
     valuesInline:
       ipam:
         mode: kubernetes

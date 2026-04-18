@@ -1,0 +1,122 @@
+clusterName: bootstrap00
+endpoint: https://endpoint.${subdomain}:6443
+kubernetesVersion: "1.34.6"
+talosVersion: v1.12.6
+nodes:
+  - hostname: cp00.${subdomain}
+    ipAddress: cp00.${subdomain}
+    controlPlane: true
+    installDisk: /dev/sda
+cniConfig:
+  name: none
+patches:
+  - |-
+    cluster:
+      proxy:
+        disabled: true
+      discovery:
+        enabled: false
+        registries:
+          service:
+            disabled: false
+      controllerManager:
+        extraArgs:
+          # For prometheus
+          bind-address: 0.0.0.0
+      scheduler:
+        extraArgs:
+          # For prometheus
+          bind-address: 0.0.0.0
+  - |-
+    machine:
+      kubelet:
+        extraArgs:
+          rotate-server-certificates: true
+        nodeIP:
+          validSubnets:
+            - "${cidr}"
+            - "${ipv6_cidr}"
+  - |-
+    machine:
+      features:
+        hostDNS:
+          enabled: true
+          forwardKubeDNSToHost: false
+        rbac: true
+  - "@./harbor-registry.yaml"
+controlPlane:
+  patches:
+    - |-
+      cluster:
+        apiServer:
+          admissionControl:
+            - name: PodSecurity
+              configuration:
+                exemptions:
+                  namespaces:
+                    - admin
+                    - database
+                    - flux-system
+                    - monitoring
+    - |-
+      cluster:
+        etcd:
+          extraArgs:
+            # for prometheus
+            listen-metrics-urls: http://0.0.0.0:2381
+          advertisedSubnets:
+            - "${cidr}"
+            - "${ipv6_cidr}"
+  schematic:
+    customization:
+      systemExtensions:
+        officialExtensions:
+          - siderolabs/i915
+          - siderolabs/intel-ucode
+  networkInterfaces:
+      - interface: enp1s0
+        dhcp: false
+      - interface: br0
+        # routes:
+        #   - network: 0.0.0.0/0
+        #     gateway: "${gateway}"
+        #   - network: ::/0
+        #     gateway: "${ipv6_gateway}"
+        bridge:
+          interfaces:
+            - enp1s0
+          stp:
+            enabled: true
+          # vlan:
+          #   vlanFiltering: true
+        dhcp: true
+        dhcpOptions:
+          ipv4: true
+          # ipv6: true
+worker:
+  schematic:
+    customization:
+      systemExtensions:
+        officialExtensions:
+          - siderolabs/amdgpu
+          - siderolabs/amd-ucode
+  networkInterfaces:
+      - interface: enp1s0
+        dhcp: false
+      - interface: br0
+        # routes:
+        #   - network: 0.0.0.0/0
+        #     gateway: "${gateway}"
+        #   - network: ::/0
+        #     gateway: "${ipv6_gateway}"
+        bridge:
+          interfaces:
+            - enp1s0
+          stp:
+            enabled: true
+          vlan:
+            vlanFiltering: true
+        dhcp: true
+        dhcpOptions:
+          ipv4: true
+          # ipv6: true
