@@ -17,3 +17,6 @@ terraform.tfstate*
 # talos
 kubernetes/**/.secrets
 kubernetes/**/charts
+
+# uv virtual environment
+.venv/
