@@ -88,8 +88,8 @@ docker_mgmt:
     - env:
         TZ: "{{ local_timezone }}"
         FTLCONF_webserver_api_password: "{{ admin_password }}"
-        FTLCONF_dns_upstreams: "192.168.0.1"
-        # FTLCONF_dns_upstreams: 192.168.0.8#5353;pihole_k8s00;192.168.0.1
+        FTLCONF_dns_upstreams: "192.168.40.8;192.168.0.1;192.168.0.1#53053"
+        # FTLCONF_dns_upstreams: "192.168.40.8;192.168.0.1"
         FTLCONF_dns_listeningMode: 'all'
         FTLCONF_dns_rateLimit_count: "100000"
         FTLCONF_dns_rateLimit_interval: "15"
@@ -116,8 +116,8 @@ docker_mgmt:
     - env:
         TZ: "{{ local_timezone }}"
         FTLCONF_webserver_api_password: "{{ admin_password }}"
-        FTLCONF_dns_upstreams: "192.168.30.1"
-        # FTLCONF_dns_upstreams: 192.168.30.8#5353;pihole_k8s00;192.168.30.1
+        FTLCONF_dns_upstreams: "192.168.30.1;192.168.30.1#53053"
+        # FTLCONF_dns_upstreams: "192.168.30.1"
         FTLCONF_dns_listeningMode: 'all'
         FTLCONF_dns_rateLimit_count: "100000"
         FTLCONF_dns_rateLimit_interval: "15"
@@ -144,8 +144,8 @@ docker_mgmt:
     - env:
         TZ: "{{ local_timezone }}"
         FTLCONF_webserver_api_password: "{{ admin_password }}"
-        FTLCONF_dns_upstreams: "192.168.40.1"
-        # FTLCONF_dns_upstreams: 192.168.40.8#5353;192.168.40.1
+        FTLCONF_dns_upstreams: "192.168.30.8;192.168.40.1#53053"
+        # FTLCONF_dns_upstreams: "192.168.30.8"
         FTLCONF_dns_listeningMode: 'all'
         FTLCONF_dns_rateLimit_count: "100000"
         FTLCONF_dns_rateLimit_interval: "15"
@@ -176,8 +176,7 @@ docker_mgmt:
     - env:
         TZ: "{{ local_timezone }}"
         FTLCONF_webserver_api_password: "{{ admin_password }}"
-        FTLCONF_dns_upstreams: "192.168.50.1"
-        # FTLCONF_dns_upstreams: 192.168.50.8#5353;pihole_k8s00;192.168.50.1
+        FTLCONF_dns_upstreams: "192.168.30.8"
         FTLCONF_dns_listeningMode: 'all'
         FTLCONF_dns_rateLimit_count: "100000"
         FTLCONF_dns_rateLimit_interval: "15"
