@@ -1,7 +1,7 @@
 clusterName: k8s00
 endpoint: https://endpoint.${subdomain}:6443
 kubernetesVersion: "1.35.3"
-talosVersion: v1.12.7
+talosVersion: v1.13.0
 nodes:
   - hostname: cp00.${subdomain}
     ipAddress: cp00.${subdomain}
