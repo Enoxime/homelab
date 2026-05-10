@@ -2,10 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-  name: yarr-jellyseerr
+  name: yarr-seerr
   namespace: yarr
   labels:
-    app: jellyseerr
+    app: seerr
 
 spec:
   replicas: 1
@@ -13,17 +13,18 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app: jellyseerr
+      app: seerr
   template:
     metadata:
       labels:
-        app: jellyseerr
+        app: seerr
     spec:
       securityContext:
         fsGroup: ${groupId}
       containers:
-        - name: jellyseerr
-          image: seerr/seerr:v3.2.0
+        - name: seerr
+          # image: seerr/seerr:v3.2.0
+          image: seerr/seerr:sha-dfde4d3
           imagePullPolicy: Always
           securityContext:
             capabilities:
@@ -42,7 +43,7 @@ spec:
               protocol: TCP
           envFrom:
             - configMapRef:
-                name: jellyseerr-env
+                name: seerr-env
           volumeMounts:
             - name: config
               mountPath: /app/config
@@ -54,7 +55,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: jellyseerr-env
+  name: seerr-env
   namespace: yarr
 data:
   TZ: ${yarr_timezone}
@@ -62,7 +63,7 @@ data:
 apiVersion: v1
 kind: Service
 metadata:
-  name: yarr-jellyseerr
+  name: yarr-seerr
   namespace: yarr
 spec:
   ports:
@@ -70,5 +71,5 @@ spec:
       port: 5055
       targetPort: http
   selector:
-    app: jellyseerr
+    app: seerr
   type: ClusterIP
