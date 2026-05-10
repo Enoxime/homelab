@@ -72,10 +72,10 @@ spec:
               echo "Ping failed, retrying in 5"
               sleep 5
             done
-            echo "ping successfull, exiting"
+            echo "ping successful, exiting"
       containers:
         - name: qbittorrent
-          image: lscr.io/linuxserver/qbittorrent:5.1.4-r3-ls450
+          image: lscr.io/linuxserver/qbittorrent:5.2.0_v2.0.12-ls454
           imagePullPolicy: Always
           securityContext:
             capabilities:
