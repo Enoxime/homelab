@@ -17,7 +17,7 @@ spec:
   chart:
     spec:
       chart: kube-prometheus-stack
-      version: ">= 82.0 < 90.0"
+      version: ">= 85.2.2 < 90.0"
       sourceRef:
         kind: HelmRepository
         name: prometheus-community
@@ -51,6 +51,7 @@ spec:
       #   version: 1
       persistence:
         enabled: true
+        type: sts
         storageClassName: rook-ceph-retain
         accessModes:
           - ReadWriteOnce
