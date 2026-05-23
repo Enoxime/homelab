@@ -29,7 +29,9 @@ spec:
       - name: TZ
         value: ${yarr_timezone}
     ingress:
-      enabled: true
+      enabled: false
+      annotations:
+        cert-manager.io/cluster-issuer: homelab-internal
       hosts:
         - host: ${seerr_hostname}
       ingressClassName: nginx
