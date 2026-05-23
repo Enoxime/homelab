@@ -13,11 +13,10 @@ stringData:
   sonarr_hostname: ENC[AES256_GCM,data:kmGY6XhWx8iqYq5pcAvjIeRJVGOCXPaPUDxdIOPvasK2qQ==,iv:e92dN98ZOupH3la7Rtk00njizgbpcqTDjO6a7qtJVV4=,tag:Yid+8f2k6IebgoajboUC5g==,type:str]
   radarr_hostname: ENC[AES256_GCM,data:Iz0eRT/5Ii1Vu1oysV9hFR6xFgAh5Gfn8gP6SSW1fDOKCQ==,iv:bLUxrg23PngK4BxHHdP1BsiM4rpJGbDQ/WgeDomI4m0=,tag:jHYDIcCossuY1q3QQN78yQ==,type:str]
   bazarr_hostname: ENC[AES256_GCM,data:799x2/62nUa2A7G47yH/GVPbtmKuQjZ7RLLwMHaQg2zrIQ==,iv:thFZPyKkGQhvaw20MeDW+piWepaJLEC48fPHUSEDLCc=,tag:l+y9s10129mN5o9Mwqj90Q==,type:str]
-  jellyseerr_hostname: ENC[AES256_GCM,data:PUU3r2RXsKqPgYYLIKkIKf8Y9CK/L/0mLedIZIUKSs4XpHeGwKc=,iv:g/a7muppZ6ft0B0oVbmNu/Ehtka+YN5VsnMs9VbvTiQ=,tag:yTHixyG48c/75wrbl+1PtA==,type:str]
+  seerr_hostname: ENC[AES256_GCM,data:zUhQHEi9qQOrJWJN1CNqRFt0tRKlA6d2DK7kR7N/2l1jIVelcZQ=,iv:qVA25fzdV4EYlWNf/RxTuzxt/d6DbT8gVCahvwba8FU=,tag:N6FqA6TvPWHPz7ID2fxbEQ==,type:str]
 sops:
   age:
-    - recipient: age195m7v6w6lce8knleuc9juqwklj56vjflng64q60eh90yrfpsfyjs222pls
-      enc: |
+    - enc: |
         -----BEGIN AGE ENCRYPTED FILE-----
         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBRRmVHOEIvcFUydkZXOUFE
         QmJDM2U5WTNRZHZwQXVsbFluS2pJYzFUVG5jCnpGK05iUi9WUll4R1Y2V3lkUldU
@@ -25,7 +24,8 @@ sops:
         bVVOczFSNlR2T0NRQkdSSlRFQ3FqekUKQmfiuqBl2ycqnoVK7EzuJwB4tG+bmheZ
         TXnD8ftuN0dAGJu9FLY1V5bohGBX0TFGAyzB+RAvzi7EVbB7qiFF9A==
         -----END AGE ENCRYPTED FILE-----
-  lastmodified: "2025-08-30T13:19:41Z"
-  mac: ENC[AES256_GCM,data:m3VTVSpp1vOw19+IfQb7Y7VkUiCUm0R05RFoXQgjQcs3PzlC+PXfl+OIhJxjVravDO/MvQJ6Kvyba4oiHvFmB96uBeLL345tHtLC3For4ePioGGFmQVtomsEdluPV3IJKC6oUOMehvUPGjSt+XOI4yPBb5fZTcJCel1gS8UbR+4=,iv:nsV9Vl4A1/6SDXAar9DLscicS4Y0phkvQzJKMfpkkGw=,tag:s6Ep27sEz+e+LewKAmutiw==,type:str]
+      recipient: age195m7v6w6lce8knleuc9juqwklj56vjflng64q60eh90yrfpsfyjs222pls
   encrypted_regex: ^(data|stringData)$
-  version: 3.10.2
+  lastmodified: "2026-05-23T00:31:58Z"
+  mac: ENC[AES256_GCM,data:7+kTTdsGDhuBvjWVY+KfQvfEVHCluJcPLnvS3H8GzoEOWHiMMDunPC4BWj2fHTxr/2Vig5d62JNIP1ikpR3T+lQIXDRqMZ3L91Fg0wkC1sGqW2iR0onWLBPjENzXb5jNEwpcmxnSfghEGljzzuGM9gdJaAw9oKgkERUWOO9lLmQ=,iv:R9W2hrKiIVo0GZgxrIQKlJzZ7TdQSPULQWxg0LWrLQY=,tag:ulUVRMGXdmI5PnJHRCmWiw==,type:str]
+  version: 3.13.0

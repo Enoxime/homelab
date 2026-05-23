@@ -59,16 +59,6 @@ spec:
                 name: yarr-bazarr
                 port:
                   number: 6767
-    - host: ${jellyseerr_hostname}
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: yarr-jellyseerr
-                port:
-                  number: 5055
   tls:
     - hosts:
         - ${qbittorrent_hostname}
@@ -82,9 +72,6 @@ spec:
     - hosts:
         - ${sonarr_hostname}
       secretName: sonarr-tls
-    - hosts:
-        - ${jellyseerr_hostname}
-      secretName: jellyseerr-tls
     - hosts:
         - ${bazarr_hostname}
       secretName: bazarr-tls
