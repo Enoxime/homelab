@@ -1,75 +1,52 @@
-apiVersion: apps/v1
-kind: Deployment
-
-metadata:
-  name: yarr-seerr
-  namespace: yarr
-  labels:
-    app: seerr
-
-spec:
-  replicas: 1
-  strategy:
-    type: Recreate
-  selector:
-    matchLabels:
-      app: seerr
-  template:
-    metadata:
-      labels:
-        app: seerr
-    spec:
-      securityContext:
-        fsGroup: ${groupId}
-      containers:
-        - name: seerr
-          # image: seerr/seerr:v3.2.0
-          image: seerr/seerr:sha-dfde4d3
-          imagePullPolicy: Always
-          securityContext:
-            capabilities:
-              drop: [ "ALL" ]
-            allowPrivilegeEscalation: false
-            runAsNonRoot: true
-            seccompProfile:
-              type: RuntimeDefault
-            readOnlyRootFilesystem: false
-            privileged: false
-            runAsUser: ${userId}
-            runAsGroup: ${groupId}
-          ports:
-            - containerPort: 5055
-              name: http
-              protocol: TCP
-          envFrom:
-            - configMapRef:
-                name: seerr-env
-          volumeMounts:
-            - name: config
-              mountPath: /app/config
-      volumes:
-        - name: config
-          persistentVolumeClaim:
-            claimName: yarr-jellyseerr-config
 ---
-apiVersion: v1
-kind: ConfigMap
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
 metadata:
-  name: seerr-env
-  namespace: yarr
-data:
-  TZ: ${yarr_timezone}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: yarr-seerr
+  name: seerr
   namespace: yarr
 spec:
-  ports:
-    - protocol: TCP
-      port: 5055
-      targetPort: http
-  selector:
-    app: seerr
-  type: ClusterIP
+  interval: 1440m
+  url: oci://ghcr.io/seerr-team/seerr/seerr-chart
+  ref:
+    tag: 3.6.0
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: seerr
+  namespace: yarr
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: seerr
+    namespace: yarr
+  values:
+    config:
+      persistence:
+        existingClaim: yarr-jellyseerr-config
+    extraEnv:
+      - name: TZ
+        value: ${yarr_timezone}
+    ingress:
+      enabled: true
+      hosts:
+        - host: ${seerr_hostname}
+      ingressClassName: nginx
+      tls:
+        - hosts:
+            - ${seerr_hostname}
+          secretName: seerr-tls
+    podSecurityContext:
+      fsGroup: ${groupId}
+    securityContext:
+      capabilities:
+        drop: [ "ALL" ]
+      allowPrivilegeEscalation: false
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
+      readOnlyRootFilesystem: false
+      privileged: false
+      runAsUser: ${userId}
+      runAsGroup: ${groupId}
