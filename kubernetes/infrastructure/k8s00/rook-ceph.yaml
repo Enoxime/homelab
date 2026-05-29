@@ -13,7 +13,7 @@ spec:
   interval: 1440m
   url: https://charts.rook.io/release
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: rook-ceph-operator
@@ -35,7 +35,7 @@ spec:
     monitoring:
       enabled: true
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: rook-ceph-cluster
