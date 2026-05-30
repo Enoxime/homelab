@@ -21,6 +21,7 @@ spec:
     - name: https
       protocol: HTTPS
       port: 443
+      hostname: "*.${mgmtDomainOld}"
       tls:
         mode: Terminate
         certificateRefs:
