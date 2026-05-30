@@ -14,7 +14,7 @@ helmCharts:
           clusterPoolIPv4PodCIDRList:
             - 10.244.0.0/16
           clusterPoolIPv6MaskSize: 120
-          .clusterPoolIPv6PodCIDRList:
+          clusterPoolIPv6PodCIDRList:
             - fc00::/48
       kubeProxyReplacement: true
       securityContext:
@@ -52,4 +52,4 @@ helmCharts:
         enabled: true
       ipv6:
         # -- Enable IPv6 support.
-        enabled: false
+        enabled: true

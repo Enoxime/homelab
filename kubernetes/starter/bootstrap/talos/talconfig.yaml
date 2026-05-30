@@ -53,7 +53,6 @@ controlPlane:
                 exemptions:
                   namespaces:
                     - admin
-                    - database
                     - flux-system
                     - monitoring
                     - rook-ceph

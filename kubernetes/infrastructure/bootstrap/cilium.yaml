@@ -53,10 +53,6 @@ spec:
     devices: br0
     bpf:
       masquerade: true
-    # ingressController:
-    #   enabled: true
-    #   default: false
-    #   loadbalancerMode: dedicated
     gatewayAPI:
       enabled: true
       enableAlpn: true
@@ -93,20 +89,8 @@ spec:
         enabled: true
         ingress:
           enabled: false
-          # annotations: {}
-          # # kubernetes.io/ingress.class: nginx
-          # # kubernetes.io/tls-acme: "true"
-          # className: ""
-          # hosts:
-          #   - chart-example.local
-          # labels: {}
-          # tls: []
-          # #  - secretName: chart-example-tls
-          # #    hosts:
-          # #      - chart-example.local
     ipv6:
-      # -- Enable IPv6 support.
-      enabled: false
+      enabled: true
     prometheus:
       metricsService: true
       enabled: true
