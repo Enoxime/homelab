@@ -49,7 +49,7 @@ spec:
               name: stun
               protocol: UDP
             - containerPort: 8080
-              name: device-communication
+              name: device-comm
               protocol: TCP
             - containerPort: 8443
               name: admin

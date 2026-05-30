@@ -8,7 +8,7 @@ metadata:
     app: unifi-network-application
 spec:
   ports:
-    - name: device-communication
+    - name: device-comm
       port: 8080
       targetPort: 8080
     - name: admin
@@ -38,7 +38,7 @@ spec:
       port: 3478
       protocol: UDP
       targetPort: 3478
-    - name: device-communication
+    - name: device-comm
       port: 8080
       targetPort: 8080
     - name: admin
@@ -58,7 +58,7 @@ metadata:
     app: mongodb
 spec:
   ports:
-    - name: 27017
+    - name: mongodb
       port: 27017
       targetPort: 27017
   selector:

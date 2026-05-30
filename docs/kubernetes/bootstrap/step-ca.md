@@ -34,7 +34,7 @@ step ca init \
 
 The server is up and running, we just need to play with it to ensure it works as
 expected. We can first get the root CA via the URL by doing a `curl --insecure
-https://YOUR_CA_SERVER_HOSTNAME/roots.pem`. We can also install Cerbot locally
+https://YOUR_CA_SERVER_HOSTNAME/roots.pem`. We can also install Certbot locally
 and try to obtain a certificate. We can set up the Opnsense router to ask for a
 [certificate](https://homenetworkguy.com/how-to/replace-opnsense-web-ui-self-signed-certificate-with-lets-encrypt/).
 
