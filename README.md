@@ -59,10 +59,8 @@ title: Infrastructure
 flowchart TB
   Internet --- router["Router (OPNsense)"]
   router --- switch["Switch Unifi"]
-  ca["Certificate Authority server (act also as a local letsencrypt)"]
-  switch --- ca
+  bootstrap["bootstrap: Act as an infrastructure bootstrap and CA server with ACME"]
   switch --- bootstrap
-  switch --- pikvm
   switch --- nas00
   switch --- ap["Access Point"]
   switch --- servers...
@@ -103,15 +101,10 @@ on [OPNsense](https://opnsense.org/). Good hardware but I had to redo the
 thermal paste on the CPU.
 - The switch is a standard Unifi switch 24 ports PoE. I like the simplicity of
 those devices.
-- The CA server is a Raspberry Pi 4 that was part of a k3s cluster and a vanilla
-k8s cluster. Its purpose for now is to serve as a Certificate Authority (CA)
-server and works as a personal letsencrypt with my own self-signed certificate.
-- The bootstrap is a repurposed Xiaomi Mi Pro as a bootstrap for the
-infrastructure. It serves as a PXE server, Unifi controller and Ansible and
-Terraform agent.
-- The [Pikvm](https://pikvm.org/) is a magic device that add IPMI and kvm
-support to no professional hardware. It helps to fix an issue without moving my
-lazy self to the machine.
+- The bootstrap is a SFF lenovo m720q computer. It runs a one node Talos cluster.
+Its purpose for now is to serve as a Certificate Authority (CA) server, works as
+a personal letsencrypt with my own self-signed certificate, as a PXE server and
+Unifi controller.
 - The nas was a Frankenstein until I sold a liver and bought a
 [HL15](https://store.45homelab.com/configure/hl15)
 from
@@ -128,8 +121,6 @@ TalosOS ([talos.dev](https://www.talos.dev/)) with three as control plane and
 three as worker.
 - The "AI" machine is a custom build system with the scavenged motherboard from
 the Frankenstein nas. It will run as a worker for the main kubernetes cluster.
-- The "AI" laptop is a second hand laptop Asus ROG GL753V. It will run as a
-worker for the main kubernetes cluster.
 
 ### Topology
 
@@ -140,10 +131,12 @@ worker for the main kubernetes cluster.
 I have a good enough basic plan, the network definition and the hardware have
 their roles assigned. Let's go!
 
-1. [Set up the router](./docs/application/1_setup_the_router.md)
-2. [Start the switch](./docs/application/2_start_the_switch.md)
-3. [The CA server](./docs/application/3_the_ca_server.md)
-4. [The bootstrap server](./docs/application/4_the_bootstrap_server.md)
-5. [The pikvm server](./docs/application/5_the_pikvm_server.md)
-6. [The nas server](./docs/application/6_the_nas_server.md)
-7. [The kubernetes cluster](./docs/application/7_the_kubernetes_cluster.md)
+1. [Set up the router](./docs/1_setup_the_router.md)
+2. [Start the switch](./docs/2_start_the_switch.md)
+3. [The bootstrap server](./docs/3_the_bootstrap_server.md)
+4. [The nas server](./docs/4_the_nas_server.md)
+5. [The kubernetes clusters](./docs/5_the_kubernetes_clusters.md)
+
+## Archive
+
+See the [archive](./docs/archive/README.md) folder.

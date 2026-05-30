@@ -11,7 +11,7 @@ TODO: Find a way to enable via the butane file the docker.service.
 > Unifi devices to find where is the controller.
 > See [Unifi l3 adoption](https://tcpip.wtf/en/unifi-l3-adoption-with-dhcp-option-43-on-pfsense-mikrotik-and-others.htm)
 
-[](ignored)
+[](application/ignored)
 
 > [!IMPORTANT]
 > Sometimes Unifi devices looks for an Unifi host inside the network.
@@ -38,8 +38,8 @@ flatcar in the bootstrap server.
 
 Once the butane file is ready to be used I use an ansible-playbook to transform
 it. See the
-[documentation on the role](../../ansible/roles/flatcar/tasks/README.md).
-Run [prepare_infra.yaml](../../ansible/prepare_infra.yaml).
+[documentation on the role](../ansible/roles/flatcar/tasks/README.md).
+Run [prepare_infra.yaml](../ansible/prepare_infra.yaml).
 
 ```bash
 ansible-playbook \
@@ -106,9 +106,9 @@ semaphore (Ansible and Terrafom/Tofu) via containers. All the endpoints will
 be managed by Traefik and the auto-update of container versions will be managed
 by beatkind/watchtower. The official Watchtower seems to not be maintained
 anymore. Refer to the documentations on
-[directories_files](../../ansible/roles/directories_files/README.md) and
-[docker_mgmt](../../ansible/roles/docker_mgmt/README.md).
-Run [setup.yaml](../../ansible/setup.yaml).
+[directories_files](../ansible/roles/directories_files/README.md) and
+[docker_mgmt](../ansible/roles/docker_mgmt/README.md).
+Run [setup.yaml](../ansible/setup.yaml).
 
 ```bash
 ansible-playbook \

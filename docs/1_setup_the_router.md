@@ -7,7 +7,7 @@ The first step would be to set up the router. I made the choice of
 - Firewall focused
 - With a good enough UI
 - Accessible to people less comfortable with network stuff
-- Can do routing, firewall, dhcp, dns, vpn (wireguard), haproxy and others
+- Can do routing, firewall, dhcp, dns, vpn (wireguard), haproxy, bgp and others
 
 I mainly followed the tutorials from
 [HomeNetworkGuy](https://homenetworkguy.com/), notably:

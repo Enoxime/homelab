@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cert-manager-issuers-secret-values
+  namespace: flux-system
+stringData:
+  caBundle: ENC[AES256_GCM,data:A1rJsaHgq2iYPtMbCBm5G199CURW3gEQK5m0lAMUg6zU2SljQ+m1UVVdLV9gixDfqN8WtEAOf44a4PRqJgWudSEohPWlhwvgSL51YPFsvae0ksoszTr+pvDlQNxAcgScdV2BNv3jrbbWt4GjnARFfeFgxHq3Ux3+kqBltHGc/TUfftjI3z5xaUFSGJV+ZqVXpaMXAR7UO23IkoYtHxqAe5QRu5hF2frNhXvQMqA3hzVYegN/w0jhr60RIA82lXMAugeY1n7NDjPee5CnvDvW+1FSMrSdi09m/A/1T5T+s0Fa49RE7kpCdvWFqKfzAl+GajOArWXmxUTJ39m60ofCVBHkW7tt1Pz+Co2KHE8bwPg9eaHaSPdOtx72bIioXcXFJaxydon3VqJBUuqLHdqa3KX3EvWs+PVAktPAkJyxKGuX9BML+0372rLWaWSW+b3JtG403xTiJsXPOPfrOryGHmaPL5vCp6gqVj7kAt+7FC81yxCG9xnlSGtBPXUOiBHaMHtwCCnTALf5merJ6nOHBBmS8vm6or4Et2fLcIlziAk1EYrQDkTVs/eEBzIfUBvL4Ux3xmigE1JZl65KbEWFeJlSfqad+fzkxi9Sgl2HItSj+iFTYtilWGlQr7M7hGTjHN8cmaKDjt5E3/DqWtLFQ/ynHl0kchStzLSy6jMUuFABs2W2i17vYsZF6tRV5fMlhxacMMm8vZIH1UCLl8pAwqc5lblVL4/h5bMjOPneXmduowAl2VQeVnl+gOWIp9XFkOYay/ogr2s0DLLV3P/vlROuOxcaQLm3juKEbH01N11s7DCNj1JtGLeKtgORxrT4Uph95kQwOZU3D/K0g8huOgbyzKbrT5cRrvlodLvaSmF4hWKDnZ7/Bc1giD1RaoX6dwndDyhNfcCiGmYEOToq5VlNatylFviisxzUWSpWJ4iiW/AJ2TOix00j6cKiy6Fpa8UTnuXv2XodWjJ2Sx6N0cBiG+4IAMHG6OSE+PLvyqDdRJ0D0Y5Fv+DEIa8Bi6U8fFQ+pKnx8vniqWcdfXKRb9ZZssF4Ew/qRHqDNHtb4nNzkaSuFhX3IHeYEpQrvTGCO1s3kJkvF84=,iv:8sOLABlnso66seUm1WxyJbxa4sko+X0NDkLhuiLSAio=,tag:qNqfP8FJAU+NEc4vvct20w==,type:str]
+  email: ENC[AES256_GCM,data:kyTUjtqlZhkuF5kkhg==,iv:dABvRRJhWiUhpsnMHMSur1qymxmAOdLMUjO32NJy7PU=,tag:ZOwEXQbC8BgJSG0ZIPUxfg==,type:str]
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBvMUFvQzF1Ylg4d1dGRk9H
+        dlZ6UHZwWGM3QnhyL1BXQUUrOTVFK01jdGlBCk5zYkx0RE1sMVdROUlXdUVQZ1p6
+        Z1RodUplVlEzdzVGZXVDOTFOaHdPaUUKLS0tIEZKeHJNWjVUREFCWGdDSnpDN1VI
+        OGY5dk10QUlvbkJJalFDZmlncWNZbjgKiCqPUXGAp0wK+SaHzRv4e2mdVDl9mL1t
+        6aTK+xNTPA3c6RzaxOqWPi6v+D+G6jWF3HWL+eDMZtHYnH/KPIeD/Q==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age195m7v6w6lce8knleuc9juqwklj56vjflng64q60eh90yrfpsfyjs222pls
+  encrypted_regex: ^(data|stringData)$
+  lastmodified: "2026-05-29T19:41:42Z"
+  mac: ENC[AES256_GCM,data:YSt8LdL2xjBWIi5QPGwRIzsBGmoYNAG9RJC9uFCPMXaUQz1yeDrBvXg8DDYgNTh5n/JT/p1fmUxefKnMpng5NXtG2HpNXypGm853xc2DSJK6zaRQwlqYA40pwFJgvtfoyk8mI9GlHkCDmH8BcqEfCQK3zIrU5rgZ52H8FFLrM/U=,iv:QQ8q7eBBidokHO41/bsc/ISdqkqFeOeFRBiAIPcuFtc=,tag:KKaXiSz7yUkSmE8yoD1l+w==,type:str]
+  version: 3.13.1

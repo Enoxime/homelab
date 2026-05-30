@@ -1,10 +1,10 @@
 # The kubernetes cluster
 
-The Kubernetes cluster is the main attraction of the homelab. The cluster manage
-pretty much all of the applications and VMs. The Kubernetes cluster is composed
-of three control plane and five workers. Two workers have a graphic card for the
-AI process. The Kubernetes runs on [TalosOS](https://www.talos.dev/). All the
-nodes are described in yaml format with
+The Kubernetes clusters are the main attractions of the homelab. The clusters
+manage pretty much all of the applications and VMs. The Kubernetes cluster k8s00
+is composed of three control plane and five workers. One worker have two graphic
+cards for the AI process. The Kubernetes runs on
+[Talos](https://www.talos.dev/). All the nodes are described in yaml format with
 [Talhelper](https://budimanjojo.github.io/talhelper/latest/).
 
 Requirements:
@@ -15,7 +15,7 @@ Requirements:
 
 ## Talhelper
 
-### Generate a secret under kubernetes/k8s00/talos
+### Generate a secret under kubernetes/starter/{cluster_name}/talos
 
 ```bash
 talhelper gensecret > talsecret.sops.yaml
@@ -28,7 +28,7 @@ talhelper gensecret > talsecret.sops.yaml
 age-keygen -o ~/.config/sops/age/keys.txt
 
 # Move to the talos folder
-cd kubernetes/k8s00/talos
+cd kubernetes/starter/{cluster_name}/talos
 
 # Create a .sops.yaml file in talos folder and paste the public key
 cat <<EOD > .sops.yaml
@@ -69,7 +69,7 @@ kubectl label node <worker node name>.... node-role.kubernetes.io/worker=worker
 
 ## Kubernetes cluster
 
-Move to the folder kubernetes/k8s00
+Move to the folder kubernetes/starter/{cluster_name}
 
 ### Boostrap the local storage and cilium
 
@@ -86,7 +86,7 @@ flux bootstrap github \
   --owner=Enoxime \
   --repository=homelab \
   --branch=main \
-  --path=kubernetes/clusters/k8s00 \
+  --path=kubernetes/clusters/{cluster_name} \
   --private=false \
   --personal=true
 ```
@@ -100,15 +100,15 @@ cat TO_THE_AGE_KEY | \
     --from-file=age.agekey=/dev/stdin
 ```
 
-### Notes
+## Upgrades
 
-#### To upgrade Talos
+### To upgrade Talos
 
 ```bash
 talhelper gencommand upgrade
 ```
 
-#### To upgrade Kubernetes
+### To upgrade Kubernetes
 
 > [!IMPORTANT]
 > Check the state of the rook-ceph cluster during the upgrade.
@@ -122,50 +122,7 @@ talhelper gencommand upgrade-k8s
 kubectl rook-ceph ceph status
 ```
 
-#### Test nvidia
+## Cluster specific information
 
-```bash
-kubectl run nvidia-test \
-  --restart=Never \
-  -ti \
-  --rm \
-  --namespace nvidia-gpu \
-  --image nvcr.io/nvidia/cuda:12.5.0-base-ubuntu22.04 \
-  --overrides \
-    '{"spec": {"runtimeClassName": "nvidia", "nodeName": "<WORKEN_NAME>"}}' \
-    nvidia-smi
-```
-
-#### Garage
-
-```bash
-# Get status
-kubectl exec --stdin --tty -n garage garage-0 -- ./garage status
-
-# initiate node in layout then apply changes
-kubectl exec --stdin --tty -n garage garage-0 -- ./garage layout assign NODE-ID \
-  -z home \
-  -c 1TB \
-  -t k8s00 \
-  -t nas \
-  -t homelab
-kubectl exec --stdin --tty -n garage garage-0 -- ./garage layout show
-kubectl exec --stdin --tty -n garage garage-0 -- ./garage layout apply \
-  --version 1
-kubectl exec --stdin --tty -n garage garage-0 -- ./garage status
-
-# Set aws-cli to browse the object storage
-mkdir -p $HOME/.aws
-
-cat <<EOD > $HOME/.aws/credentials
-[default]
-aws_access_key_id=<AWS_ACCESS_KEY_ID>    # Replace with your AWS access key ID
-aws_secret_access_key=<AWS_SECRET_ACCESS_KEY>    # Replace with your AWS secret access key
-EOD
-
-cat <<EOD > $HOME/.aws/config
-[default]
-region=garage
-endpoint_url=<endpoint_url> # scheme://host:port
-EOD
-```
+- [bootstrap](./kubernetes/bootstrap/README.md)
+- [k8s00](./kubernetes/k8s00/README.md)
