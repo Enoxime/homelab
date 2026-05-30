@@ -19,4 +19,4 @@ that manage the creation and maintenance of the infrastructure.
 The OS of choice is [Talos](https://www.siderolabs.com/talos-linux). I choose
 Talos because it is immutable, easy to configure and maintain. Everything is
 deployed automatically via [fluxcd](https://fluxcd.io/). See
-[The kubernetes clusters](./5_the_kubernetes_clusters.md) for more informations.
+[The kubernetes clusters](./5_the_kubernetes_clusters.md) for more information.

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: cilium-variables
+  name: cilium-values
   namespace: flux-system
 stringData:
   ipv4_mgmt_router: ENC[AES256_GCM,data:MmN0N6/MxkEl++Sz,iv:JAzrt1qZ7ZX2KLCYLOqKpC9WPpe+9yx5GECTFv3LB4E=,tag:36PH1C2Vq6Fb5lGr2ewbdQ==,type:str]
@@ -26,6 +26,6 @@ sops:
         -----END AGE ENCRYPTED FILE-----
       recipient: age195m7v6w6lce8knleuc9juqwklj56vjflng64q60eh90yrfpsfyjs222pls
   encrypted_regex: ^(data|stringData)$
-  lastmodified: "2026-05-29T19:42:03Z"
-  mac: ENC[AES256_GCM,data:zUw67MKKNiBT+qGyjUwxquNbvYkRad3vdp8TsI3jaPgFZI7gzadVmvVnMV3jvIl3SxwrJ1zkYzzIT6b310P4dE1FNW0IdXvs5JdvBytKLCizK9uSS//1MElbZsr65D+FbxM7WPbtmRj2+TUkU/ZhOpPgPGVZowwfBNDVTxmtjEw=,iv:q0V4zIScvrZ9FiNQzq+zlvNGnL0t+3kE2Z0b1O20IeM=,tag:JwoIGzroHv/3YtfZ0mJ+Cw==,type:str]
+  lastmodified: "2026-05-30T03:58:18Z"
+  mac: ENC[AES256_GCM,data:Bj120y040pYUFfL1bzyMAahzn1bC2TIlPVeaPYKRE9cuyU4b8aUriiKkSXxFzWlu0U2U9NZAqQi6qNW/oicORKCd0kyPn7SrHamyY/o6Un6b5KBwsSE8+XBW7JEpaNSTlC+tn9ulbbh+s82fIzxYSRvnpPTHMR5qYPThS2a/Ts4=,iv:IvcC6N4C8vfyrPOu4fZz5lYw2m5a8uXCdZGfrfmUy+0=,tag:sJiCxTdkzX3WZ8sUuSSJAw==,type:str]
   version: 3.13.1

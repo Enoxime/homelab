@@ -10,7 +10,7 @@ spec:
     # Let's Encrypt will use this to contact you about expiring
     # certificates, and issues related to your account.
     email: "${email}"
-    server: "step-certificates.smallstep.svc.cluster.local/acme/acme/directory"
+    server: "https://step-certificates.smallstep.svc.cluster.local/acme/acme/directory"
     # curl --silent --insecure ${url}/roots.pem | base64 -w0
     caBundle: "${caBundle}"
     privateKeySecretRef:

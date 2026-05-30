@@ -51,5 +51,4 @@ helmCharts:
       ipv4:
         enabled: true
       ipv6:
-        # -- Enable IPv6 support.
         enabled: true

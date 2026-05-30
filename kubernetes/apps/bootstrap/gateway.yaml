@@ -22,9 +22,9 @@ spec:
       protocol: HTTPS
       port: 443
       tls:
-        - mode: Terminate
-          certificateRefs:
-            - name: bootstrap-shared-wildcard
+        mode: Terminate
+        certificateRefs:
+          - name: bootstrap-shared-wildcard
     - name: http-unifi
       port: 8080
       protocol: HTTP

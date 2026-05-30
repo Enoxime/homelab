@@ -22,7 +22,7 @@ spec:
       containers:
         - name: netbootxyz
           image: ghcr.io/netbootxyz/netbootxyz:0.7.6-nbxyz23
-          imagePullPolicy: ifNotPresent
+          imagePullPolicy: IfNotPresent
           env:
             - name: TZ
               value: "${homeTimezone}"
@@ -67,7 +67,7 @@ spec:
               mountPath: /config
   volumeClaimTemplates:
     - metadata:
-        - name: assets
+        name: assets
       spec:
         accessModes: [ "ReadWriteOnce" ]
         storageClassName: rook-ceph-delete
@@ -75,7 +75,7 @@ spec:
           requests:
             storage: 5Gi
     - metadata:
-        - name: config
+        name: config
       spec:
         accessModes: [ "ReadWriteOnce" ]
         storageClassName: rook-ceph-delete
