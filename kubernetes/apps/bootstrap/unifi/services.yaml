@@ -25,6 +25,7 @@ metadata:
   namespace: bootstrap
   labels:
     app: unifi-network-application
+    network: mgmt
   annotations:
     lbipam.cilium.io/sharing-key: mgmt-bootstrap
 spec:

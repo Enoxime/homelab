@@ -25,8 +25,8 @@ spec:
             - name: MONGO_INITDB_ROOT_USERNAME
               value: unifi
           envFrom:
-            secretRef:
-              - name: mongodb
+            - secretRef:
+                name: mongodb
           ports:
             - containerPort: 27017
               name: mongodb

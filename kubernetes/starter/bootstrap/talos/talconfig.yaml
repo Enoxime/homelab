@@ -28,11 +28,11 @@ patches:
       controllerManager:
         extraArgs:
           # For prometheus
-          bind-address: [::]
+          bind-address: "::"
       scheduler:
         extraArgs:
           # For prometheus
-          bind-address: [::]
+          bind-address: "::"
   - |-
     machine:
       kubelet:
@@ -99,3 +99,6 @@ controlPlane:
         dhcpOptions:
           ipv4: true
           ipv6: true
+  nameservers:
+    - 2606:4700:4700::1111
+    - 2606:4700:4700::1001
