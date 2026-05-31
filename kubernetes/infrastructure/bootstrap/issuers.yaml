@@ -23,5 +23,9 @@ spec:
             parentRefs:
               - name: bootstrap-shared-mgmt
                 namespace: bootstrap
+              - name: ca-mgmt
+                namespace: smallstep
+              - name: ca-service
+                namespace: smallstep
               # - name: pihole-shared
               #   namespace: pihole

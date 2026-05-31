@@ -11,7 +11,7 @@ spec:
       sectionName: https
       port: 443
   hostnames:
-    - "netbootxyzmgmt.bootstrap.mgmt.${homeDomainOld}"
+    - "netbootxyzmgmt.bootstrap.${mgmtDomainOld}"
   rules:
     - name: https
       backendRefs:
@@ -30,7 +30,7 @@ spec:
       sectionName: http
       port: 80
   hostnames:
-    - "netbootxyz.bootstrap.mgmt.${homeDomainOld}"
+    - "netbootxyz.bootstrap.${mgmtDomainOld}"
   rules:
     - name: https
       backendRefs:
@@ -49,7 +49,7 @@ spec:
       sectionName: http
       port: 80
   hostnames:
-    - "netbootxyz.bootstrap.service.${homeDomainOld}"
+    - "netbootxyz.bootstrap.${serviceDomainOld}"
   rules:
     - name: https
       backendRefs:
@@ -68,7 +68,7 @@ spec:
       sectionName: http
       port: 80
   hostnames:
-    - "netbootxyz.bootstrap.k8s00.${homeDomainOld}"
+    - "netbootxyz.bootstrap.${k8s00DomainOld}"
   rules:
     - name: https
       backendRefs:
