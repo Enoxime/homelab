@@ -100,7 +100,7 @@ spec:
     - name: http
       port: 80
       protocol: HTTP
-      hostname: "*.${mgmtDomainOld}"
+      hostname: "*.${serviceDomainOld}"
     - name: https
       protocol: HTTPS
       port: 443
