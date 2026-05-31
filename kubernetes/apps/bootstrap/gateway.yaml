@@ -26,7 +26,7 @@ spec:
       tls:
         mode: Terminate
         certificateRefs:
-          - name: bootstrap-shared-wildcard
+          - name: bootstrap-shared-mgmt-wildcard
     # - name: http-unifi
     #   port: 8080
     #   protocol: HTTP
@@ -35,6 +35,34 @@ spec:
     #   port: 8443
     #   protocol: HTTPS
     #   hostname: "*.${mgmtDomainOld}"
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: ca-mgmt
+  namespace: smallstep
+  annotations:
+    cert-manager.io/cluster-issuer: homelab-internal
+spec:
+  infrastructure:
+    annotations:
+      lbipam.cilium.io/ips: "${caMgmtIpv4},${caMgmtIpv6}"
+    labels:
+      network: mgmt
+  gatewayClassName: internal
+  listeners:
+    - name: http
+      port: 80
+      protocol: HTTP
+      hostname: "*.${mgmtDomainOld}"
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: "*.${mgmtDomainOld}"
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: ca-mgmt-wildcard
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
@@ -53,6 +81,30 @@ spec:
     - name: http
       port: 80
       protocol: HTTP
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: ca-service
+  namespace: smallstep
+  annotations:
+    cert-manager.io/cluster-issuer: homelab-internal
+spec:
+  infrastructure:
+    annotations:
+      lbipam.cilium.io/ips: "${caServiceIpv4},${caServiceIpv6}"
+    labels:
+      network: service
+  gatewayClassName: internal
+  listeners:
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: "*.${serviceDomainOld}"
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: ca-service-wildcard
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
