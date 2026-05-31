@@ -97,6 +97,10 @@ spec:
       network: service
   gatewayClassName: internal
   listeners:
+    - name: http
+      port: 80
+      protocol: HTTP
+      hostname: "*.${mgmtDomainOld}"
     - name: https
       protocol: HTTPS
       port: 443
