@@ -1,0 +1,76 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: mgmt-admin
+  namespace: bootstrap
+spec:
+  parentRefs:
+    - name: bootstrap-shared-mgmt
+      namespace: bootstrap
+      sectionName: https
+      port: 443
+  hostnames:
+    - "netbootxyzmgmt.bootstrap.mgmt.${homeDomainOld}"
+  rules:
+    - name: https
+      backendRefs:
+        - name: netbootxyz
+          port: 3000
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: mgmt-assets
+  namespace: bootstrap
+spec:
+  parentRefs:
+    - name: bootstrap-shared-mgmt
+      namespace: bootstrap
+      sectionName: http
+      port: 80
+  hostnames:
+    - "netbootxyz.bootstrap.mgmt.${homeDomainOld}"
+  rules:
+    - name: https
+      backendRefs:
+        - name: netbootxyz
+          port: 80
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: service-assets
+  namespace: bootstrap
+spec:
+  parentRefs:
+    - name: bootstrap-shared-service
+      namespace: bootstrap
+      sectionName: http
+      port: 80
+  hostnames:
+    - "netbootxyz.bootstrap.service.${homeDomainOld}"
+  rules:
+    - name: https
+      backendRefs:
+        - name: netbootxyz
+          port: 80
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: k8s00-assets
+  namespace: bootstrap
+spec:
+  parentRefs:
+    - name: bootstrap-shared-k8s00
+      namespace: bootstrap
+      sectionName: http
+      port: 80
+  hostnames:
+    - "netbootxyz.bootstrap.k8s00.${homeDomainOld}"
+  rules:
+    - name: https
+      backendRefs:
+        - name: netbootxyz
+          port: 80

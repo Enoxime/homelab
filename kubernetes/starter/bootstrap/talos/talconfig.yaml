@@ -1,14 +1,20 @@
 clusterName: bootstrap00
-endpoint: https://endpoint.${subdomain}:6443
-kubernetesVersion: "1.34.6"
-talosVersion: v1.12.6
+endpoint: https://cp00.${subdomain}:6443
+kubernetesVersion: "1.35.5"
+talosVersion: v1.13.0
 nodes:
   - hostname: cp00.${subdomain}
     ipAddress: cp00.${subdomain}
     controlPlane: true
-    installDisk: /dev/sda
+    installDisk: /dev/nvme0n1
 cniConfig:
   name: none
+clusterPodNets:
+  - fc00::/48
+  - 10.244.0.0/16
+clusterSvcNets:
+  - fc00:0:1::/112
+  - 10.96.0.0/12
 patches:
   - |-
     cluster:
@@ -22,11 +28,11 @@ patches:
       controllerManager:
         extraArgs:
           # For prometheus
-          bind-address: 0.0.0.0
+          bind-address: "::"
       scheduler:
         extraArgs:
           # For prometheus
-          bind-address: 0.0.0.0
+          bind-address: "::"
   - |-
     machine:
       kubelet:
@@ -34,16 +40,8 @@ patches:
           rotate-server-certificates: true
         nodeIP:
           validSubnets:
-            - "${cidr}"
             - "${ipv6_cidr}"
-  - |-
-    machine:
-      features:
-        hostDNS:
-          enabled: true
-          forwardKubeDNSToHost: false
-        rbac: true
-  - "@./harbor-registry.yaml"
+            - "${cidr}"
 controlPlane:
   patches:
     - |-
@@ -55,18 +53,26 @@ controlPlane:
                 exemptions:
                   namespaces:
                     - admin
-                    - database
                     - flux-system
                     - monitoring
+                    - rook-ceph
     - |-
       cluster:
         etcd:
           extraArgs:
             # for prometheus
-            listen-metrics-urls: http://0.0.0.0:2381
+            listen-metrics-urls: http://[::]:2381
           advertisedSubnets:
-            - "${cidr}"
             - "${ipv6_cidr}"
+            - "${cidr}"
+    - |-
+      cluster:
+        allowSchedulingOnControlPlanes: true
+    - |-
+      machine:
+        nodeLabels:
+          node.kubernetes.io/exclude-from-external-load-balancers:
+            $$patch: delete
   schematic:
     customization:
       systemExtensions:
@@ -74,7 +80,7 @@ controlPlane:
           - siderolabs/i915
           - siderolabs/intel-ucode
   networkInterfaces:
-      - interface: enp1s0
+      - interface: eno1
         dhcp: false
       - interface: br0
         # routes:
@@ -84,7 +90,7 @@ controlPlane:
         #     gateway: "${ipv6_gateway}"
         bridge:
           interfaces:
-            - enp1s0
+            - eno1
           stp:
             enabled: true
           # vlan:
@@ -92,31 +98,7 @@ controlPlane:
         dhcp: true
         dhcpOptions:
           ipv4: true
-          # ipv6: true
-worker:
-  schematic:
-    customization:
-      systemExtensions:
-        officialExtensions:
-          - siderolabs/amdgpu
-          - siderolabs/amd-ucode
-  networkInterfaces:
-      - interface: enp1s0
-        dhcp: false
-      - interface: br0
-        # routes:
-        #   - network: 0.0.0.0/0
-        #     gateway: "${gateway}"
-        #   - network: ::/0
-        #     gateway: "${ipv6_gateway}"
-        bridge:
-          interfaces:
-            - enp1s0
-          stp:
-            enabled: true
-          vlan:
-            vlanFiltering: true
-        dhcp: true
-        dhcpOptions:
-          ipv4: true
-          # ipv6: true
+          ipv6: true
+  nameservers:
+    - 2606:4700:4700::1111
+    - 2606:4700:4700::1001

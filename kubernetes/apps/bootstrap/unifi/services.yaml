@@ -1,0 +1,66 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: unifi
+  namespace: bootstrap
+  labels:
+    app: unifi-network-application
+spec:
+  ports:
+    - name: device-comm
+      port: 8080
+      targetPort: 8080
+    - name: admin
+      port: 8443
+      targetPort: 8443
+  selector:
+    app: unifi-network-application
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: unifi-discovery-stun-mgmt
+  namespace: bootstrap
+  labels:
+    app: unifi-network-application
+    network: mgmt
+  annotations:
+    lbipam.cilium.io/sharing-key: mgmt-bootstrap
+spec:
+  ports:
+    - name: discovery
+      port: 10001
+      protocol: UDP
+      targetPort: 10001
+    - name: stun
+      port: 3478
+      protocol: UDP
+      targetPort: 3478
+    - name: device-comm
+      port: 8080
+      targetPort: 8080
+    - name: admin
+      port: 8443
+      protocol: TCP
+      targetPort: 8443
+  type: LoadBalancer
+  selector:
+    app: unifi-network-application
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+  namespace: bootstrap
+  labels:
+    app: mongodb
+spec:
+  ports:
+    - name: mongodb
+      port: 27017
+      targetPort: 27017
+  selector:
+    app: mongodb
+  clusterIP: None

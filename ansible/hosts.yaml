@@ -8,7 +8,6 @@ home:
   children:
     dietpi:
       hosts:
-        ca:
         print:
           admin_host_groups:
             - lpadmin
@@ -21,12 +20,6 @@ home:
         pkg_flags: --quiet --yes
         python: python3
         ansible_python_interpreter: /usr/bin/python3
-    flatcar:
-      hosts:
-        bootstrap:
-    miscs:
-      hosts:
-        pikvm:
 
   vars:
     ansible_user: ansible

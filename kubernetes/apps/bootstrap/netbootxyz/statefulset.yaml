@@ -1,0 +1,84 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: netbootxyz
+  namespace: bootstrap
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  selector:
+    matchLabels:
+      app: netbootxyz
+  serviceName: netbootxyz
+  template:
+    metadata:
+      labels:
+        app: netbootxyz
+    spec:
+      terminationGracePeriodSeconds: 10
+      # securityContext:
+      #   fsGroup: 1000
+      containers:
+        - name: netbootxyz
+          image: ghcr.io/netbootxyz/netbootxyz:0.7.6-nbxyz23
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: "${homeTimezone}"
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: NGINX_PORT
+              value: "80"
+            - name: WEB_APP_PORT
+              value: "3000"
+          ports:
+            - containerPort: 3000
+              name: admin
+            - containerPort: 80
+              name: assets
+            - containerPort: 69
+              name: tftp
+              protocol: UDP
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: admin
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 5
+            successThreshold: 1
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /
+              port: admin
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 1
+            successThreshold: 1
+          volumeMounts:
+            - name: assets
+              mountPath: /assets
+            - name: config
+              mountPath: /config
+  volumeClaimTemplates:
+    - metadata:
+        name: assets
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: rook-ceph-delete
+        resources:
+          requests:
+            storage: 5Gi
+    - metadata:
+        name: config
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: rook-ceph-delete
+        resources:
+          requests:
+            storage: 1Gi

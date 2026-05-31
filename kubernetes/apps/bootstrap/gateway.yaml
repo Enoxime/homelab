@@ -1,0 +1,96 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: bootstrap-shared-mgmt
+  namespace: bootstrap
+  annotations:
+    cert-manager.io/cluster-issuer: homelab-internal
+spec:
+  infrastructure:
+    annotations:
+      lbipam.cilium.io/ips: "${bootstrapMgmtIpv4},${bootstrapMgmtIpv6}"
+      lbipam.cilium.io/sharing-key: mgmt-bootstrap
+    labels:
+      network: mgmt
+  gatewayClassName: internal
+  listeners:
+    - name: http
+      port: 80
+      protocol: HTTP
+      hostname: "*.${mgmtDomainOld}"
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: "*.${mgmtDomainOld}"
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: bootstrap-shared-wildcard
+    # - name: http-unifi
+    #   port: 8080
+    #   protocol: HTTP
+    #   hostname: "*.${mgmtDomainOld}"
+    # - name: https-unifi
+    #   port: 8443
+    #   protocol: HTTPS
+    #   hostname: "*.${mgmtDomainOld}"
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: bootstrap-shared-service
+  namespace: bootstrap
+spec:
+  infrastructure:
+    annotations:
+      lbipam.cilium.io/ips: "${bootstrapServiceIpv4},${bootstrapServiceIpv6}"
+      lbipam.cilium.io/sharing-key: service-bootstrap
+    labels:
+      network: service
+  gatewayClassName: internal
+  listeners:
+    - name: http
+      port: 80
+      protocol: HTTP
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: bootstrap-shared-k8s00
+  namespace: bootstrap
+spec:
+  infrastructure:
+    annotations:
+      lbipam.cilium.io/ips: "${bootstrapK8s00Ipv4},${bootstrapK8s00Ipv6}"
+      lbipam.cilium.io/sharing-key: k8s00-bootstrap
+    labels:
+      network: k8s00
+  gatewayClassName: internal
+  listeners:
+    - name: http
+      port: 80
+      protocol: HTTP
+# ---
+# apiVersion: gateway.networking.k8s.io/v1
+# kind: Gateway
+# metadata:
+#   name: pihole
+#   namespace: pihole
+#   annotations:
+#     cert-manager.io/cluster-issuer: homelab-internal
+# spec:
+#   infrastructure:
+#     annotations:
+#       lbipam.cilium.io/ips: "IP"
+#       lbipam.cilium.io/sharing-key: mgmt
+#     labels:
+#       network: mgmt
+#   gatewayClassName: internal
+#   listeners:
+#     - allowedRoutes:
+#         namespaces:
+#           from: Same
+#       name: web-gw
+#       port: 80
+#       protocol: HTTP

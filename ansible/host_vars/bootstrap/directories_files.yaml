@@ -1,8 +1,0 @@
----
-directories_files:
-  directories: "{{
-    directories_files_traefik.directories
-    + directories_files_backup.directories }}"
-  contents: "{{
-    directories_files_traefik.contents
-     + directories_files_backup.contents }}"

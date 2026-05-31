@@ -1,5 +1,0 @@
----
-flatcar:
-  butane_list:
-    - name: bootstrap
-      file_path: "{{ ansible_env.PWD }}/../flatcar"
