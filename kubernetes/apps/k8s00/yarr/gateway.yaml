@@ -9,7 +9,7 @@ metadata:
 spec:
   infrastructure:
     labels:
-      network: mgmt
+      network: service
   gatewayClassName: cilium
   listeners:
     - protocol: HTTPS
@@ -20,14 +20,14 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: yarr-jellyfin-cert
+            name: yarr-wildcart-cert
       allowedRoutes:
         namespaces:
           from: Same
-    - protocol: HTTP
-      port: 80
-      name: http
-      hostname: "*.yarr.${serviceDomain}"
-      allowedRoutes:
-        namespaces:
-          from: Same
+    # - protocol: HTTP
+    #   port: 80
+    #   name: http
+    #   hostname: "*.yarr.${serviceDomain}"
+    #   allowedRoutes:
+    #     namespaces:
+    #       from: Same
