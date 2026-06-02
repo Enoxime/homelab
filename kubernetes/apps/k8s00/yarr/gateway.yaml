@@ -1,50 +1,33 @@
-# ---
-# apiVersion: gateway.networking.k8s.io/v1
-# kind: Gateway
-# metadata:
-#   name: yarr
-#   namespace: yarr
-#   # annotations:
-#   #   # cert-manager.io/cluster-issuer: step-issuer
-#   #   cert-manager.io/cluster-issuer: homelab-internal
-# spec:
-#   # gatewayClassName: internal
-#   gatewayClassName: cilium
-#   listeners:
-#     # - protocol: HTTPS
-#     #   port: 443
-#     #   name: yarr-jellyfin
-#     #   hostname: "${jellyfin_hostname}"
-#     #   tls:
-#     #     certificateRefs:
-#     #       - kind: Secret
-#     #         name: yarr-jellyfin-cert
-#     #   allowedRoutes:
-#     #     namespaces:
-#     #       from: Same
-#     - protocol: HTTP
-#       port: 80
-#       name: yarr-jellyfin-http
-#       hostname: "${jellyfin_hostname}"
-#       allowedRoutes:
-#         namespaces:
-#           from: Same
-# ---
-# apiVersion: gateway.networking.k8s.io/v1
-# kind: HTTPRoute
-# metadata:
-#   name: yarr-jellyfin
-#   namespace: yarr
-# spec:
-#   parentRefs:
-#     - name: yarr
-#   hostnames:
-#     - "${jellyfin_hostname}"
-#   rules:
-#     - matches:
-#         - path:
-#             type: PathPrefix
-#             value: /
-#       backendRefs:
-#         - name: yarr-jellyfin
-#           port: 8096
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: yarr
+  namespace: yarr
+  annotations:
+    cert-manager.io/cluster-issuer: homelab-internal
+spec:
+  infrastructure:
+    labels:
+      network: service
+  gatewayClassName: cilium
+  listeners:
+    - protocol: HTTPS
+      port: 443
+      name: https
+      hostname: "*.yarr.${serviceDomain}"
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: yarr-wildcart-cert
+      allowedRoutes:
+        namespaces:
+          from: Same
+    # - protocol: HTTP
+    #   port: 80
+    #   name: http
+    #   hostname: "*.yarr.${serviceDomain}"
+    #   allowedRoutes:
+    #     namespaces:
+    #       from: Same
