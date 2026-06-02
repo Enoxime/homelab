@@ -42,19 +42,19 @@ spec:
     labels:
       velero-backup: "true"
     ingress:
-      enabled: true
+      enabled: false
       className: nginx
-      annotations:
-        cert-manager.io/cluster-issuer: homelab-internal
-      hosts:
-        - host: "${jellyfin_hostname}"
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - hosts:
-            - "${jellyfin_hostname}"
-          secretName: jellyfin-tls
+      # annotations:
+      #   cert-manager.io/cluster-issuer: homelab-internal
+      # hosts:
+      #   - host: "${jellyfin_hostname}"
+      #     paths:
+      #       - path: /
+      #         pathType: Prefix
+      # tls:
+      #   - hosts:
+      #       - "${jellyfin_hostname}"
+      #     secretName: jellyfin-tls
     metrics:
       enabled: true
       serviceMonitor:
