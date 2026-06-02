@@ -42,6 +42,7 @@ patches:
           validSubnets:
             - "${ipv6_cidr}"
             - "${cidr}"
+  - "@./homelab_root_ca.yaml"
 controlPlane:
   patches:
     - |-
