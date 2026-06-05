@@ -9,13 +9,6 @@ helmCharts:
     valuesInline:
       ipam:
         mode: kubernetes
-        operator:
-          clusterPoolIPv4MaskSize: 24
-          clusterPoolIPv4PodCIDRList:
-            - 10.244.0.0/16
-          clusterPoolIPv6MaskSize: 120
-          clusterPoolIPv6PodCIDRList:
-            - fc00::/48
       kubeProxyReplacement: true
       securityContext:
         capabilities:
@@ -44,6 +37,7 @@ helmCharts:
       cni:
         exclusive: false
       devices: br0
+      enableIPv6Masquerade: true
       ipv4:
         enabled: true
       ipv6:
