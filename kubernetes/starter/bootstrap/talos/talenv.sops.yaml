@@ -2,6 +2,8 @@ domainOld: ENC[AES256_GCM,data:dGkfbZJV4hAhqK1aDg==,iv:PEvyLeVbWS39qtchz0l92ucF+
 subdomain: ENC[AES256_GCM,data:au1qeQhctIZsdxeI6jBvpnnT,iv:RCOCuXX0c8+XBHVhWzK5WC0kxhVITw8dwGXPP+Ziofg=,tag:Kfzdj34ovqRVyG091GGiOg==,type:str]
 cidr: ENC[AES256_GCM,data:khDNpRxIq+BVu4TEe/E=,iv:UXjLSoeBI4a/99KVrbdKckD8Z8WUr8cZ/Wjq3st74Rg=,tag:np+pDGu4sajrqIFg8DbMUA==,type:str]
 ipv6_cidr: ENC[AES256_GCM,data:DOgtfwuw8AWzTQfCK/aDJWbKxzziJyW/,iv:1hCA5FkI0wTY6kN0RZotTLe4CIOiM/4+YrXlAZGxVAU=,tag:blJ1LlCZ+XWc+ikiQRrjug==,type:str]
+mgmtIpv4Dns: ENC[AES256_GCM,data:A3iQHi87wudHHuM=,iv:8tO8MFXsF+Xlt/TmcML9YGwiNJ0M3yzsl5l8P/YeBS0=,tag:OnbUXLBk/bPjr+JXvXOB3Q==,type:str]
+mgmtIpv6Dns: ENC[AES256_GCM,data:qWrhqmUDFOdSRLgF1jRYGd6i1LFx8D1Am01ZMIamfdi9eSg3EoUT,iv:jJjnCvvaKaOVzkP+DRu+4decHmbII1xNiv/r0Cw4+h4=,tag:RjzICJrapFwSTPmCfUD95A==,type:str]
 sops:
   age:
     - enc: |
@@ -13,7 +15,7 @@ sops:
         rxNtUqVfakrbyZOseT+4rB/AJuMTJwaWMrglStKsYa8rL1Asr+eIPw==
         -----END AGE ENCRYPTED FILE-----
       recipient: age195m7v6w6lce8knleuc9juqwklj56vjflng64q60eh90yrfpsfyjs222pls
-  lastmodified: "2026-06-01T02:22:11Z"
-  mac: ENC[AES256_GCM,data:thtCN3lHuu7Dh/LK6XwD1dXVSDznJs828MOqiN0W5nX48ACO9ga8XnKfjLiW7itWSI0uKK/b9LPkod4/0qAgSa2yZG2p0HRN98XOwbmRI9DOM6a38UPBU9sZ/CYGNcnMld5daiRA/z5g4e9FhKHwYKoCuw6OBJoweDGOSf0na3U=,iv:3KDUV1c8/jC4kxsknTuUGakzeKfy+Vyn+DtWv0QxcSM=,tag:nXJiC7sfc4tmL402gdG+Gw==,type:str]
+  lastmodified: "2026-06-05T12:35:54Z"
+  mac: ENC[AES256_GCM,data:iiTVgPaO+Ps3pkBpa/l+hDRbpys6GnB3zludiH0PnUaEgDOdO8/RpHth/j8tf+V/Zcj2v0erzmvr2b3FJ4QLdxHRuxmSKMvZPd/5Jtisr5KUeBeTN0eO3FA4jGmc3tbLZbM2bGh31Zq+RetA3GpNxgTf0YsYDvwcSBHDGa21XQs=,iv:hhOYz4lBf5BQhS8vBPwb/7WkYh9ovrqJy4+g2vhv8TY=,tag:Gi6GIigeOHlyymBlm5yZXQ==,type:str]
   unencrypted_suffix: _unencrypted
   version: 3.13.1
