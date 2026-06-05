@@ -27,40 +27,40 @@ spec:
     crds:
       upgradeJob:
         enabled: true
-    grafana:
-      operator:
-        ## Enable references to ConfigMaps containing dashboards in GrafanaDashboard CRs
-        ## Set to true to allow dashboards to be loaded from ConfigMap references
-        dashboardsConfigMapRefEnabled: false
-      defaultDashboardsTimezone: America/Toronto
-      ## Configure additional grafana datasources (passed through tpl)
-      ## ref: https://grafana.com/docs/grafana/latest/administration/provisioning/#datasources
-      additionalDataSources: []
-      # - name: prometheus-sample
-      #   access: proxy
-      #   basicAuth: true
-      #   secureJsonData:
-      #       basicAuthPassword: pass
-      #   basicAuthUser: daco
-      #   editable: false
-      #   jsonData:
-      #       tlsSkipVerify: true
-      #   orgId: 1
-      #   type: prometheus
-      #   url: https://{{ printf "%s-prometheus.svc" .Release.Name }}:9090
-      #   version: 1
-      persistence:
-        enabled: true
-        type: sts
-        storageClassName: rook-ceph-retain
-        accessModes:
-          - ReadWriteOnce
-        size: 10Gi
-      admin:
-        ## Name of the secret. Can be templated.
-        existingSecret: ""
-        userKey: admin-user
-        passwordKey: admin-password
+    # grafana:
+    #   operator:
+    #     ## Enable references to ConfigMaps containing dashboards in GrafanaDashboard CRs
+    #     ## Set to true to allow dashboards to be loaded from ConfigMap references
+    #     dashboardsConfigMapRefEnabled: false
+    #   defaultDashboardsTimezone: America/Toronto
+    #   ## Configure additional grafana datasources (passed through tpl)
+    #   ## ref: https://grafana.com/docs/grafana/latest/administration/provisioning/#datasources
+    #   additionalDataSources: []
+    #   # - name: prometheus-sample
+    #   #   access: proxy
+    #   #   basicAuth: true
+    #   #   secureJsonData:
+    #   #       basicAuthPassword: pass
+    #   #   basicAuthUser: daco
+    #   #   editable: false
+    #   #   jsonData:
+    #   #       tlsSkipVerify: true
+    #   #   orgId: 1
+    #   #   type: prometheus
+    #   #   url: https://{{ printf "%s-prometheus.svc" .Release.Name }}:9090
+    #   #   version: 1
+    #   persistence:
+    #     enabled: true
+    #     type: sts
+    #     storageClassName: local-path
+    #     accessModes:
+    #       - ReadWriteOnce
+    #     size: 10Gi
+    #   admin:
+    #     ## Name of the secret. Can be templated.
+    #     existingSecret: ""
+    #     userKey: admin-user
+    #     passwordKey: admin-password
 
     kubeControllerManager:
       enabled: true
