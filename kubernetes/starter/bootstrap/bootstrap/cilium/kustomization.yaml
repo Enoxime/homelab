@@ -43,12 +43,10 @@ helmCharts:
       k8sServicePort: 7445
       cni:
         exclusive: false
-      gatewayAPI:
-        enabled: true
-        enableAlpn: true
-        enableAppProtocol: true
       devices: br0
       ipv4:
         enabled: true
       ipv6:
         enabled: true
+      operator:
+        replicas: 1

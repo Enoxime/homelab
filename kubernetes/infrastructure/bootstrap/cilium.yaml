@@ -18,6 +18,13 @@ spec:
   values:
     ipam:
       mode: kubernetes
+      operator:
+        clusterPoolIPv4MaskSize: 24
+        clusterPoolIPv4PodCIDRList:
+          - 10.244.0.0/16
+        clusterPoolIPv6MaskSize: 120
+        clusterPoolIPv6PodCIDRList:
+          - fc00::/48
     kubeProxyReplacement: true
     securityContext:
       capabilities:
@@ -86,6 +93,8 @@ spec:
         enabled: true
         ingress:
           enabled: false
+    ipv4:
+      enabled: true
     ipv6:
       enabled: true
     prometheus:
@@ -101,11 +110,5 @@ spec:
       securityContext:
         capabilities:
           keepCapNetBindService: true
-    l2announcements:
-      enabled: true
-      leaseDuration: 3s
-      leaseRenewDeadline: 1s
-      leaseRetryPeriod: 200ms
-    k8sClientRateLimit:
-      qps: 5
-      burst: 10
+    operator:
+      replicas: 1
