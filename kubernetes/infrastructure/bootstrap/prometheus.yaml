@@ -52,7 +52,7 @@ spec:
     #   persistence:
     #     enabled: true
     #     type: sts
-    #     storageClassName: rook-ceph-retain
+    #     storageClassName: local-path
     #     accessModes:
     #       - ReadWriteOnce
     #     size: 10Gi
