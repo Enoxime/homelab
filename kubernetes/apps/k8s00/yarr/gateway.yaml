@@ -20,7 +20,7 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: yarr-wildcart-cert
+            name: yarr-wildcard-cert
       allowedRoutes:
         namespaces:
           from: Same
