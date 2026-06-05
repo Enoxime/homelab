@@ -48,6 +48,7 @@ spec:
     cni:
       exclusive: false
     devices: br0
+    enableIPv6Masquerade: true
     bpf:
       masquerade: true
     gatewayAPI:
@@ -86,6 +87,8 @@ spec:
         enabled: true
         ingress:
           enabled: false
+    ipv4:
+      enabled: true
     ipv6:
       enabled: true
     prometheus:
@@ -101,11 +104,5 @@ spec:
       securityContext:
         capabilities:
           keepCapNetBindService: true
-    l2announcements:
-      enabled: true
-      leaseDuration: 3s
-      leaseRenewDeadline: 1s
-      leaseRetryPeriod: 200ms
-    k8sClientRateLimit:
-      qps: 5
-      burst: 10
+    operator:
+      replicas: 1
