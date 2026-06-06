@@ -63,7 +63,7 @@ talhelper gencommand bootstrap
 # To obtain the kubeconfig of the created cluster
 talhelper gencommand kubeconfig
 
-# To obtain the kubeconfig of the created cluster (in case of multiple cluster definition)
+# To obtain the kubeconfig of the created cluster (when multiple clusters are defined)
 talhelper gencommand kubeconfig --extra-flags --merge
 
 # Ensure the workers a tagged as workers
