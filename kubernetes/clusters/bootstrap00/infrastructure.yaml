@@ -59,6 +59,10 @@ spec:
   path: ./kubernetes/infrastructure/bootstrap00
   prune: true
   wait: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
   postBuild:
     substituteFrom:
       - kind: Secret
