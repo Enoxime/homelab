@@ -1,0 +1,51 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: smallstep
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: smallstep
+  namespace: smallstep
+spec:
+  interval: 1440m
+  url: https://smallstep.github.io/helm-charts/
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: step-certificates
+  namespace: smallstep
+spec:
+  # dependsOn:
+  #   - name: kube-prometheus-stack
+  #     namespace: monitoring
+  interval: 5m
+  chart:
+    spec:
+      chart: step-certificates
+      version: ">=1.19.4 <1.20.0"
+      sourceRef:
+        kind: HelmRepository
+        name: smallstep
+        namespace: smallstep
+      interval: 1m
+  values:
+    existingSecrets:
+      enabled: true
+      ca: true
+      issuer: true
+      certsAsSecret: true
+      configAsSecret: true
+      sshHostCa: false
+      sshUserCa: false
+
+    bootstrap:
+      secrets: false
+      enabled: false
+      configmaps: false
+
+    inject:
+      enabled: false
