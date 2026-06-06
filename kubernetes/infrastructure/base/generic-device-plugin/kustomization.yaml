@@ -3,4 +3,3 @@ kind: Kustomization
 resources:
   # generic-device-plugin
   - https://raw.githubusercontent.com/squat/generic-device-plugin/main/manifests/generic-device-plugin.yaml
-  - https://raw.githubusercontent.com/squat/generic-device-plugin/main/manifests/podmonitor.yaml
