@@ -60,7 +60,7 @@ spec:
               claims:
                 maxTLSCertDuration: 720h
               provisioners:
-                - {"type":"JWK","name":"admin@${mainDomain}","key":{"use":"sig","kty":"EC","kid":"${step-ca_kid}","crv":"P-256","alg":"ES256","x":"${step-ca_x}","y":"${step-ca_y}"},"encryptedKey":"eyJhbGciOiJQQkVTMi1IUzI1NitBMTI4S1ciLCJjdHkiOiJqd2sranNvbiIsImVuYyI6IkEyNTZHQ00iLCJwMmMiOjYwMDAwMCwicDJzIjoiemZ0NTBabzJmeWNrZk5TYW1Ibm9qdyJ9.6nym_4zosDnCkFzLjMmBUAPPdVXmQejg2a3XgaRJvfUTD5-j-oXo4w.56Q7GoiOU9X4kOTY.Jz4amXuCkJl7PWghNnvYt4m3KQkpsFvnQsnxIio1K2d49h8FDeXnmkSF3Xq8eMzsJ9kz_Fen7DzO2gR4FBdwItZU_oqaXb3uaozEPoyyVZIOf83KXuozDBjCAcEtCSmDfYMuVZQtDP2n_8WhhYyHOFn8TPY2NR5bZX5JmRdRuzBR1mA8mI1vRabMAhL2fNlXJb9fX6B8Yi9KJ8ezPtDYvS_joPoFU-jyUbpHBgnEIkHUp63QGx3fETUfFN4BabDHGag0It77CUYXpQaln1CktkHxV95aRacQHY68vC3fhA7RkIRVjWG3KLiVrAB3fA5xMIQi8SVJ6VfGAmGkjjc.imF-TXh0f9YudftJ6ZkS8A","options":{"x509":{},"ssh":{}}}
+                - {"type":"JWK","name":"admin@${mainDomain}","key":{"use":"sig","kty":"EC","kid":"${stepCa_kid}","crv":"P-256","alg":"ES256","x":"${stepCa_x}","y":"${stepCa_y}"},"encryptedKey":"eyJhbGciOiJQQkVTMi1IUzI1NitBMTI4S1ciLCJjdHkiOiJqd2sranNvbiIsImVuYyI6IkEyNTZHQ00iLCJwMmMiOjYwMDAwMCwicDJzIjoiemZ0NTBabzJmeWNrZk5TYW1Ibm9qdyJ9.6nym_4zosDnCkFzLjMmBUAPPdVXmQejg2a3XgaRJvfUTD5-j-oXo4w.56Q7GoiOU9X4kOTY.Jz4amXuCkJl7PWghNnvYt4m3KQkpsFvnQsnxIio1K2d49h8FDeXnmkSF3Xq8eMzsJ9kz_Fen7DzO2gR4FBdwItZU_oqaXb3uaozEPoyyVZIOf83KXuozDBjCAcEtCSmDfYMuVZQtDP2n_8WhhYyHOFn8TPY2NR5bZX5JmRdRuzBR1mA8mI1vRabMAhL2fNlXJb9fX6B8Yi9KJ8ezPtDYvS_joPoFU-jyUbpHBgnEIkHUp63QGx3fETUfFN4BabDHGag0It77CUYXpQaln1CktkHxV95aRacQHY68vC3fhA7RkIRVjWG3KLiVrAB3fA5xMIQi8SVJ6VfGAmGkjjc.imF-TXh0f9YudftJ6ZkS8A","options":{"x509":{},"ssh":{}}}
                 - {"type":"ACME","name":"acme"}
             tls:
               cipherSuites:
@@ -115,16 +115,16 @@ spec:
       secrets:
         # ca_password contains the password used to encrypt x509.intermediate_ca_key, ssh.host_ca_key and ssh.user_ca_key
         # This value must be base64 encoded.
-        ca_password: "${step-ca_password}"
-        provisioner_password: "${step-ca_password}"
+        ca_password: "${stepCa_password}"
+        provisioner_password: "${stepCa_password}"
 
         x509:
           # intermediate_ca_key contains the contents of your encrypted intermediate CA key
-          intermediate_ca_key: "${step-ca_intermediate_ca_key}"
+          intermediate_ca_key: "${stepCa_intermediate_ca_key}"
 
 
           # root_ca_key contains the contents of your encrypted root CA key
           # Note that this value can be omitted without impacting the functionality of step-certificates
           # If supplied, this should be encrypted using a unique password that is not used for encrypting
           # the intermediate_ca_key, ssh.host_ca_key or ssh.user_ca_key.
-          root_ca_key: "${step-ca_root_ca_key}"
+          root_ca_key: "${stepCa_root_ca_key}"
