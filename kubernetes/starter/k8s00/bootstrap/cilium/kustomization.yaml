@@ -37,3 +37,5 @@ helmCharts:
       cni:
         exclusive: false
       devices: br0
+      bgpControlPlane:
+        enabled: true
