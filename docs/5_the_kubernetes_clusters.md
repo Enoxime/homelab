@@ -63,6 +63,9 @@ talhelper gencommand bootstrap
 # To obtain the kubeconfig of the created cluster
 talhelper gencommand kubeconfig
 
+# To obtain the kubeconfig of the created cluster (when multiple clusters are defined)
+talhelper gencommand kubeconfig --extra-flags --merge
+
 # Ensure the workers a tagged as workers
 kubectl label node <worker node name>.... node-role.kubernetes.io/worker=worker
 ```
@@ -77,7 +80,24 @@ Move to the folder kubernetes/starter/{cluster_name}
 kubectl kustomize bootstrap --enable-helm | kubectl apply -f -
 ```
 
-### Bootstrap flux
+### Bootstrap fluxcd
+
+```bash
+flux install
+
+flux create source git homelab \
+  --url=https://github.com/Enoxime/homelab \
+  --branch=main \
+  --interval=1m
+
+flux create kustomization {cluster_name} \
+  --source=GitRepository/homelab \
+  --path=./kubernetes/clusters/{cluster_name} \
+  --prune=true \
+  --interval=10m
+```
+
+For the legacy way (only on k8s00):
 
 ```bash
 export GITHUB_TOKEN=<gh-token>
@@ -124,5 +144,5 @@ kubectl rook-ceph ceph status
 
 ## Cluster specific information
 
-- [bootstrap](./kubernetes/bootstrap/README.md)
+- [bootstrap00](./kubernetes/bootstrap00/README.md)
 - [k8s00](./kubernetes/k8s00/README.md)
