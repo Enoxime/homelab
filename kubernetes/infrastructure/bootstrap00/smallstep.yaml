@@ -60,8 +60,22 @@ spec:
               claims:
                 maxTLSCertDuration: 720h
               provisioners:
-                - {"type":"JWK","name":"admin@${mainDomain}","key":{"use":"sig","kty":"EC","kid":"${stepCa_kid}","crv":"P-256","alg":"ES256","x":"${stepCa_x}","y":"${stepCa_y}"},"encryptedKey":"eyJhbGciOiJQQkVTMi1IUzI1NitBMTI4S1ciLCJjdHkiOiJqd2sranNvbiIsImVuYyI6IkEyNTZHQ00iLCJwMmMiOjYwMDAwMCwicDJzIjoiemZ0NTBabzJmeWNrZk5TYW1Ibm9qdyJ9.6nym_4zosDnCkFzLjMmBUAPPdVXmQejg2a3XgaRJvfUTD5-j-oXo4w.56Q7GoiOU9X4kOTY.Jz4amXuCkJl7PWghNnvYt4m3KQkpsFvnQsnxIio1K2d49h8FDeXnmkSF3Xq8eMzsJ9kz_Fen7DzO2gR4FBdwItZU_oqaXb3uaozEPoyyVZIOf83KXuozDBjCAcEtCSmDfYMuVZQtDP2n_8WhhYyHOFn8TPY2NR5bZX5JmRdRuzBR1mA8mI1vRabMAhL2fNlXJb9fX6B8Yi9KJ8ezPtDYvS_joPoFU-jyUbpHBgnEIkHUp63QGx3fETUfFN4BabDHGag0It77CUYXpQaln1CktkHxV95aRacQHY68vC3fhA7RkIRVjWG3KLiVrAB3fA5xMIQi8SVJ6VfGAmGkjjc.imF-TXh0f9YudftJ6ZkS8A","options":{"x509":{},"ssh":{}}}
-                - {"type":"ACME","name":"acme"}
+                - type: "JWK"
+                  name: "admin@${mainDomain}"
+                  key:
+                    use: "sig"
+                    kty: "EC"
+                    kid: "${stepCa_kid}"
+                    crv: "P-256"
+                    alg: "ES256"
+                    x: "${stepCa_x}"
+                    y: "${stepCa_y}"
+                  encryptedKey: "eyJhbGciOiJQQkVTMi1IUzI1NitBMTI4S1ciLCJjdHkiOiJqd2sranNvbiIsImVuYyI6IkEyNTZHQ00iLCJwMmMiOjYwMDAwMCwicDJzIjoiemZ0NTBabzJmeWNrZk5TYW1Ibm9qdyJ9.6nym_4zosDnCkFzLjMmBUAPPdVXmQejg2a3XgaRJvfUTD5-j-oXo4w.56Q7GoiOU9X4kOTY.Jz4amXuCkJl7PWghNnvYt4m3KQkpsFvnQsnxIio1K2d49h8FDeXnmkSF3Xq8eMzsJ9kz_Fen7DzO2gR4FBdwItZU_oqaXb3uaozEPoyyVZIOf83KXuozDBjCAcEtCSmDfYMuVZQtDP2n_8WhhYyHOFn8TPY2NR5bZX5JmRdRuzBR1mA8mI1vRabMAhL2fNlXJb9fX6B8Yi9KJ8ezPtDYvS_joPoFU-jyUbpHBgnEIkHUp63QGx3fETUfFN4BabDHGag0It77CUYXpQaln1CktkHxV95aRacQHY68vC3fhA7RkIRVjWG3KLiVrAB3fA5xMIQi8SVJ6VfGAmGkjjc.imF-TXh0f9YudftJ6ZkS8A"
+                  options:
+                    x509: {}
+                    ssh: {}
+                - type: "ACME"
+                  name: "acme"
             tls:
               cipherSuites:
                 - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256
