@@ -85,7 +85,7 @@ spec:
               renegotiation: false
 
           defaults.json:
-            ca-url: https://ca.${mgmtDomainOld}
+            ca-url: "https://ca.${mgmtDomainOld}"
             ca-config: /home/step/config/ca.json
             fingerprint: ba796b5752c9481ce8d321ce8cc74e5f6af1e08b9d611384d236b94c2264594e
             root: /home/step/certs/root_ca.crt
