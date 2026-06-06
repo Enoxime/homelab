@@ -94,7 +94,7 @@ flux create kustomization {cluster_name} \
   --source=GitRepository/homelab \
   --path=./kubernetes/clusters/{cluster_name} \
   --decryption-provider=sops \
-  --decryption-secret=sops-age
+  --decryption-secret=sops-age \
   --prune=true \
   --interval=10m
 ```
