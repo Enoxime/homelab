@@ -27,6 +27,7 @@ metadata:
     app: unifi-network-application
     network: mgmt
   annotations:
+    lbipam.cilium.io/ips: "${bootstrapMgmtIpv4},${bootstrapMgmtIpv6}"
     lbipam.cilium.io/sharing-key: mgmt-bootstrap
 spec:
   ports:

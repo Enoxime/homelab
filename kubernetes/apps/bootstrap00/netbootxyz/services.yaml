@@ -27,6 +27,7 @@ metadata:
     app: netbootxyz
     network: mgmt
   annotations:
+    lbipam.cilium.io/ips: "${bootstrapMgmtIpv4},${bootstrapMgmtIpv6}"
     lbipam.cilium.io/sharing-key: mgmt-bootstrap
 spec:
   ports:
@@ -47,6 +48,7 @@ metadata:
     app: netbootxyz
     network: service
   annotations:
+    lbipam.cilium.io/ips: "${bootstrapServiceIpv4},${bootstrapServiceIpv6}"
     lbipam.cilium.io/sharing-key: service-bootstrap
 spec:
   ports:
@@ -67,6 +69,7 @@ metadata:
     app: netbootxyz
     network: k8s00
   annotations:
+    lbipam.cilium.io/ips: "${bootstrapK8s00Ipv4},${bootstrapK8s00Ipv6}"
     lbipam.cilium.io/sharing-key: k8s00-bootstrap
 spec:
   ports:
