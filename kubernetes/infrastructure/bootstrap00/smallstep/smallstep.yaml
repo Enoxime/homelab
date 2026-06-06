@@ -36,7 +36,7 @@ spec:
     existingSecrets:
       enabled: true
       ca: true
-      issuer: true
+      issuer: false
       certsAsSecret: true
       configAsSecret: true
       sshHostCa: false
