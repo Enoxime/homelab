@@ -10,7 +10,7 @@
 #   timeout: 5m
 #   sourceRef:
 #     kind: GitRepository
-#     name: flux-system
+#     name: homelab
 #   path: ./kubernetes/apps/base
 #   prune: true
 #   wait: true
@@ -26,7 +26,7 @@ spec:
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: homelab
   path: ./kubernetes/apps/bootstrap00
   prune: true
   wait: true
