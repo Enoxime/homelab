@@ -24,6 +24,7 @@ stringData:
   caMgmtIpv6: ENC[AES256_GCM,data:zLTtaBmpnVC5PyN6i9S38zUEmSv5QGA=,iv:0vEmH1PV6zZFPaDtQ5VHJtGSvL5/qo7FmyPSIDDsRgQ=,tag:uumpgZ6Dxv+0dRpa0wb6QA==,type:str]
   caServiceIpv4: ENC[AES256_GCM,data:Nxebg/k0lUZNDXQTLw==,iv:WcG81uUhQZmSFTBH4zfN+9dHZP3pmMR1we8oC2diLJ0=,tag:pVXWO3bsLKVZqjqOwH5tZQ==,type:str]
   caServiceIpv6: ENC[AES256_GCM,data:v8sBWHbA2oeiYH+VuGmsyIXPSTf6QuM=,iv:8uY/dljhJBFXqMpLCFNgGDlAfNaFrboSiXnsk1hy3Ww=,tag:261oDenmheScHsIGXNXtzA==,type:str]
+  piholeUrl: ENC[AES256_GCM,data:TLIUR6oot54Z7Bb5LUg34Zmtyu0SWKu/N8BdddKtQVS7bIiouizJiE+64fXMbA==,iv:hMXkxSU+aRvtPhc3A1y49n6/uUKvUbXzxf8z8Vg56VM=,tag:Nt6Yda+PPaJa8ra/c20Q8Q==,type:str]
 sops:
   age:
     - enc: |
@@ -36,6 +37,6 @@ sops:
         -----END AGE ENCRYPTED FILE-----
       recipient: age195m7v6w6lce8knleuc9juqwklj56vjflng64q60eh90yrfpsfyjs222pls
   encrypted_regex: ^(data|stringData)$
-  lastmodified: "2026-06-06T18:55:45Z"
-  mac: ENC[AES256_GCM,data:WHGsuP1vJZM5Z6Sf/5IOQ1h/V4EClQUU7zk2hxOsrOg6AlB1ZJ69I2qYT+CDs9Sa5+mYIs4naExg3/uKQ0LgzG6n20wmLhKKeBN91iGQupgryIWyPQUXljk9smN5AHDFhBG2pV603Z4DRL8IVpvYbECyuo5/T4uvUmPvHo1R9n4=,iv:uSNWwa1hR2dbRlrYDfTqgKDHv1YV42obHeaTXrJp8dY=,tag:lcB3OS3SW2wJrSKWp4sSGA==,type:str]
+  lastmodified: "2026-06-07T16:24:00Z"
+  mac: ENC[AES256_GCM,data:Hb86Jcx6lcYGhdZkfIJaiaoEUU/XFu8pAmdU3JsZup8I2kZdFfb84LqENTEegN0GvHoMs8yqeqp/i2hGs/e5uXZFmULNmtfqMTcQS7gpmdpiPOgib0DmR9UQ/BeXZighG6lpvyurHvTnkDZAgEqEk9vDtDWIU56slPIdN02dyfU=,iv:IxdnzMk8Rc5M58yGyEUlIO37iiACK6r1/loPoNCFSnY=,tag:3rS3vHTtK64ltEiIA+8Ipg==,type:str]
   version: 3.13.1
