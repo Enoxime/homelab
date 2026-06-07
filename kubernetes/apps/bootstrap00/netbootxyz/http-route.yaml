@@ -32,7 +32,7 @@ spec:
   hostnames:
     - "netbootxyz.bootstrap.${mgmtDomainOld}"
   rules:
-    - name: https
+    - name: http
       backendRefs:
         - name: netbootxyz
           port: 80
@@ -51,7 +51,7 @@ spec:
   hostnames:
     - "netbootxyz.bootstrap.${serviceDomainOld}"
   rules:
-    - name: https
+    - name: http
       backendRefs:
         - name: netbootxyz
           port: 80
