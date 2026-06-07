@@ -58,10 +58,12 @@ metadata:
   labels:
     app: mongodb
 spec:
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
   ports:
     - name: mongodb
       port: 27017
       targetPort: 27017
   selector:
     app: mongodb
-  clusterIP: None
