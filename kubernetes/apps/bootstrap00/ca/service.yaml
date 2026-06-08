@@ -1,0 +1,42 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ca-mgmt
+  namespace: smallstep
+  labels:
+    app: ca
+    network: mgmt
+  annotations:
+    lbipam.cilium.io/ips: "${caMgmtIpv4},${caMgmtIpv6}"
+spec:
+  ports:
+    - name: ca-server
+      port: 443
+      protocol: TCP
+      targetPort: 9000
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/instance: step-certificates
+    app.kubernetes.io/name: step-certificates
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ca-service
+  namespace: smallstep
+  labels:
+    app: ca
+    network: service
+  annotations:
+    lbipam.cilium.io/ips: "${caServiceIpv4},${caServiceIpv6}"
+spec:
+  ports:
+    - name: ca-server
+      port: 443
+      protocol: TCP
+      targetPort: 9000
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/instance: step-certificates
+    app.kubernetes.io/name: step-certificates
