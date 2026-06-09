@@ -12,9 +12,12 @@ spec:
     - name: device-comm
       port: 8080
       targetPort: 8080
-    - name: admin
+    - name: admin-https
       port: 8443
       targetPort: 8443
+    - name: admin-http
+      port: 8880
+      targetPort: 8880
   selector:
     app: unifi-network-application
   type: ClusterIP
@@ -37,6 +40,10 @@ spec:
       port: 10001
       protocol: UDP
       targetPort: 10001
+    - name: discovery-l2
+      port: 1900
+      protocol: UDP
+      targetPort: 1900
     - name: stun
       port: 3478
       protocol: UDP
@@ -44,7 +51,7 @@ spec:
     - name: device-comm
       port: 8080
       targetPort: 8080
-    - name: admin
+    - name: admin-https
       port: 8443
       protocol: TCP
       targetPort: 8443
