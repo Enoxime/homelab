@@ -10,6 +10,7 @@ metadata:
   annotations:
     lbipam.cilium.io/ips: "${caMgmtIpv4},${caMgmtIpv6}"
 spec:
+  ipFamilyPolicy: PreferDualStack
   ports:
     - name: ca-server
       port: 443
@@ -31,6 +32,7 @@ metadata:
   annotations:
     lbipam.cilium.io/ips: "${caServiceIpv4},${caServiceIpv6}"
 spec:
+  ipFamilyPolicy: PreferDualStack
   ports:
     - name: ca-server
       port: 443
