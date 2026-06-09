@@ -7,6 +7,7 @@ metadata:
   labels:
     app: unifi-network-application
 spec:
+  ipFamilyPolicy: PreferDualStack
   ports:
     - name: device-comm
       port: 8080
