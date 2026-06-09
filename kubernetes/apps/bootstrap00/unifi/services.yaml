@@ -30,6 +30,7 @@ metadata:
     lbipam.cilium.io/ips: "${bootstrapMgmtIpv4},${bootstrapMgmtIpv6}"
     lbipam.cilium.io/sharing-key: mgmt-bootstrap
 spec:
+  ipFamilyPolicy: PreferDualStack
   ports:
     - name: discovery
       port: 10001
@@ -58,9 +59,10 @@ metadata:
   labels:
     app: mongodb
 spec:
+  ipFamilyPolicy: PreferDualStack
   ipFamilies:
     - IPv4
-  ipFamilyPolicy: SingleStack
+    - IPv6
   ports:
     - name: mongodb
       port: 27017
