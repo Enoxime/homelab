@@ -83,11 +83,11 @@ kubectl kustomize bootstrap --enable-helm | kubectl apply -f -
 ### Add SOPS age-key secrets
 
 ```bash
-kubectl create namespace flux-system
-cat TO_THE_AGE_KEY | \
+kubectl create namespace flux-system --dry-run=client -o yaml | kubectl apply -f -
+cat <path-to-age-key> | \
   kubectl create secret generic sops-age \
     --namespace=flux-system \
-    --from-file=age.agekey=/dev/stdin
+    --from-file=age.agekey=/dev/stdin --dry-run=client -o yaml | kubectl apply -f -
 ```
 
 ### Bootstrap fluxcd
