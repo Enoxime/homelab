@@ -80,6 +80,16 @@ Move to the folder kubernetes/starter/{cluster_name}
 kubectl kustomize bootstrap --enable-helm | kubectl apply -f -
 ```
 
+### Add SOPS age-key secrets
+
+```bash
+kubectl create namespace flux-system --dry-run=client -o yaml | kubectl apply -f -
+cat <path-to-age-key> | \
+  kubectl create secret generic sops-age \
+    --namespace=flux-system \
+    --from-file=age.agekey=/dev/stdin --dry-run=client -o yaml | kubectl apply -f -
+```
+
 ### Bootstrap fluxcd
 
 ```bash
@@ -111,15 +121,6 @@ flux bootstrap github \
   --path=kubernetes/clusters/{cluster_name} \
   --private=false \
   --personal=true
-```
-
-### Add SOPS age-key secrets
-
-```bash
-cat TO_THE_AGE_KEY | \
-  kubectl create secret generic sops-age \
-    --namespace=flux-system \
-    --from-file=age.agekey=/dev/stdin
 ```
 
 ## Upgrades
