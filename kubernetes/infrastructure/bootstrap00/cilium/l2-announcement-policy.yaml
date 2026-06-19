@@ -1,0 +1,13 @@
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: bootstrap-l2-annoucement-policy
+spec:
+  serviceSelector:
+    matchExpressions:
+      - key: network
+        operator: Exists
+  interfaces:
+    - ^br0(\.[\d]+)?
+  externalIPs: true
+  loadBalancerIPs: true

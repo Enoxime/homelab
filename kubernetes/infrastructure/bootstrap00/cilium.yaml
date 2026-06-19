@@ -106,3 +106,11 @@ spec:
           keepCapNetBindService: true
     operator:
       replicas: 1
+    l2announcements:
+      enabled: true
+      leaseDuration: 15s
+      leaseRenewDeadline: 5s
+      leaseRetryPeriod: 2s
+    k8sClientRateLimit:
+      qps: 5
+      burst: 10
