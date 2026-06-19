@@ -98,22 +98,36 @@ controlPlane:
       - interface: eno1
         dhcp: false
       - interface: br0
-        # routes:
-        #   - network: 0.0.0.0/0
-        #     gateway: "${gateway}"
-        #   - network: ::/0
-        #     gateway: "${ipv6_gateway}"
         bridge:
           interfaces:
             - eno1
           stp:
             enabled: true
-          # vlan:
-          #   vlanFiltering: true
+          vlan:
+            vlanFiltering: true
         dhcp: true
         dhcpOptions:
           ipv4: true
           ipv6: true
+        vlans:
+          - vlanId: 30
+            addresses:
+              - "${serviceIpv4}"
+              - "${serviceIpv6}"
+            routes:
+              - network: "${serviceCidrIpv4}"
+                gateway: "${serviceGatewayIpv4}"
+              - network: "${serviceCidrIpv6}"
+                gateway: "${serviceGatewayIpv6}"
+          - vlanId: 40
+            addresses:
+              - "${k8s00Ipv4}"
+              - "${k8s00Ipv6}"
+            routes:
+              - network: "${k8s00CidrIpv4}"
+                gateway: "${k8s00GatewayIpv4}"
+              - network: "${k8s00CidrIpv6}"
+                gateway: "${k8s00GatewayIpv6}"
   nameservers:
     # - 2606:4700:4700::1111
     # - 2606:4700:4700::1001
