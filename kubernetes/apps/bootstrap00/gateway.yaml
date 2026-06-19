@@ -158,7 +158,7 @@
 #     - name: http
 #       port: 80
 #       protocol: HTTP
----
+# ---
 # apiVersion: gateway.networking.k8s.io/v1
 # kind: Gateway
 # metadata:
