@@ -65,7 +65,7 @@
 #     #   port: 8443
 #     #   protocol: HTTPS
 #     #   hostname: "*.bootstrap.${mgmtDomainOld}"
----
+# ---
 # apiVersion: gateway.networking.k8s.io/v1
 # kind: Gateway
 # metadata:
