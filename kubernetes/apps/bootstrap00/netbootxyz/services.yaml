@@ -32,7 +32,10 @@ metadata:
     lbipam.cilium.io/sharing-key: mgmt-bootstrap
 spec:
   ipFamilyPolicy: PreferDualStack
-  ports:
+  ipFamilies:
+    - IPv4
+    - IPv6
+  ports: 
     - name: tftp
       port: 69
       protocol: UDP
