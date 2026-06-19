@@ -33,7 +33,7 @@ metadata:
 spec:
   ipFamilyPolicy: PreferDualStack
   ports:
-    - name: web
+    - name: tftp
       port: 69
       protocol: UDP
       targetPort: 69
@@ -62,7 +62,7 @@ spec:
 # spec:
 #   ipFamilyPolicy: PreferDualStack
 #   ports:
-#     - name: web
+#     - name: tftp
 #       port: 69
 #       protocol: UDP
 #       targetPort: 69
@@ -84,7 +84,7 @@ spec:
 # spec:
 #   ipFamilyPolicy: PreferDualStack
 #   ports:
-#     - name: web
+#     - name: tftp
 #       port: 69
 #       protocol: UDP
 #       targetPort: 69
