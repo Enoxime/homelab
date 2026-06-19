@@ -9,7 +9,7 @@
 #     - name: bootstrap-shared-mgmt
 #       namespace: bootstrap
 #       sectionName: https
-#       port: 8443
+#       port: 443
 #   hostnames:
 #     - "unifi.bootstrap.mgmt.${homeDomainOld}"
 #   rules:
