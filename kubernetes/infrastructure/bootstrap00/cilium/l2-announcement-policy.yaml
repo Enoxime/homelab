@@ -8,6 +8,6 @@ spec:
       - key: network
         operator: Exists
   interfaces:
-    - ^br0(\.[\d]+)?
+    - '^br0(\.[0-9]+)?$'
   externalIPs: true
   loadBalancerIPs: true
