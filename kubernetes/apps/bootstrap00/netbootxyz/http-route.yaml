@@ -49,7 +49,7 @@
 #       sectionName: netbootxyz-assets
 #       port: 80
 #   hostnames:
-#     - "netbootxyz.bootstrap.${mgmtDomainOld}"
+#     - "netbootxyz.bootstrap.${serviceDomainOld}"
 #   rules:
 #     - name: assets
 #       backendRefs:
