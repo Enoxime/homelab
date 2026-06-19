@@ -35,7 +35,7 @@ spec:
   ipFamilies:
     - IPv4
     - IPv6
-  ports: 
+  ports:
     - name: tftp
       port: 69
       protocol: UDP
