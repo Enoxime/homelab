@@ -35,6 +35,9 @@ metadata:
     lbipam.cilium.io/sharing-key: mgmt-bootstrap
 spec:
   ipFamilyPolicy: PreferDualStack
+  ipFamilies:
+    - IPv4
+    - IPv6
   ports:
     - name: discovery
       port: 10001
@@ -56,6 +59,8 @@ spec:
       protocol: TCP
       targetPort: 8443
   type: LoadBalancer
+  loadBalancerClass: io.cilium/l2-announcer
+  # loadBalancerClass: io.cilium/bgp-control-plane
   selector:
     app: unifi-network-application
 ---

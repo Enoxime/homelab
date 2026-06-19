@@ -1,40 +1,70 @@
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: Gateway
-metadata:
-  name: bootstrap-shared-mgmt
-  namespace: bootstrap
-  annotations:
-    cert-manager.io/cluster-issuer: homelab-internal
-spec:
-  infrastructure:
-    annotations:
-      lbipam.cilium.io/ips: "${bootstrapMgmtIpv4},${bootstrapMgmtIpv6}"
-      lbipam.cilium.io/sharing-key: mgmt-bootstrap
-    labels:
-      network: mgmt
-  gatewayClassName: cilium
-  listeners:
-    - name: http
-      port: 80
-      protocol: HTTP
-      hostname: "*.bootstrap.${mgmtDomainOld}"
-    - name: https
-      protocol: HTTPS
-      port: 443
-      hostname: "*.bootstrap.${mgmtDomainOld}"
-      tls:
-        mode: Terminate
-        certificateRefs:
-          - name: bootstrap-shared-mgmt-wildcard
-    # - name: http-unifi
-    #   port: 8080
-    #   protocol: HTTP
-    #   hostname: "*.bootstrap.${mgmtDomainOld}"
-    # - name: https-unifi
-    #   port: 8443
-    #   protocol: HTTPS
-    #   hostname: "*.bootstrap.${mgmtDomainOld}"
+# ---
+# apiVersion: gateway.networking.k8s.io/v1
+# kind: GatewayClass
+# metadata:
+#   name: internal-bootstrap
+# spec:
+#   controllerName: io.cilium/gateway-controller
+#   description: Internal Cilium GatewayClass for bootstrap
+#   parametersRef:
+#     group: cilium.io
+#     kind: CiliumGatewayClassConfig
+#     name: internal-bootstrap-config
+#     namespace: bootstrap
+# ---
+# apiVersion: cilium.io/v2alpha1
+# kind: CiliumGatewayClassConfig
+# metadata:
+#   name: internal-bootstrap-config
+#   namespace: bootstrap
+# spec:
+#   service:
+#     loadBalancerClass: io.cilium/l2-announcer
+#     ipFamilyPolicy: PreferDualStack
+#     ipFamilies:
+#       - IPv4
+#       - IPv6
+# ---
+# apiVersion: gateway.networking.k8s.io/v1
+# kind: Gateway
+# metadata:
+#   name: bootstrap-shared-mgmt
+#   namespace: bootstrap
+#   annotations:
+#     cert-manager.io/cluster-issuer: homelab-internal
+# spec:
+#   infrastructure:
+#     annotations:
+#       lbipam.cilium.io/ips: "${bootstrapMgmtIpv4},${bootstrapMgmtIpv6}"
+#       lbipam.cilium.io/sharing-key: mgmt-bootstrap
+#     labels:
+#       network: mgmt
+#   gatewayClassName: internal-bootstrap
+#   listeners:
+#     - name: netbootxyzmgmt-http
+#       port: 80
+#       protocol: HTTP
+#       hostname: "*.bootstrap.${mgmtDomainOld}"
+#     - name: netbootxyzmgmt-https
+#       protocol: HTTPS
+#       port: 443
+#       hostname: "*.bootstrap.${mgmtDomainOld}"
+#       tls:
+#         mode: Terminate
+#         certificateRefs:
+#           - name: netbootxyz-bootstrap-mgmt-tls
+#     - name: netbootxyz-assets
+#       port: 80
+#       protocol: HTTP
+#       hostname: "*.bootstrap.${mgmtDomainOld}"
+#     # - name: http-unifi
+#     #   port: 8080
+#     #   protocol: HTTP
+#     #   hostname: "*.bootstrap.${mgmtDomainOld}"
+#     # - name: https-unifi
+#     #   port: 8443
+#     #   protocol: HTTPS
+#     #   hostname: "*.bootstrap.${mgmtDomainOld}"
 ---
 # apiVersion: gateway.networking.k8s.io/v1
 # kind: Gateway
@@ -63,25 +93,26 @@ spec:
 #         mode: Terminate
 #         certificateRefs:
 #           - name: ca-mgmt-wildcard
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: Gateway
-metadata:
-  name: bootstrap-shared-service
-  namespace: bootstrap
-spec:
-  infrastructure:
-    annotations:
-      lbipam.cilium.io/ips: "${bootstrapServiceIpv4},${bootstrapServiceIpv6}"
-      lbipam.cilium.io/sharing-key: service-bootstrap
-    labels:
-      network: service
-  gatewayClassName: cilium
-  listeners:
-    - name: http
-      port: 80
-      protocol: HTTP
----
+# ---
+# apiVersion: gateway.networking.k8s.io/v1
+# kind: Gateway
+# metadata:
+#   name: bootstrap-shared-service
+#   namespace: bootstrap
+# spec:
+#   infrastructure:
+#     annotations:
+#       lbipam.cilium.io/ips: "${bootstrapServiceIpv4},${bootstrapServiceIpv6}"
+#       lbipam.cilium.io/sharing-key: service-bootstrap
+#     labels:
+#       network: service
+#   gatewayClassName: internal-bootstrap
+#   listeners:
+#     - name: netbootxyz-assets
+#       port: 80
+#       protocol: HTTP
+#       hostname: "netbootxyz.bootstrap.${serviceDomainOld}"
+# ---
 # apiVersion: gateway.networking.k8s.io/v1
 # kind: Gateway
 # metadata:
@@ -110,23 +141,23 @@ spec:
 #         certificateRefs:
 #           - name: ca-service-wildcard
 ---
-apiVersion: gateway.networking.k8s.io/v1
-kind: Gateway
-metadata:
-  name: bootstrap-shared-k8s00
-  namespace: bootstrap
-spec:
-  infrastructure:
-    annotations:
-      lbipam.cilium.io/ips: "${bootstrapK8s00Ipv4},${bootstrapK8s00Ipv6}"
-      lbipam.cilium.io/sharing-key: k8s00-bootstrap
-    labels:
-      network: k8s00
-  gatewayClassName: cilium
-  listeners:
-    - name: http
-      port: 80
-      protocol: HTTP
+# apiVersion: gateway.networking.k8s.io/v1
+# kind: Gateway
+# metadata:
+#   name: bootstrap-shared-k8s00
+#   namespace: bootstrap
+# spec:
+#   infrastructure:
+#     annotations:
+#       lbipam.cilium.io/ips: "${bootstrapK8s00Ipv4},${bootstrapK8s00Ipv6}"
+#       lbipam.cilium.io/sharing-key: k8s00-bootstrap
+#     labels:
+#       network: k8s00
+#   gatewayClassName: cilium
+#   listeners:
+#     - name: http
+#       port: 80
+#       protocol: HTTP
 ---
 # apiVersion: gateway.networking.k8s.io/v1
 # kind: Gateway
