@@ -1,7 +1,7 @@
 apiVersion: "cilium.io/v2alpha1"
 kind: CiliumL2AnnouncementPolicy
 metadata:
-  name: bootstrap-l2-annoucement-policy
+  name: bootstrap-l2-announcement-policy
 spec:
   serviceSelector:
     matchExpressions:
