@@ -140,7 +140,7 @@
 #         mode: Terminate
 #         certificateRefs:
 #           - name: ca-service-wildcard
----
+# ---
 # apiVersion: gateway.networking.k8s.io/v1
 # kind: Gateway
 # metadata:
