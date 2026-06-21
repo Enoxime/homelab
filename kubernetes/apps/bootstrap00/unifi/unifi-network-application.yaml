@@ -57,9 +57,6 @@ spec:
             - containerPort: 8443
               name: admin-https
               protocol: TCP
-            - containerPort: 8880
-              name: admin-http
-              protocol: TCP
           volumeMounts:
             - name: config
               mountPath: /config

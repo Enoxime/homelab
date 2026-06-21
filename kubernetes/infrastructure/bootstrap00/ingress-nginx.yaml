@@ -36,7 +36,8 @@ spec:
       metrics:
         enabled: false
       service:
-        # annotations:
+        annotations:
+          lbipam.cilium.io/ips: "${ingressMgmtIpv4},${ingressMgmtIpv6}"
         ipFamilies:
           - IPv4
           - IPv6
