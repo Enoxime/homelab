@@ -19,6 +19,9 @@ spec:
     # Add a single challenge solver, HTTP01 using nginx
     solvers:
       - http01:
+          ingress:
+            ingressClassName: nginx
+      - http01:
           gatewayHTTPRoute:
             parentRefs:
               - name: bootstrap-shared-mgmt
@@ -29,6 +32,3 @@ spec:
                 namespace: smallstep
               # - name: pihole-shared
               #   namespace: pihole
-      - http01:
-          ingress:
-            ingressClassName: nginx
