@@ -1,0 +1,25 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: homelab-internal
+  name: netbootxyz-ingress
+  namespace: bootstrap
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: "netbootxyzmgmt.bootstrap.${mgmtDomainOld}"
+      http:
+        paths:
+          - backend:
+              service:
+                name: netbootxyz
+                port:
+                  number: 3000
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - "netbootxyzmgmt.bootstrap.${mgmtDomainOld}"
+      secretName: "netbootxyzmgmt.bootstrap.${mgmtDomainOld}-tls"

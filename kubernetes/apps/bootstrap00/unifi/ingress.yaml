@@ -1,0 +1,26 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: homelab-internal
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+  name: unifimgmt-ingress
+  namespace: bootstrap
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: "unifimgmt.bootstrap.${mgmtDomainOld}"
+      http:
+        paths:
+          - backend:
+              service:
+                name: unifi
+                port:
+                  number: 8443
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - "unifimgmt.bootstrap.${mgmtDomainOld}"
+      secretName: "unifimgmt.bootstrap.${mgmtDomainOld}-tls"

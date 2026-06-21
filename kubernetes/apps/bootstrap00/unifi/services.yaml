@@ -15,9 +15,6 @@ spec:
     - name: admin-https
       port: 8443
       targetPort: 8443
-    - name: admin-http
-      port: 8880
-      targetPort: 8880
   selector:
     app: unifi-network-application
   type: ClusterIP
@@ -54,10 +51,6 @@ spec:
     - name: device-comm
       port: 8080
       targetPort: 8080
-    - name: admin-https
-      port: 8443
-      protocol: TCP
-      targetPort: 8443
   type: LoadBalancer
   loadBalancerClass: io.cilium/l2-announcer
   # loadBalancerClass: io.cilium/bgp-control-plane
