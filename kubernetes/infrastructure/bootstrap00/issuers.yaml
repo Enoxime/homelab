@@ -29,3 +29,6 @@ spec:
                 namespace: smallstep
               # - name: pihole-shared
               #   namespace: pihole
+      - http01:
+          ingress:
+            ingressClassName: nginx
