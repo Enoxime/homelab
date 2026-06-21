@@ -42,7 +42,7 @@ spec:
             # Switch to pihole V6 API
             - --pihole-api-version=6
             # Change this to the actual address of your Pi-hole web server
-            - --pihole-server=${pihole_url}
+            - --pihole-server=${piholeUrl}
             - --pihole-tls-skip-verify
         - op: add
           path: /spec/template/spec/containers/0/envFrom
