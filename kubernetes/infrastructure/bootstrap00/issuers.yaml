@@ -21,14 +21,14 @@ spec:
       - http01:
           ingress:
             ingressClassName: nginx
-      - http01:
-          gatewayHTTPRoute:
-            parentRefs:
-              - name: bootstrap-shared-mgmt
-                namespace: bootstrap
-              - name: ca-mgmt
-                namespace: smallstep
-              - name: ca-service
-                namespace: smallstep
-              # - name: pihole-shared
-              #   namespace: pihole
+      # - http01:
+      #     gatewayHTTPRoute:
+      #       parentRefs:
+      #         - name: bootstrap-shared-mgmt
+      #           namespace: bootstrap
+      #         - name: ca-mgmt
+      #           namespace: smallstep
+      #         - name: ca-service
+      #           namespace: smallstep
+      #         # - name: pihole-shared
+      #         #   namespace: pihole
