@@ -71,3 +71,5 @@ spec:
         name: cilium-values
       - kind: Secret
         name: cert-manager-issuers-secret-values
+      - kind: Secret
+        name: external-dns-values
