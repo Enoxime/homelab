@@ -34,8 +34,13 @@ spec:
   values:
     controller:
       metrics:
-        enabled: true
-        serviceMonitor:
-          enabled: true
-        prometheusRule:
-          enabled: true
+        enabled: false
+      service:
+        # annotations:
+        ipFamilies:
+          - IPv4
+          - IPv6
+        ipFamilyPolicy: PreferDualStack
+        labels:
+          network: mgmt
+        loadBalancerClass: io.cilium/bgp-control-plane
