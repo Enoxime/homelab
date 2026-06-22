@@ -36,21 +36,21 @@ spec:
       annotations:
         cert-manager.io/cluster-issuer: homelab-internal
       hosts:
-        - host: immich.${serviceDomain}
+        - host: immich.${serviceDomainOld}
           paths:
             - path: /
               pathType: Prefix
-        - host: photos.${mainDomain}
+        - host: photos.${homeDomainOld}
           paths:
             - path: /
               pathType: Prefix
       tls:
         - secretName: immich-tls-int
           hosts:
-            - immich.${serviceDomain}
+            - immich.${serviceDomainOld}
         - secretName: immich-tls-ext
           hosts:
-            - photos.${mainDomain}
+            - photos.${homeDomainOld}
 
     persistence:
       enabled: true

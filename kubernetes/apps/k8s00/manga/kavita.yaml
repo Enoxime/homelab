@@ -51,11 +51,11 @@ spec:
       annotations:
         cert-manager.io/cluster-issuer: homelab-internal
       hosts:
-        - host: kavita.${serviceDomain}
+        - host: kavita.${serviceDomainOld}
           paths:
             - path: /
               pathType: Prefix
       tls:
         - secretName: kavita-tls
           hosts:
-            - kavita.${serviceDomain}
+            - kavita.${serviceDomainOld}

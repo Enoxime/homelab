@@ -163,7 +163,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: pgadmin.${serviceDomain}
+    - host: pgadmin.${serviceDomainOld}
       http:
         paths:
           - backend:
@@ -175,5 +175,5 @@ spec:
             pathType: Prefix
   tls:
     - hosts:
-        - pgadmin.${serviceDomain}
-      secretName: pgadmin.${serviceDomain}-tls
+        - pgadmin.${serviceDomainOld}
+      secretName: pgadmin.${serviceDomainOld}-tls
