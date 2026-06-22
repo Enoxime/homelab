@@ -1,0 +1,60 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pihole-service
+  namespace: pihole
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: pihole
+      version: ">=2.36.0 <2.37"
+      sourceRef:
+        kind: HelmRepository
+        name: mojo2600
+        namespace: pihole
+      interval: 1m
+  values:
+    DNS1: "${piholeIpv4ServiceBootstrap00}"
+    DNS2: "${piholeIpv4ServiceK8s00}"
+    admin:
+      enabled: true
+      existingSecret: pihole
+      passwordKey: password
+    doh:
+      enabled: false
+    dualStack:
+      enabled: true
+    extraEnvVars:
+      FTLCONF_dns_listeningMode: 'all'
+    ftl:
+      dns_rateLimit_count: "100000"
+      dns_rateLimit_interval: "15"
+      ntp_ipv4_active: false
+      ntp_ipv6_active: false
+      webserver_interface_boxed: false
+      webserver_interface_theme: default-dark
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: homelab-internal
+      ingressClassName: nginx
+      hosts:
+        - piholek8s00.k8s00.${mgmtDomainOld}
+      path: /
+      pathType: ImplementationSpecific
+      tls:
+        - hosts:
+            - piholek8s00.k8s00.${mgmtDomainOld}
+          secretName: piholek8s00.k8s00.${mgmtDomainOld}-tls
+    persistentVolumeClaim:
+      enabled: true
+      size: 500Mi
+    serviceDhcp:
+      enabled: false
+    serviceDns:
+      type: ClusterIP
+    serviceWeb:
+      type: ClusterIP
+    strategyType: Recreate
