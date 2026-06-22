@@ -40,7 +40,7 @@ spec:
           paths:
             - path: /
               pathType: Prefix
-        - host: photos.${homeDomainOld}
+        - host: photos.${mainDomainOld}
           paths:
             - path: /
               pathType: Prefix
@@ -50,7 +50,7 @@ spec:
             - immich.${serviceDomainOld}
         - secretName: immich-tls-ext
           hosts:
-            - photos.${homeDomainOld}
+            - photos.${mainDomainOld}
 
     persistence:
       enabled: true
