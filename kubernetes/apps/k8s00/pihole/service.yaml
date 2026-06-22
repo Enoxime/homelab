@@ -1,0 +1,120 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pihole-mgmt
+  namespace: pihole
+  labels:
+    app: pihole-mgmt
+    network: mgmt
+  annotations:
+    lbipam.cilium.io/ips: "${piholeIpv4MgmtK8s00}"
+spec:
+  # ipFamilyPolicy: PreferDualStack
+  # ipFamilies:
+  #   - IPv4
+  #   - IPv6
+  ports:
+    - name: dns
+      port: 53
+      protocol: TCP
+      targetPort: dns
+    - name: dns-udp
+      port: 53
+      protocol: UDP
+      targetPort: dns-udp
+  type: LoadBalancer
+  loadBalancerClass: io.cilium/bgp-control-plane
+  selector:
+    app: pihole
+    release: pihole-mgmt
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pihole-service
+  namespace: pihole
+  labels:
+    app: pihole-service
+    network: service
+  annotations:
+    lbipam.cilium.io/ips: "${piholeIpv4ServiceK8s00}"
+spec:
+  # ipFamilyPolicy: PreferDualStack
+  # ipFamilies:
+  #   - IPv4
+  #   - IPv6
+  ports:
+    - name: dns
+      port: 53
+      protocol: TCP
+      targetPort: dns
+    - name: dns-udp
+      port: 53
+      protocol: UDP
+      targetPort: dns-udp
+  type: LoadBalancer
+  loadBalancerClass: io.cilium/bgp-control-plane
+  selector:
+    app: pihole
+    release: pihole-service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pihole-casa
+  namespace: pihole
+  labels:
+    app: pihole-casa
+    network: casa
+  annotations:
+    lbipam.cilium.io/ips: "${piholeIpv4CasaK8s00}"
+spec:
+  # ipFamilyPolicy: PreferDualStack
+  # ipFamilies:
+  #   - IPv4
+  #   - IPv6
+  ports:
+    - name: dns
+      port: 53
+      protocol: TCP
+      targetPort: dns
+    - name: dns-udp
+      port: 53
+      protocol: UDP
+      targetPort: dns-udp
+  type: LoadBalancer
+  loadBalancerClass: io.cilium/bgp-control-plane
+  selector:
+    app: pihole
+    release: pihole-casa
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pihole-k8s00
+  namespace: pihole
+  labels:
+    app: pihole-k8s00
+    network: k8s00
+  annotations:
+    lbipam.cilium.io/ips: "${piholeIpv4K8s00K8s00}"
+spec:
+  # ipFamilyPolicy: PreferDualStack
+  # ipFamilies:
+  #   - IPv4
+  #   - IPv6
+  ports:
+    - name: dns
+      port: 53
+      protocol: TCP
+      targetPort: dns
+    - name: dns-udp
+      port: 53
+      protocol: UDP
+      targetPort: dns-udp
+  type: LoadBalancer
+  loadBalancerClass: io.cilium/bgp-control-plane
+  selector:
+    app: pihole
+    release: pihole-k8s00
