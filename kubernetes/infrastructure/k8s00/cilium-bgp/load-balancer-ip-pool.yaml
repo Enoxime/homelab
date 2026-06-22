@@ -6,5 +6,51 @@ metadata:
 spec:
   allowFirstLastIPs: "No"
   blocks:
-    - cidr: 192.168.90.0/24
+    - cidr: ${ipv4_service_service_bgp_cidr}
   disabled: false
+  serviceSelector:
+    matchExpressions:
+      - key: network
+        operator: DoesNotExist
+---
+apiVersion: "cilium.io/v2"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: service-pool-mgmt
+spec:
+  allowFirstLastIPs: "No"
+  blocks:
+    - cidr: ${ipv4_mgmt_bgp_cidr}
+    # - cidr: ${ipv6_mgmt_bgp_cidr}
+  disabled: false
+  serviceSelector:
+    matchLabels:
+      network: mgmt
+---
+apiVersion: "cilium.io/v2"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: service-pool-service
+spec:
+  allowFirstLastIPs: "No"
+  blocks:
+    - cidr: ${ipv4_service_bgp_cidr}
+    # - cidr: ${ipv6_service_bgp_cidr}
+  disabled: false
+  serviceSelector:
+    matchLabels:
+      network: service
+---
+apiVersion: "cilium.io/v2"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: service-pool-k8s00
+spec:
+  allowFirstLastIPs: "No"
+  blocks:
+    - cidr: ${ipv4_k8s00_bgp_cidr}
+    # - cidr: ${ipv6_k8s00_bgp_cidr}
+  disabled: false
+  serviceSelector:
+    matchLabels:
+      network: k8s00

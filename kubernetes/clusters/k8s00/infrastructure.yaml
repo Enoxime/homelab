@@ -62,6 +62,8 @@ spec:
   postBuild:
     substituteFrom:
       - kind: Secret
+        name: cilium-values
+      - kind: Secret
         name: external-dns-values
       - kind: Secret
         name: cert-manager-issuers-secret-values
