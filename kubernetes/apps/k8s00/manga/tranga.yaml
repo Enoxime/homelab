@@ -73,11 +73,11 @@ spec:
       annotations:
         cert-manager.io/cluster-issuer: homelab-internal
       hosts:
-        - host: tranga.${serviceDomain}
+        - host: tranga.${serviceDomainOld}
           paths:
             - path: /
               pathType: Prefix
       tls:
         - secretName: tranga-tls
           hosts:
-            - tranga.${serviceDomain}
+            - tranga.${serviceDomainOld}

@@ -1,33 +1,33 @@
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: Gateway
-metadata:
-  name: yarr
-  namespace: yarr
-  annotations:
-    cert-manager.io/cluster-issuer: homelab-internal
-spec:
-  infrastructure:
-    labels:
-      network: service
-  gatewayClassName: cilium
-  listeners:
-    - protocol: HTTPS
-      port: 443
-      name: https
-      hostname: "*.yarr.${serviceDomain}"
-      tls:
-        mode: Terminate
-        certificateRefs:
-          - kind: Secret
-            name: yarr-wildcard-cert
-      allowedRoutes:
-        namespaces:
-          from: Same
-    # - protocol: HTTP
-    #   port: 80
-    #   name: http
-    #   hostname: "*.yarr.${serviceDomain}"
-    #   allowedRoutes:
-    #     namespaces:
-    #       from: Same
+# ---
+# apiVersion: gateway.networking.k8s.io/v1
+# kind: Gateway
+# metadata:
+#   name: yarr
+#   namespace: yarr
+#   annotations:
+#     cert-manager.io/cluster-issuer: homelab-internal
+# spec:
+#   infrastructure:
+#     labels:
+#       network: service
+#   gatewayClassName: cilium
+#   listeners:
+#     - protocol: HTTPS
+#       port: 443
+#       name: https
+#       hostname: "*.yarr.${serviceDomainOld}"
+#       tls:
+#         mode: Terminate
+#         certificateRefs:
+#           - kind: Secret
+#             name: yarr-wildcard-cert
+#       allowedRoutes:
+#         namespaces:
+#           from: Same
+#     # - protocol: HTTP
+#     #   port: 80
+#     #   name: http
+#     #   hostname: "*.yarr.${serviceDomainOld}"
+#     #   allowedRoutes:
+#     #     namespaces:
+#     #       from: Same

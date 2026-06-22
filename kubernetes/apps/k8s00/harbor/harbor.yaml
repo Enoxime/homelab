@@ -20,7 +20,7 @@ spec:
       type: ingress
       ingress:
         hosts:
-          core: harbor.${serviceDomain}
+          core: harbor.${serviceDomainOld}
         className: nginx
         annotations:
           cert-manager.io/cluster-issuer: homelab-internal
@@ -28,7 +28,7 @@ spec:
           ingress.kubernetes.io/proxy-body-size: "0"
           nginx.ingress.kubernetes.io/ssl-redirect: "true"
           nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    externalURL: https://harbor.${serviceDomain}
+    externalURL: https://harbor.${serviceDomainOld}
     persistence:
       enabled: true
       resourcePolicy: "keep"
