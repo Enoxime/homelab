@@ -67,4 +67,4 @@ spec:
   disabled: false
   serviceSelector:
     matchLabels:
-      network: k8s00
+      network: casa
