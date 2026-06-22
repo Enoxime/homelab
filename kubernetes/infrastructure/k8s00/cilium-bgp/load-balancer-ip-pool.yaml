@@ -54,3 +54,17 @@ spec:
   serviceSelector:
     matchLabels:
       network: k8s00
+---
+apiVersion: "cilium.io/v2"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: service-pool-casa
+spec:
+  allowFirstLastIPs: "No"
+  blocks:
+    - cidr: ${ipv4_casa_bgp_cidr}
+    # - cidr: ${ipv6_casa_bgp_cidr}
+  disabled: false
+  serviceSelector:
+    matchLabels:
+      network: k8s00
