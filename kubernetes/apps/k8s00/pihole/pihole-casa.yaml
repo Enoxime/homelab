@@ -25,7 +25,7 @@ spec:
     doh:
       enabled: false
     dualStack:
-      enabled: true
+      enabled: false
     extraEnvVars:
       FTLCONF_dns_listeningMode: 'all'
     ftl:
