@@ -4,7 +4,7 @@ metadata:
   name: cilium-values
   namespace: flux-system
 stringData:
-  ipv4_k8s00_router: ENC[AES256_GCM,data:EJ357XkTIfQg/t2P,iv:Y0GvsO04jd/AdIX9KcC1DvqopdK/TtG7FMDSJeTNsFw=,tag:sMvb0PPjYUQtfws11U73rA==,type:str]
+  ipv4_k8s00_router: ENC[AES256_GCM,data:y2JLdg7h8I0xeAyP,iv:FRbQwIahawChnv2z9Bp66p7fsK8nKAusP2Z/Qe6aLjs=,tag:GsxFPgDFL6mW6G2Jrngxng==,type:str]
   ipv4_mgmt_bgp_cidr: ENC[AES256_GCM,data:MSQPlXl7IR3LvmKBEvY=,iv:sVerFdcmc9iiMH3QiXulo4+2CozVpVRkq00q6SQlupg=,tag:EhYx+nS3hnkpjQzPywgr/w==,type:str]
   ipv4_service_bgp_cidr: ENC[AES256_GCM,data:yRfsgwJPDSlIQvme/L6Z,iv:1IQDzTdwMYzfM2ANHxt9aj12oia2zLOsITWJnyyq43U=,tag:Z/ulnRDD/LGL0JbffCgAMQ==,type:str]
   ipv4_k8s00_bgp_cidr: ENC[AES256_GCM,data:pGqqAA+CKy5QxC4pmvu5,iv:GbJCRfOBbw8Setp7BBKeGq7Onk5cbd0oFLh4+BmBPa0=,tag:D7g6/cSDMLB442GEFy9ymw==,type:str]
@@ -22,6 +22,6 @@ sops:
         -----END AGE ENCRYPTED FILE-----
       recipient: age195m7v6w6lce8knleuc9juqwklj56vjflng64q60eh90yrfpsfyjs222pls
   encrypted_regex: ^(data|stringData)$
-  lastmodified: "2026-06-22T20:45:36Z"
-  mac: ENC[AES256_GCM,data:lt59sMT+3I6XgF2aef4HjEIFdzOVzBP3Cbw/xcDVwAGLKEh/tHcnI+aRDAaytdGCwUovvuPlRGJasE8eIf0vGccwPH89mDWuLE/EgGGCqfNkykBiwcdnu+UK9HYWVip4LcL+OUuGAqW4j4tlDc5+ZvrbRAvrBOnOW4/8SFyLMqM=,iv:MG7tj4eR6o1nwVGcGYON0OX83WdiS23xmXC9OUbSQiA=,tag:gRUTANmXSotpMKhDTbtbgg==,type:str]
+  lastmodified: "2026-06-23T10:14:18Z"
+  mac: ENC[AES256_GCM,data:v/VuW3dtF77zqQAKoeXc2zLJ4g5MPwLYLPnte1FanrZ/Gu4JBDuh/gbZHpsVLZNie1/DCwEX7IyVz8nLim64uiMytam1cpOMsd5y7MuRBhqC2FjvVH3DddQQ9RemFYeBGTiX0nnkR8PYhZ0BPCgedAyJnJqbv/ID8qPmrxAnCYg=,iv:zGmZCQuh4x8roTR5b4RsfNAUUmrNp9HCNrSTmpjUgh4=,tag:pRP6AMLGWm7TouPKYkzJsg==,type:str]
   version: 3.13.1
