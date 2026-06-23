@@ -27,7 +27,7 @@ stringData:
   piholeIpv4MgmtK8s00: ENC[AES256_GCM,data:UC62pO440tQlnBo=,iv:unentwg99dzrqsr+kmd4SsDCTRWkH0QwMwaBksnfWGw=,tag:Ybj1gulfHlZ/BKiQYia0/w==,type:str]
   piholeIpv4K8s00Bootstrap00: ENC[AES256_GCM,data:qfBxfyr+pU5NJRfu,iv:kW84pgfnp/D7s7bXcz43ALR/NzH61NOU5poYDlRiEVA=,tag:Z2vxhGtK5qlQVyX3EWig8Q==,type:str]
   piholeIpv4K8s00K8s00: ENC[AES256_GCM,data:gX9enfLgvbapilVq,iv:kUvBms8uh40LR4DV/Hu/+ZSy8L1O07SdqPOclTas4r8=,tag:Blypb8bxBgyiSji5ryDhkA==,type:str]
-  piholeIpv4ServiceBootstrap00: ENC[AES256_GCM,data:SkA3pxOtaAyuDWo=,iv:ziipQUzKxAko3JDxeyOYnSmEvE2b10mujIJ1a0BwGU4=,tag:tRLjyaVduXsPbrg2Ek5Vxg==,type:str]
+  piholeIpv4ServiceBootstrap00: ENC[AES256_GCM,data:C00MbSZMo8IaOHI5,iv:KRKs/x0lOB345VZLUPoNCq2z38uLo5IEzGUi4ngpmIw=,tag:JDfxG3npv3Li8ExWpVmDJg==,type:str]
   piholeIpv4ServiceK8s00: ENC[AES256_GCM,data:tgxlKaseplFZullM,iv:ZzMdp1MqvUAui+xvYAQKaQMIQwBlKQzk60hNdN0UHU4=,tag:fME1OZ/+sxVbwEQjWkhoUw==,type:str]
   piholeIpv4CasaK8s00: ENC[AES256_GCM,data:NQ5MW7UOgPlf/74D,iv:Lu2ElPJQouGSlmjVgJriFV6lefoUPL9zQrM5C12pMew=,tag:f4ou8w2S03Hys+IcbD8OhA==,type:str]
 sops:
@@ -42,6 +42,6 @@ sops:
         -----END AGE ENCRYPTED FILE-----
       recipient: age195m7v6w6lce8knleuc9juqwklj56vjflng64q60eh90yrfpsfyjs222pls
   encrypted_regex: ^(data|stringData)$
-  lastmodified: "2026-06-22T21:35:36Z"
-  mac: ENC[AES256_GCM,data:SgdK0NDqolA2zXjG1uakNEKzs5FESlvlFieJDe7h7jyAOJIXMuud9nxnvrSnhiDiAgFiKwJPPAj0XkIgSkQR48xzUNHBLJJXlGfhjYEsv9CuSY4Gr01TDtpuod+w3n/FzoOHqTCPkrMkS4iiL2nJLkj+TpFpyhguQn8dO8huK1o=,iv:pU7j8egYJ+RI//J5VYxlPV/aH1caNkfih5vgwyixVms=,tag:cQp/aGMTy8JKIDS3Pdpaiw==,type:str]
+  lastmodified: "2026-06-23T10:38:30Z"
+  mac: ENC[AES256_GCM,data:JQ+kX/HUqQYYDYIf7fhXVA308jrgz6E3BdrJH+lOj+rcAonwGWK8LwgndbN7dOiymk1qZj2aC2SzOR5Vhz1DERHKdxjk30CgjPJcwTHse5CRkkBQtflGY6okLG+kPX7iBCYa1umv04w5l88sPu5rapj0ntovPvrV3y5g3hkFVK8=,iv:2saVWYpplFnjwOfqtQNYxe7b7qGFnOAqMYR3ESzoVWI=,tag:NjlNikIN4X/ioFwj3+rRhA==,type:str]
   version: 3.13.1
