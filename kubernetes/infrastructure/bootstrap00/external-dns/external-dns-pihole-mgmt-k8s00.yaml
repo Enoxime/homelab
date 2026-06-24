@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: external-dns-pihole-k8s00
+  name: external-dns-pihole-mgmt-k8s00
   namespace: cert-manager
 spec:
   interval: 5m

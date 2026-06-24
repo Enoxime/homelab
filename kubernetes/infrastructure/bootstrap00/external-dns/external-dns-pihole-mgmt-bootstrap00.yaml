@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: external-dns-pihole-k8s00
+  name: external-dns-pihole-mgmt-bootstrap00
   namespace: cert-manager
 spec:
   interval: 5m
@@ -24,7 +24,7 @@ spec:
             name: pihole-password
     extraArgs:
       - --pihole-api-version=6
-      - --pihole-server=${piholeUrlMgmtK8s00}
+      - --pihole-server=${piholeUrlMgmtBootstrap00Internal}
       - --pihole-tls-skip-verify
     interval: 1m
     namespaced: false
@@ -52,7 +52,7 @@ spec:
 # apiVersion: kustomize.toolkit.fluxcd.io/v1
 # kind: Kustomization
 # metadata:
-#   name: external-dns-pihole-k8s00
+#   name: external-dns-pihole-bootstrap00
 #   namespace: cert-manager
 # spec:
 #   interval: 1440m
@@ -69,7 +69,7 @@ spec:
 #     - patch: |
 #         - op: replace
 #           path: /metadata/name
-#           value: external-dns-pihole-k8s00
+#           value: external-dns-pihole-bootstrap00
 #         - op: replace
 #           path: /spec/template/spec/containers/0/args
 #           value:
@@ -86,7 +86,7 @@ spec:
 #             # Switch to pihole V6 API
 #             - --pihole-api-version=6
 #             # Change this to the actual address of your Pi-hole web server
-#             - --pihole-server=${piholeUrlMgmtK8s00}
+#             - --pihole-server=${piholeUrlMgmtBootstrap00}
 #             # - --pihole-tls-skip-verify
 #         - op: add
 #           path: /spec/template/spec/containers/0/envFrom

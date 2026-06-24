@@ -24,6 +24,7 @@ stringData:
   k8s00DomainOld: ENC[AES256_GCM,data:lyi5BW26g0cENmtxBYp1VVJR0Q==,iv:gesiXsL9VXLUUHzDz8PPzYDdn1hcf6jVGHH+iHEbSbY=,tag:qYJ2bGdWlzAGvBYxUsjJuA==,type:str]
   piholeUrlMgmtBootstrap00: ENC[AES256_GCM,data:qoKSxZ3jR9xrVMcEEawoyYyrG1WdJStNvS0lv/SGhH9iTsu/d+i8djHmgA/uns14DQ==,iv:L1apPtbzs5SmIUqONf+mUYDmoQ3u8OaWkZJJptZNmvE=,tag:REFcTM1XRFMJ/OKoBOlONw==,type:str]
   piholeUrlMgmtK8s00: ENC[AES256_GCM,data:dwf+sFV8DXiyEhLcuO2Vj+E01oGZthDkI7oEFyu4Uxssq1wbXyjW0dFIGQ==,iv:XY7N2LvnF4yxr52PqQr9tpiXQAM9Ezz+tW62hSpywPU=,tag:jK2Vt5ZkkEWGFeE4x9H1mQ==,type:str]
+  piholeUrlMgmtK8s00Internal: ENC[AES256_GCM,data:SOUhF/mNhAZTFrMHt752dRYtOeTWPKhEgqyJvqtx,iv:P3Phb/k5GfDKZfcI9s4MOTVRJ7T08OwvaHFjnrbR0uo=,tag:m0ajjrONAWNVwOdC9JIbMg==,type:str]
   piholeIpv4MgmtK8s00: ENC[AES256_GCM,data:UC62pO440tQlnBo=,iv:unentwg99dzrqsr+kmd4SsDCTRWkH0QwMwaBksnfWGw=,tag:Ybj1gulfHlZ/BKiQYia0/w==,type:str]
   piholeIpv6MgmtK8s00: ENC[AES256_GCM,data:RcX1j8cKRY9+j23soeytMXbtmmFuwA==,iv:IJzNxmT0fFsz725hQgIG8AZ0TPCfI2L+/jq9hr7YzZk=,tag:ZJ+xgm1LDRRWB3isXpc+Aw==,type:str]
   piholeIpv4K8s00Bootstrap00: ENC[AES256_GCM,data:qfBxfyr+pU5NJRfu,iv:kW84pgfnp/D7s7bXcz43ALR/NzH61NOU5poYDlRiEVA=,tag:Z2vxhGtK5qlQVyX3EWig8Q==,type:str]
@@ -48,6 +49,6 @@ sops:
         -----END AGE ENCRYPTED FILE-----
       recipient: age195m7v6w6lce8knleuc9juqwklj56vjflng64q60eh90yrfpsfyjs222pls
   encrypted_regex: ^(data|stringData)$
-  lastmodified: "2026-06-24T00:28:50Z"
-  mac: ENC[AES256_GCM,data:9/b9F1gB9fYBvYFrp7W9U+QUQukxlsLZC6lEu6nmAqPd9zp/GEAse4Q3Gk3Y1Gx+Hdef0snY+ngyfAnEMire5y4+KSKWzQ2ojFQ79m1SxhDUWEdsI6/WzuOBpMKGncNNyODm0wzDiwiA5Ip7YnXCSuBJN2W5iogJOAjJnRQhiZE=,iv:ARLD+A40HEnqdpygF8GN9zZeom573Dh9JzDPMdfmBmI=,tag:Ylgp2qUkbZ41osrVfE+SJw==,type:str]
+  lastmodified: "2026-06-24T21:18:23Z"
+  mac: ENC[AES256_GCM,data:re6UOLtBDqk2IGWcWxY+ArmTeix7qjKSctRHJN1fJLiuLLGKQOPHU3fgy9vsrUODbnm4X2duvjaAzBrrKYlLXqNCeuiO8n65fZdRH1IwZ3wjaXS+le8F9U4t4TK9Zcbr5RWOtLYV7eCFCgHJeYcyTxFjlsi8bZ+Ja8t/PJ5ATAo=,iv:s+HRhwaf7g44xxSIlaAxtAudyg2nb5zTeEbQpUxJjdE=,tag:jdIpTXmYm21acm2M2FrCuQ==,type:str]
   version: 3.13.1
