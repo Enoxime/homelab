@@ -59,11 +59,15 @@ spec:
   path: ./kubernetes/infrastructure/k8s00
   prune: true
   wait: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
   postBuild:
     substituteFrom:
       - kind: Secret
-        name: cilium-values
+        name: global-variables
       - kind: Secret
-        name: external-dns-values
+        name: cilium-values
       - kind: Secret
         name: cert-manager-issuers-secret-values

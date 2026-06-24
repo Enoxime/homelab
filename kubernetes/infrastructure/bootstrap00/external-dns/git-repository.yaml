@@ -1,0 +1,9 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: external-dns
+  namespace: cert-manager
+spec:
+  interval: 1440m
+  url: https://github.com/kubernetes-sigs/external-dns

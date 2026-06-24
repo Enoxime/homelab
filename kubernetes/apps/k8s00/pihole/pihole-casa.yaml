@@ -16,8 +16,6 @@ spec:
         namespace: pihole
       interval: 1m
   values:
-    DNS1: "${piholeIpv4ServiceBootstrap00}"
-    DNS2: "${piholeIpv4ServiceK8s00}"
     admin:
       enabled: true
       existingSecret: pihole
@@ -29,6 +27,7 @@ spec:
     extraEnvVars:
       FTLCONF_dns_listeningMode: 'all'
     ftl:
+      dns_upstreams: "${piholeIpv4ServiceBootstrap00};${piholeIpv4ServiceK8s00};${piholeIpv6ServiceBootstrap00};${piholeIpv6ServiceK8s00}"
       dns_rateLimit_count: "100000"
       dns_rateLimit_interval: "15"
       ntp_ipv4_active: false
@@ -49,8 +48,8 @@ spec:
             - piholecasa.k8s00.${mgmtDomainOld}
           secretName: piholecasa.k8s00.${mgmtDomainOld}-tls
     persistentVolumeClaim:
-      enabled: true
-      size: 500Mi
+      enabled: false
+      # size: 500Mi
     serviceDhcp:
       enabled: false
     serviceDns:
