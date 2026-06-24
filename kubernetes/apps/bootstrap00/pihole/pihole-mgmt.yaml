@@ -30,7 +30,8 @@ spec:
         - address=/router/${routerIpMgmt}
         - address=/nas00/${nasIpmgmt}
       enableCustomDnsMasq: true
-    DNS1: "${piholeIpv4K8s00Bootstrap00};${piholeIpv4K8s00K8s00};${piholeIpv6K8s00Bootstrap00};${piholeIpv6K8s00K8s00}"
+    DNS1: "${piholeIpv4K8s00Bootstrap00};${piholeIpv4K8s00K8s00}"
+    DNS2: "${piholeIpv6K8s00Bootstrap00};${piholeIpv6K8s00K8s00}"
     doh:
       enabled: false
     dualStack:

@@ -20,6 +20,8 @@ spec:
       enabled: true
       existingSecret: pihole
       passwordKey: password
+    DNS1: "${piholeIpv4ServiceBootstrap00};${piholeIpv4ServiceK8s00}"
+    DNS2: "${piholeIpv6ServiceBootstrap00};${piholeIpv6ServiceK8s00}"
     doh:
       enabled: false
     dualStack:
@@ -27,7 +29,6 @@ spec:
     extraEnvVars:
       FTLCONF_dns_listeningMode: 'all'
     ftl:
-      dns_upstreams: "${piholeIpv4ServiceBootstrap00};${piholeIpv4ServiceK8s00};${piholeIpv6ServiceBootstrap00};${piholeIpv6ServiceK8s00}"
       dns_rateLimit_count: "100000"
       dns_rateLimit_interval: "15"
       ntp_ipv4_active: false
