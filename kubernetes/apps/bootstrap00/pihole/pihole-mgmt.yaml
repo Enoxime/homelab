@@ -30,6 +30,7 @@ spec:
         - address=/router/${routerIpMgmt}
         - address=/nas00/${nasIpmgmt}
       enableCustomDnsMasq: true
+    DNS1: "${piholeIpv4K8s00Bootstrap00};${piholeIpv4K8s00K8s00};${piholeIpv6K8s00Bootstrap00};${piholeIpv6K8s00K8s00}"
     doh:
       enabled: false
     dualStack:
@@ -37,7 +38,6 @@ spec:
     extraEnvVars:
       FTLCONF_dns_listeningMode: 'all'
     ftl:
-      dns_upstreams: "${piholeIpv4K8s00Bootstrap00};${piholeIpv4K8s00K8s00};${piholeIpv6K8s00Bootstrap00};${piholeIpv6K8s00K8s00}"
       dns_rateLimit_count: "100000"
       dns_rateLimit_interval: "15"
       ntp_ipv4_active: false
