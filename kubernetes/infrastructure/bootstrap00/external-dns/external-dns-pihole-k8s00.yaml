@@ -18,6 +18,9 @@ spec:
   patches:
     - patch: |
         - op: replace
+          path: /metadata/name
+          value: external-dns-pihole-k8s00
+        - op: replace
           path: /spec/template/spec/containers/0/args
           value:
             - --source=service
