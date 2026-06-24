@@ -1,17 +1,8 @@
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: GitRepository
-metadata:
-  name: external-dns
-  namespace: cert-manager
-spec:
-  interval: 1440m
-  url: https://github.com/kubernetes-sigs/external-dns
----
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: external-dns
+  name: external-dns-pihole-k8s00
   namespace: cert-manager
 spec:
   interval: 1440m
@@ -42,8 +33,8 @@ spec:
             # Switch to pihole V6 API
             - --pihole-api-version=6
             # Change this to the actual address of your Pi-hole web server
-            - --pihole-server=${pihole_url}
-            - --pihole-tls-skip-verify
+            - --pihole-server=${piholeUrlMgmtK8s00}
+            # - --pihole-tls-skip-verify
         - op: add
           path: /spec/template/spec/containers/0/envFrom
           value:

@@ -49,8 +49,8 @@ spec:
             - piholeservice.k8s00.${mgmtDomainOld}
           secretName: piholeservice.k8s00.${mgmtDomainOld}-tls
     persistentVolumeClaim:
-      enabled: true
-      size: 500Mi
+      enabled: false
+      # size: 500Mi
     serviceDhcp:
       enabled: false
     serviceDns:
