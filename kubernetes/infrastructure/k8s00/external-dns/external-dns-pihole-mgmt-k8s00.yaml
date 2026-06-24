@@ -25,7 +25,6 @@ spec:
     extraArgs:
       - --pihole-api-version=6
       - --pihole-server=${piholeUrlMgmtK8s00Internal}
-      - --pihole-tls-skip-verify
     interval: 1m
     namespaced: false
     # IMPORTANT: If you have records that you manage manually in Pi-hole, set
