@@ -54,7 +54,7 @@ spec:
       enabled: true
       annotations:
         cert-manager.io/cluster-issuer: homelab-internal
-      ingressClassName: nginx
+      ingressClassName: nginx-mgmt
       hosts:
         - piholemgmt.k8s00.${mgmtDomainOld}
       path: /
