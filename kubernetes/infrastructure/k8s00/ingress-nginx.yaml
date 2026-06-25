@@ -39,3 +39,43 @@ spec:
           enabled: true
         prometheusRule:
           enabled: true
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ingress-nginx-mgmt
+  namespace: ingress-nginx
+spec:
+  interval: 30m
+  install:
+    createNamespace: true
+  chart:
+    spec:
+      chart: ingress-nginx
+      version: ">= 4.15.1 < 4.16.0"
+      sourceRef:
+        kind: HelmRepository
+        name: ingress-nginx
+        namespace: flux-system
+      interval: 1m
+  values:
+    controller:
+      ingressClass: nginx-mgmt
+      ingressClassResource:
+        name: nginx-mgmt
+        enabled: true
+        default: false
+        controllerValue: "k8s.io/ingress-nginx-mgmt"
+      metrics:
+        enabled: false
+      service:
+        annotations:
+          lbipam.cilium.io/ips: "${ingressMgmtIpv4}"
+        #   lbipam.cilium.io/ips: "${ingressMgmtIpv4},${ingressMgmtIpv6}"
+        # ipFamilies:
+        #   - IPv4
+        #   - IPv6
+        # ipFamilyPolicy: PreferDualStack
+        labels:
+          network: mgmt
+        loadBalancerClass: io.cilium/bgp-control-plane
