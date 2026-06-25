@@ -20,8 +20,10 @@ spec:
       enabled: true
       existingSecret: pihole
       passwordKey: password
-    DNS1: "${piholeIpv4K8s00Bootstrap00};${piholeIpv4K8s00K8s00}"
-    DNS2: "${piholeIpv6K8s00Bootstrap00};${piholeIpv6K8s00K8s00}"
+    # DNS1: "${piholeIpv4K8s00Bootstrap00};${piholeIpv4K8s00K8s00}"
+    # DNS2: "${piholeIpv6K8s00Bootstrap00};${piholeIpv6K8s00K8s00}"
+    DNS1: "${piholeIpv4K8s00Bootstrap00}"
+    DNS2: "${piholeIpv4K8s00K8s00}"
     dnsmasq:
       customCnameEntries:
         - cname=router.${mgmtDomainOld},router

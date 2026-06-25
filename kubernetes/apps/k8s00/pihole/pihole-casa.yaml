@@ -20,8 +20,10 @@ spec:
       enabled: true
       existingSecret: pihole
       passwordKey: password
-    DNS1: "${piholeIpv4ServiceBootstrap00};${piholeIpv4ServiceK8s00}"
-    DNS2: "${piholeIpv6ServiceBootstrap00};${piholeIpv6ServiceK8s00}"
+    # DNS1: "${piholeIpv4ServiceBootstrap00};${piholeIpv4ServiceK8s00}"
+    # DNS2: "${piholeIpv6ServiceBootstrap00};${piholeIpv6ServiceK8s00}"
+    DNS1: "${piholeIpv4ServiceBootstrap00}"
+    DNS2: "${piholeIpv4ServiceK8s00}"
     doh:
       enabled: false
     dualStack:
