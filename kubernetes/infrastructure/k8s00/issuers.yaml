@@ -22,8 +22,9 @@ spec:
           ingress:
             ingressClassName: nginx-mgmt
         selector:
-          matchLabels:
-            network: mgmt
+          dnsZones:
+            - "${mgmtDomainOld}"
+            - "${mgmtDomain}"
       - http01:
           ingress:
             ingressClassName: nginx
