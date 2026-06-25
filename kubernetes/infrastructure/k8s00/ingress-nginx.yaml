@@ -61,6 +61,11 @@ spec:
   values:
     controller:
       ingressClass: nginx-mgmt
+      ingressClassResource:
+        name: nginx-mgmt
+        enabled: true
+        default: false
+        controllerValue: "k8s.io/ingress-nginx-mgmt"
       metrics:
         enabled: false
       service:
