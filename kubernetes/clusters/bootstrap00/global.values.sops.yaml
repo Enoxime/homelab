@@ -5,6 +5,7 @@ metadata:
   namespace: flux-system
 stringData:
   routerIpMgmt: ENC[AES256_GCM,data:FfS6BjKAxKhio7c=,iv:gCf9gMmMk+O0O9RJgj9iSfE15w7F6mhU56GSUsKNXJc=,tag:eocjv1ZMjvDp8srWeJbyBg==,type:str]
+  routerIpService: ENC[AES256_GCM,data:QbHmIPyKy/yf1Jvt,iv:ZYr/V973l2pODa0503+YC23n87rueUx59t20AO1o8qI=,tag:qMjYBH+bdyuczNYc7NJEqw==,type:str]
   nasIpmgmt: ENC[AES256_GCM,data:QJ+GQto6/gFitk/R,iv:KuooGOBBbeigYcX3J54N5+eSluo62rnWv8BoXZo68xY=,tag:qviB7QdLu0ris4vsTSEwDA==,type:str]
   mainDomain: ENC[AES256_GCM,data:yGEzHJEjhg==,iv:bNDPDCnSdbqfRIgoWqlViT3LAemru4fK6e0qd8McRqs=,tag:muMU6BiNQnK6qfxCZxCrQg==,type:str]
   homeDomainOld: ENC[AES256_GCM,data:UHyuJlxxmirkjeyEhQ==,iv:29Ynv/2ljrTirJgiCAN0xibIeTXbhlCzYe8ggrm4u5g=,tag:YRo0KCPIkBHlNCC+ufy4kg==,type:str]
@@ -55,6 +56,6 @@ sops:
         -----END AGE ENCRYPTED FILE-----
       recipient: age195m7v6w6lce8knleuc9juqwklj56vjflng64q60eh90yrfpsfyjs222pls
   encrypted_regex: ^(data|stringData)$
-  lastmodified: "2026-06-24T21:34:47Z"
-  mac: ENC[AES256_GCM,data:RgmrLJndvUECVrr7rZ4kUSAnaLpFugQ7+igOGbA3tmMBUQLiRtbXf2/Lszw2pACTuPdd6N2W2GuFDCB7ucjDIVFIRNPnsLAKfg/sLtAl329AYZQcMeZv1aex+MVsv2XCaCNldfHTktWfgfBa0IcNnTx6CkAwwVmjRrxA4IhJ7Dk=,iv:4PUNShaoVP2iVG/s8Q40cPAycJ++sCEOnTq+70EMiXE=,tag:amAwNen2CFhXSzcNgQYJ6w==,type:str]
+  lastmodified: "2026-06-24T23:59:59Z"
+  mac: ENC[AES256_GCM,data:hfEHoaphHT1zRS4x9zf7Kci/+aWNPGu1FIhXC5btL9hlARK9xiiUKNGuPfdvng4/9e/YoBiAkPK3oMLYn9NpSSyWGBl1/R7JiCDNNjBFj8P6JPNH+WkNoJ7Q3NpZq5N47Xu2gdaRhnN04nBGrIBzkTCcZjUsrVrVGYKJl/buaeY=,iv:Yh4jHAdvRUf4u05xXDLIH+qjU2Z7fD+PHlbtLZbWLes=,tag:8xbDhHbujx0SgsUMaysbhg==,type:str]
   version: 3.13.1
