@@ -20,4 +20,10 @@ spec:
     solvers:
     - http01:
         ingress:
+          ingressClassName: nginx-mgmt
+      selector:
+        matchLabels:
+          network: mgmt
+    - http01:
+        ingress:
           ingressClassName: nginx
