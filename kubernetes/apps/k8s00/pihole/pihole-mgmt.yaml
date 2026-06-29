@@ -33,6 +33,10 @@ spec:
       customDnsEntries:
         - address=/router/${routerIpMgmt}
         - address=/nas00/${nasIpmgmt}
+        - address=/piholemgmt.bootstrap00.${mgmtDomainOld}/${piholeIpv4MgmtBootstrap00}
+        - address=/piholemgmt.bootstrap00.${mgmtDomainOld}/${piholeIpv6MgmtBootstrap00}
+        - address=/piholemgmt.k8s00.${mgmtDomainOld}/${piholeIpv4MgmtK8s00}
+        - address=/piholemgmt.k8s00.${mgmtDomainOld}/${piholeIpv6MgmtK8s00}
       enableCustomDnsMasq: true
     doh:
       enabled: false
