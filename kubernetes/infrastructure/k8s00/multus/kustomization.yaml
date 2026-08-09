@@ -24,28 +24,28 @@ patches:
                 configMap:
                   name: multus-install-cni
                   defaultMode: 0555
-  - patch: |-
-      apiVersion: apps/v1
-      kind: DaemonSet
-      metadata:
-        name: kube-multus-ds
-        namespace: kube-system
-      spec:
-        template:
-          spec:
-            initContainers:
-            - command:
-                - /scripts/install-cni.sh
-              image: alpine/k8s:1.34.3
-              name: install-cni
-              securityContext:
-                privileged: true
-              volumeMounts:
-                - mountPath: /host/opt/cni/bin
-                  mountPropagation: Bidirectional
-                  name: cnibin
-                - mountPath: /scripts
-                  name: install-cni
+  # - patch: |-
+  #     apiVersion: apps/v1
+  #     kind: DaemonSet
+  #     metadata:
+  #       name: kube-multus-ds
+  #       namespace: kube-system
+  #     spec:
+  #       template:
+  #         spec:
+  #           initContainers:
+  #           - command:
+  #               - /scripts/install-cni.sh
+  #             image: alpine/k8s:1.34.3
+  #             name: install-cni
+  #             securityContext:
+  #               privileged: true
+  #             volumeMounts:
+  #               - mountPath: /host/opt/cni/bin
+  #                 mountPropagation: Bidirectional
+  #                 name: cnibin
+  #               - mountPath: /scripts
+  #                 name: install-cni
   - patch: |-
       apiVersion: apps/v1
       kind: DaemonSet
