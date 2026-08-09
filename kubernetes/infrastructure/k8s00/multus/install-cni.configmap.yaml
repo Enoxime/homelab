@@ -23,12 +23,17 @@ data:
       | tail -n 1
     )
 
-    curl -LO "https://github.com/containernetworking/plugins/releases/download/${__version}/cni-plugins-linux-amd64-${__version}.tgz"
-    curl -LO "https://github.com/containernetworking/plugins/releases/download/${__version}/cni-plugins-linux-amd64-${__version}.tgz.sha256"
+    # curl -LO "https://github.com/containernetworking/plugins/releases/download/${__version}/cni-plugins-linux-amd64-${__version}.tgz"
+    curl -LO "https://github.com/containernetworking/plugins/releases/download/v1.0.0/cni-plugins-linux-amd64-v1.0.0.tgz"
+    # curl -LO "https://github.com/containernetworking/plugins/releases/download/${__version}/cni-plugins-linux-amd64-${__version}.tgz.sha256"
+    curl -LO "https://github.com/containernetworking/plugins/releases/download/v1.0.0/cni-plugins-linux-amd64-v1.0.0.tgz.sha256"
 
-    grep "cni-plugins-linux-amd64-${__version}.tgz" "cni-plugins-linux-amd64-${__version}.tgz.sha256" | sha256sum -c -
+    # grep "cni-plugins-linux-amd64-${__version}.tgz" "cni-plugins-linux-amd64-${__version}.tgz.sha256" | sha256sum -c -
+    grep "cni-plugins-linux-amd64-v.1.0.0.tgz" "cni-plugins-linux-amd64-v1.0.0.tgz.sha256" | sha256sum -c -
 
-    tar xvfz "cni-plugins-linux-amd64-${__version}.tgz"
+    # tar xvfz "cni-plugins-linux-amd64-${__version}.tgz"
+    tar xvfz "cni-plugins-linux-amd64-v1.0.0.tgz"
 
-    rm "cni-plugins-linux-amd64-${__version}.tgz" "cni-plugins-linux-amd64-${__version}.tgz.sha256" LICENSE README.md
+    # rm "cni-plugins-linux-amd64-${__version}.tgz" "cni-plugins-linux-amd64-${__version}.tgz.sha256" LICENSE README.md
+    rm "cni-plugins-linux-amd64-v1.0.0.tgz" "cni-plugins-linux-amd64-v1.0.0.tgz.sha256" LICENSE README.md
     find . -type f -executable -exec cp {} /host/opt/cni/bin \;
