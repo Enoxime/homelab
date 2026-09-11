@@ -74,7 +74,10 @@ spec:
         enabled: true
         name: rook-ceph.rbd.csi.ceph.com
     operatorConfig:
+      namespace: rook-ceph
       driverSpecDefaults:
+        imageSet:
+          name: rook-csi-operator-image-set-configmap
         deployCsiAddons: true
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
