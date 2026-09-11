@@ -70,7 +70,7 @@ spec:
         enabled: false
       nvmeof:
         enabled: false
-      rdb:
+      rbd:
         enabled: true
         name: rook-ceph.rbd.csi.ceph.com
     operatorConfig:
