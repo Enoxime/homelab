@@ -13,12 +13,20 @@ Requirements:
 - [sops](https://github.com/getsops/sops)
 - [talhelper](https://budimanjojo.github.io/talhelper/latest/)
 
-## Talhelper
+## topf
 
-### Generate a secret under kubernetes/starter/{cluster_name}/talos
+[topf website](https://postfinance.github.io/topf/main/)
+
+### Generate topf.yaml file under kubernetes/starter/{cluster_name}/topf
+
+Create a topf.yaml file by following
+[this link](https://postfinance.github.io/topf/main/getting-started/)
+
+### Generate a secret under kubernetes/starter/{cluster_name}/topf
 
 ```bash
-talhelper gensecret > talsecret.sops.yaml
+topf secrets
+# answer 'y' to confirm the generation of secrets
 ```
 
 ### Ensure that the secret stays secret
@@ -27,47 +35,75 @@ talhelper gensecret > talsecret.sops.yaml
 # Generate a key and copy the public key
 age-keygen -o ~/.config/sops/age/keys.txt
 
-# Move to the talos folder
-cd kubernetes/starter/{cluster_name}/talos
+# Move to the topf folder
+cd kubernetes/starter/{cluster_name}/topf
 
-# Create a .sops.yaml file in talos folder and paste the public key
+# Create a .sops.yaml file in topf folder and paste the public key
 cat <<EOD > .sops.yaml
 ---
 creation_rules:
   - age: >-
       PUBLIC_KEY_HERE
+    path_regex: topf\.yaml
+    encrypted_regex: ^(data|clusterEndpoint)$
+  - age: >-
+      PUBLIC_KEY_HERE
+    path_regex: secrets\.yaml
+  - age: >-
+      PUBLIC_KEY_HERE
+stores:
+  yaml:
+    indent: 2
 
 EOD
 
-# Encrypt the talsecret.sops.yaml file
-sops -ei talsecret.sops.yaml
+# Encrypt the secrets.yaml file
+sops encrypt -i secrets.yaml
+
+# Encrypt the topf.yaml file
+sops encrypt -i topf.yaml
+
+# Create a gitignore file
+cat <<EOD > .gitignore
+output/
+talosconfig
+kubeconfig
+
+EOD
 ```
-
-### Generate talconfig.yaml
-
-Refer to
-[talhelper configuration](https://budimanjojo.github.io/talhelper/latest/reference/configuration/)
 
 ### Generate talos cluster config files and command lines needed
 
 ```bash
 # To generate the cluster config files
-talhelper genconfig
+topf render
+
+# To generate the talos config file
+topf talosconfig > talosconfig
 
 # To apply on nodes to install talosOS
-talhelper gencommand apply --extra-flags --insecure
+topf apply
+# or
+talosctl apply-config \
+  --nodes <node> \
+  --talosconfig ./talosconfig \
+  --insecure \
+  --file ./output/<node>.yaml
 
 # To bootstrap the cluster
-talhelper gencommand bootstrap
+talosctl bootstrap \
+  --nodes <first-control-plane> \
+  --endpoint <first-control-plane> \
+  --talosconfig ./talosconfig
 
-# To obtain the kubeconfig of the created cluster
-talhelper gencommand kubeconfig
+# To obtain the kubeconfig of the created cluster for one year validity
+# (default is 12h)
+topf kubeconfig --validity 8760h > kubeconfig
+# or
+talosctl kubeconfig --talosconfig=./talosconfig
 
 # To obtain the kubeconfig of the created cluster (when multiple clusters are defined)
-talhelper gencommand kubeconfig --extra-flags --merge
-
-# Ensure the workers a tagged as workers
-kubectl label node <worker node name>.... node-role.kubernetes.io/worker=worker
+talosctl kubeconfig --talosconfig=./talosconfig --merge
 ```
 
 ## Kubernetes cluster
@@ -80,16 +116,6 @@ Move to the folder kubernetes/starter/{cluster_name}
 kubectl kustomize bootstrap --enable-helm | kubectl apply -f -
 ```
 
-### Add SOPS age-key secrets
-
-```bash
-kubectl create namespace flux-system --dry-run=client -o yaml | kubectl apply -f -
-cat <path-to-age-key> | \
-  kubectl create secret generic sops-age \
-    --namespace=flux-system \
-    --from-file=age.agekey=/dev/stdin --dry-run=client -o yaml | kubectl apply -f -
-```
-
 ### Bootstrap fluxcd
 
 ```bash
@@ -99,6 +125,13 @@ flux create source git homelab \
   --url=https://github.com/Enoxime/homelab \
   --branch=main \
   --interval=1m
+
+# Add SOPS age-key secrets
+cat <path-to-age-key> | \
+  kubectl create secret generic sops-age \
+    --namespace=flux-system \
+    --from-file=age.agekey=/dev/stdin \
+    --dry-run=client -o yaml | kubectl apply -f -
 
 flux create kustomization {cluster_name} \
   --source=GitRepository/homelab \
