@@ -5,7 +5,7 @@ helmCharts:
     repo: https://helm.cilium.io/
     releaseName: cilium
     namespace: kube-system
-    version: 1.19.4
+    version: 1.20.2
     valuesInline:
       ipam:
         mode: kubernetes
@@ -37,5 +37,9 @@ helmCharts:
       cni:
         exclusive: false
       devices: br0
+      ipv4:
+        enabled: true
+      ipv6:
+        enabled: true
       bgpControlPlane:
         enabled: true
