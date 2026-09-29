@@ -5,13 +5,13 @@ manage pretty much all of the applications and VMs. The Kubernetes cluster k8s00
 is composed of three control plane and five workers. One worker have two graphic
 cards for the AI process. The Kubernetes runs on
 [Talos](https://www.talos.dev/). All the nodes are described in yaml format with
-[Talhelper](https://budimanjojo.github.io/talhelper/latest/).
+[Topf](https://postfinance.github.io/topf/main/).
 
 Requirements:
 
 - [age](https://github.com/FiloSottile/age)
 - [sops](https://github.com/getsops/sops)
-- [talhelper](https://budimanjojo.github.io/talhelper/latest/)
+- [Topf](https://postfinance.github.io/topf/main/)
 
 ## topf
 
@@ -25,8 +25,8 @@ Create a topf.yaml file by following
 ### Generate a secret under kubernetes/starter/{cluster_name}/topf
 
 ```bash
-topf secrets
 # answer 'y' to confirm the generation of secrets
+topf secrets > secrets.yaml
 ```
 
 ### Ensure that the secret stays secret
@@ -45,7 +45,7 @@ creation_rules:
   - age: >-
       PUBLIC_KEY_HERE
     path_regex: topf\.yaml
-    encrypted_regex: ^(data|clusterEndpoint)$
+    encrypted_regex: ^(data|clusterEndpoint|host)$
   - age: >-
       PUBLIC_KEY_HERE
     path_regex: secrets\.yaml
@@ -161,7 +161,7 @@ flux bootstrap github \
 ### To upgrade Talos
 
 ```bash
-talhelper gencommand upgrade
+topf upgrade
 ```
 
 ### To upgrade Kubernetes
@@ -170,7 +170,7 @@ talhelper gencommand upgrade
 > Check the state of the rook-ceph cluster during the upgrade.
 
 ```bash
-talhelper gencommand upgrade-k8s
+talosctl upgrade-k8s --to=v<kubernetes-version> --nodes=<control-plane-node>
 
 # Change the version to the one needed and check the state of the rook-ceph
 # cluster during the upgrade process.
