@@ -41,6 +41,9 @@ metadata:
   name: metrics-server
   namespace: kube-system
 spec:
+  dependsOn:
+    - name: cert-manager
+      namespace: cert-manager
   interval: 5m
   chart:
     spec:
@@ -50,3 +53,9 @@ spec:
         name: metrics-server
         namespace: kube-system
       interval: 1m
+  values:
+    replicas: 3
+    apiService:
+      insecureSkipTLSVerify: false
+    tls:
+      type: cert-manager

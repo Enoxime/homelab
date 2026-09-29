@@ -27,6 +27,7 @@ spec:
   wait: true
 ---
 # cloudnative-vectorchord
+# Mainly for Immich. See: https://docs.immich.app/administration/postgres-standalone/#prerequisites
 apiVersion: postgresql.cnpg.io/v1
 kind: ClusterImageCatalog
 metadata:
@@ -36,10 +37,7 @@ metadata:
     images.cnpg.io/publisher: vectorchord.ai
 spec:
   images:
-  - major: 18
-    image: ghcr.io/tensorchord/cloudnative-vectorchord:18.3@sha256:392b53675b403d6a2c72b673cc488a7c272514755dd818c622fb9ce4665193c4
-  - major: 17
-    image: ghcr.io/tensorchord/cloudnative-vectorchord:17.9
-  # Mainly for Immich. See: https://docs.immich.app/administration/postgres-standalone/#prerequisites
-  - major: 16
-    image: ghcr.io/tensorchord/cloudnative-vectorchord:16.9-0.4.3
+    - major: 18
+      image: ghcr.io/tensorchord/cloudnative-vectorchord:18.6-1.1.1
+    - major: 17
+      image: ghcr.io/tensorchord/cloudnative-vectorchord:17-1.1.1

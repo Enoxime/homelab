@@ -67,7 +67,3 @@ spec:
     substituteFrom:
       - kind: Secret
         name: global-variables
-      - kind: Secret
-        name: cilium-values
-      - kind: Secret
-        name: cert-manager-issuers-secret-values

@@ -8,7 +8,7 @@ spec:
   interval: 1440m
   url: https://git.deuxfleurs.fr/Deuxfleurs/garage
   ref:
-    semver: "v2.3.*"
+    semver: "v2.4.*"
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -64,55 +64,79 @@ spec:
         [s3_api]
         s3_region = "garage"
         api_bind_addr = "[::]:3900"
-        root_domain = ".${s3_api_hostname}"
+        root_domain = ".api.s3.${serviceDomain}"
 
         [s3_web]
         bind_addr = "[::]:3902"
-        root_domain = ".${s3_web_hostname}"
+        root_domain = ".web.s3.${serviceDomain}"
         index = "index.html"
 
         [admin]
         api_bind_addr = "[::]:3903"
-    ingress:
-      s3:
-        api:
-          enabled: true
-          className: nginx
-          annotations:
-            nginx.ingress.kubernetes.io/proxy-body-size: 500m
-            cert-manager.io/cluster-issuer: homelab-internal
-          hosts:
-            - host: ${s3_api_hostname}
-              paths:
-                - path: /
-                  pathType: Prefix
-          tls:
-            - hosts:
-                - "${s3_api_hostname}"
-              secretName: garage-api-tls
-        web:
-          enabled: true
-          className: nginx
-          annotations:
-            nginx.ingress.kubernetes.io/proxy-body-size: 500m
-            cert-manager.io/cluster-issuer: homelab-internal
-          hosts:
-            - host: ${s3_web_hostname}
-              paths:
-                - path: /
-                  pathType: Prefix
-          tls:
-            - hosts:
-                - "${s3_web_hostname}"
-              secretName: garage-web-tls
-    monitoring:
-      metrics:
-        enabled: true
-      serviceMonitor:
-        enabled: true
+    # ingress:
+      # s3:
+      #   api:
+      #     enabled: true
+      #     className: nginx
+      #     annotations:
+      #       nginx.ingress.kubernetes.io/proxy-body-size: 500m
+      #       cert-manager.io/cluster-issuer: homelab-internal
+      #     hosts:
+      #       - host: api.s3.${serviceDomain}
+      #         paths:
+      #           - path: /
+      #             pathType: Prefix
+      #     tls:
+      #       - hosts:
+      #           - "api.s3.${serviceDomain}"
+      #         secretName: garage-api-tls
+      #   web:
+      #     enabled: true
+      #     className: nginx
+      #     annotations:
+      #       nginx.ingress.kubernetes.io/proxy-body-size: 500m
+      #       cert-manager.io/cluster-issuer: homelab-internal
+      #     hosts:
+      #       - host: web.s3.${serviceDomain}
+      #         paths:
+      #           - path: /
+      #             pathType: Prefix
+      #     tls:
+      #       - hosts:
+      #           - "web.s3.${serviceDomain}"
+      #         secretName: garage-web-tls
+    # monitoring:
+    #   metrics:
+    #     enabled: true
+    #   serviceMonitor:
+    #     enabled: true
     persistence:
       enabled: false
     podSecurityContext:
       fsGroup: ${groupId}
       runAsGroup: ${groupId}
       runAsUser: ${userId}
+
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |-
+              apiVersion: v1
+              kind: Service
+              metadata:
+                name: garage
+              spec:
+                ipFamilyPolicy: PreferDualStack
+                ipFamilies:
+                  - IPv6
+                  - IPv4
+          - patch: |-
+              apiVersion: v1
+              kind: Service
+              metadata:
+                name: garage-headless
+              spec:
+                ipFamilyPolicy: PreferDualStack
+                ipFamilies:
+                  - IPv6
+                  - IPv4

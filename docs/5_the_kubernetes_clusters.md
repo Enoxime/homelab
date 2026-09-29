@@ -142,20 +142,6 @@ flux create kustomization {cluster_name} \
   --interval=10m
 ```
 
-For the legacy way (only on k8s00):
-
-```bash
-export GITHUB_TOKEN=<gh-token>
-flux bootstrap github \
-  --token-auth \
-  --owner=Enoxime \
-  --repository=homelab \
-  --branch=main \
-  --path=kubernetes/clusters/{cluster_name} \
-  --private=false \
-  --personal=true
-```
-
 ## Upgrades
 
 ### To upgrade Talos

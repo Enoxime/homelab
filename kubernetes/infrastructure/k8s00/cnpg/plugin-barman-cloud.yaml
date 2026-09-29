@@ -5,6 +5,9 @@ metadata:
   name: plugin-barman-cloud
   namespace: database
 spec:
+  dependsOn:
+    - name: cloudnative-pg
+      namespace: database
   interval: 5m
   chart:
     spec:

@@ -2,14 +2,14 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
 metadata:
-  name: two-times-a-day
+  name: two-times-a-day-pg18
   namespace: immich
 spec:
   suspend: false
   immediate: true
   schedule: "0 0 0,12 * * *"
   cluster:
-    name: immich-pg
+    name: immich-pg-18
   backupOwnerReference: self
   method: plugin
   pluginConfiguration:
@@ -18,7 +18,7 @@ spec:
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
 metadata:
-  name: garage-home-cnpg
+  name: garage-home-immich
   namespace: immich
 spec:
   configuration:
@@ -36,6 +36,7 @@ spec:
     endpointURL: http://garage.garage:3900
     wal:
       compression: gzip
+      maxParallel: 8
     data:
       compression: gzip
   retentionPolicy: 30d
@@ -43,7 +44,7 @@ spec:
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: immich-pg
+  name: immich-pg-18
   namespace: immich
 spec:
   description: Main database for immich
@@ -55,7 +56,7 @@ spec:
     apiGroup: postgresql.cnpg.io
     kind: ClusterImageCatalog
     name: vectorchord
-    major: 16
+    major: 18
   postgresUID: 26
   postgresGID: 26
   instances: 3
@@ -64,10 +65,15 @@ spec:
       - "vchord.so"
   bootstrap:
     initdb:
+      # import:
+      #   type: microservice
+      #   databases:
+      #     - immich
+      #   source:
+      #     externalCluster: immich-pg-17
       database: immich
       postInitApplicationSQL:
         # Commands based on: https://immich.app/docs/administration/postgres-standalone/#without-superuser-permission
-        # TODO: Check why it doesn't apply
         - CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
         - CREATE EXTENSION IF NOT EXISTS earthdistance CASCADE;
       owner: immich
@@ -93,4 +99,4 @@ spec:
       enabled: true
       isWALArchiver: true
       parameters:
-        barmanObjectName: garage-home-cnpg
+        barmanObjectName: garage-home-immich

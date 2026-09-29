@@ -22,7 +22,7 @@ data:
             "Group": "k8s00",
             "Port": 5432,
             "Username": "immich",
-            "Host": "immich-pg-rw.immich",
+            "Host": "immich-pg-18-rw.immich",
             "SSLMode": "prefer",
             "MaintenanceDB": "postgres"
           },
@@ -100,7 +100,7 @@ spec:
         fsGroup: 5050
       containers:
         - name: pgadmin
-          image: dpage/pgadmin4:9.15
+          image: dpage/pgadmin4:9.18
           imagePullPolicy: Always
           env:
             - name: PGADMIN_DEFAULT_EMAIL
@@ -153,27 +153,27 @@ spec:
         - name: tmp
           emptyDir: {}
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  annotations:
-    cert-manager.io/cluster-issuer: homelab-internal
-  name: pgadmin-ingress
-  namespace: admin
-spec:
-  ingressClassName: nginx
-  rules:
-    - host: pgadmin.${serviceDomainOld}
-      http:
-        paths:
-          - backend:
-              service:
-                name: pgadmin-http
-                port:
-                  number: 8080
-            path: /
-            pathType: Prefix
-  tls:
-    - hosts:
-        - pgadmin.${serviceDomainOld}
-      secretName: pgadmin.${serviceDomainOld}-tls
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   annotations:
+#     cert-manager.io/cluster-issuer: homelab-internal
+#   name: pgadmin-ingress
+#   namespace: admin
+# spec:
+#   ingressClassName: nginx
+#   rules:
+#     - host: pgadmin.${serviceDomainOld}
+#       http:
+#         paths:
+#           - backend:
+#               service:
+#                 name: pgadmin-http
+#                 port:
+#                   number: 8080
+#             path: /
+#             pathType: Prefix
+#   tls:
+#     - hosts:
+#         - pgadmin.${serviceDomainOld}
+#       secretName: pgadmin.${serviceDomainOld}-tls
