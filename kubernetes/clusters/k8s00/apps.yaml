@@ -38,5 +38,3 @@ spec:
     substituteFrom:
       - name: global-variables
         kind: Secret
-      - name: garage-secret-values
-        kind: Secret
