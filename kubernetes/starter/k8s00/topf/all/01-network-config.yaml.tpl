@@ -34,7 +34,7 @@ addresses:
 routes:
   - gateway: "{{ .Data.gatewayIpv6 }}"
     source: "{{ .Data.networkIpv6 }}{{ .Node.Data.hostSubnetIpv6 }}"
-  - gateway: "{{ .Data.networkIpv4 }}1"
+  - gateway: "{{ .Data.gatewayIpv4 }}"
     source: "{{ .Data.networkIpv4 }}{{ .Node.Data.hostSubnetIpv4 }}"
 ---
 apiVersion: v1alpha1
