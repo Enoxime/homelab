@@ -14,8 +14,8 @@ spec:
     storage: 1Ti
   storageClassName: ""
   nfs:
-    server: "${nas_ip}"
-    path: "${nfs_garage_path}"
+    server: "${nasIp}"
+    path: "${nasNfsPath}/apps/s3/garage"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

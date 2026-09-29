@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: immich
-      version: ">= 0.2.0 < 0.3"
+      version: ">= 1.0.1 < 1.1"
       sourceRef:
         kind: HelmRepository
         name: homelab
@@ -17,7 +17,13 @@ spec:
       interval: 1m
   values:
     image:
-      tag: v3.1.0
+      tag: v3.2.4
+
+    network:
+      dualStack:
+        enabled: true
+        ipFamilyPolicy: RequireDualStack
+        ipv6First: true
 
     securityContext:
       capabilities:
@@ -30,27 +36,27 @@ spec:
       seccompProfile:
         type: RuntimeDefault
 
-    ingress:
-      enabled: true
-      className: nginx
-      annotations:
-        cert-manager.io/cluster-issuer: homelab-internal
-      hosts:
-        - host: immich.${serviceDomainOld}
-          paths:
-            - path: /
-              pathType: Prefix
-        - host: photos.${mainDomainOld}
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - secretName: immich-tls-int
-          hosts:
-            - immich.${serviceDomainOld}
-        - secretName: immich-tls-ext
-          hosts:
-            - photos.${mainDomainOld}
+    # ingress:
+    #   enabled: true
+    #   className: nginx
+    #   annotations:
+    #     cert-manager.io/cluster-issuer: homelab-internal
+    #   hosts:
+    #     - host: immich.${serviceDomainOld}
+    #       paths:
+    #         - path: /
+    #           pathType: Prefix
+    #     - host: photos.${mainDomainOld}
+    #       paths:
+    #         - path: /
+    #           pathType: Prefix
+    #   tls:
+    #     - secretName: immich-tls-int
+    #       hosts:
+    #         - immich.${serviceDomainOld}
+    #     - secretName: immich-tls-ext
+    #       hosts:
+    #         - photos.${mainDomainOld}
 
     persistence:
       enabled: true
@@ -78,11 +84,16 @@ spec:
       - name: library
         mountPath: /usr/src/app/library
 
-    timezone: America/Toronto
+    timezone: ${timezone}
 
     ai:
+      enabled: true
       image:
-        tag: v3.1.0
+        tag: v3.2.4-cuda
+      persistence:
+        storageClassName: rook-ceph-delete
+        cacheSize: 50Gi
+        configSize: 1Gi
       runtimeClass:
         enabled: true
         name: nvidia
@@ -106,19 +117,16 @@ spec:
         port: 3003
 
     microservices:
-      runtimeClass:
-        enabled: true
-        name: nvidia
       resources:
         limits:
-          nvidia.com/gpu: 1
+          nvidia.com/gpu: 8
 
     ipp:
       enabled: true
       image:
         repository: alangrainger/immich-public-proxy
         pullPolicy: IfNotPresent
-        tag: "3.2.0"
+        tag: "3.4.0"
       podSecurityContext:
         fsGroup: ${groupId}
       securityContext:
@@ -133,7 +141,7 @@ spec:
           type: RuntimeDefault
       publicBaseUrl:
         enabled: true
-        url: https://photos.enoxi.me
+        url: https://photos.${mainDomainOld}
       config:
         enabled: true
         singleImageGallery: true
@@ -141,7 +149,7 @@ spec:
         allowDownloadAll: 1
 
     postgresql:
-      hostname: immich-pg-rw
+      hostname: immich-pg-18-rw
       username: immich
       databaseName: immich
       password:

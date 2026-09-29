@@ -13,12 +13,19 @@ spec:
       labels:
         pod: cloudflared
     spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              pod: cloudflared
       securityContext:
         fsGroup: 1000
         sysctls:
         # Allows ICMP traffic (ping, traceroute) to resources behind cloudflared.
           - name: net.ipv4.ping_group_range
-            value: "65532 65532"
+            value: "${groupId} ${groupId}"
       containers:
         - image: cloudflare/cloudflared:latest
           name: cloudflared

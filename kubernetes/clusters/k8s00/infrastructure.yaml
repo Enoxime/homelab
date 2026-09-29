@@ -10,7 +10,7 @@ spec:
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: homelab
   path: ./kubernetes/infrastructure/base
   prune: true
   wait: true
@@ -55,7 +55,7 @@ spec:
   timeout: 5m
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: homelab
   path: ./kubernetes/infrastructure/k8s00
   prune: true
   wait: true
@@ -67,7 +67,3 @@ spec:
     substituteFrom:
       - kind: Secret
         name: global-variables
-      - kind: Secret
-        name: cilium-values
-      - kind: Secret
-        name: cert-manager-issuers-secret-values
