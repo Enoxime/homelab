@@ -29,11 +29,12 @@ spec:
     crds:
       upgradeJob:
         enabled: true
+
     grafana:
       operator:
         ## Enable references to ConfigMaps containing dashboards in GrafanaDashboard CRs
         ## Set to true to allow dashboards to be loaded from ConfigMap references
-        dashboardsConfigMapRefEnabled: false
+        dashboardsConfigMapRefEnabled: true
       defaultDashboardsTimezone: ${timezone}
       ## Configure additional grafana datasources (passed through tpl)
       ## ref: https://grafana.com/docs/grafana/latest/administration/provisioning/#datasources
@@ -70,32 +71,27 @@ spec:
         selector:
           k8s-app: kube-controller-manager
 
-    # kubeEtcd:
-    #   enabled: false
-    #   service:
-    #     selector:
-    #       # Fix selector for kube-etcd for Talos
-    #       # (set itentionally to kube-controller-manager because all master nodes has the same roles)
-    #       k8s-app: kube-controller-manager
-    #   serviceMonitor:
-    #     scheme: https
-    #     insecureSkipVerify: false
-    #     serverName: localhost
-    #     caFile: /etc/prometheus/secrets/etcd-secrets/ca.crt
-    #     certFile: /etc/prometheus/secrets/etcd-secrets/server.crt
-    #     keyFile: /etc/prometheus/secrets/etcd-secrets/server.key
-    #     # Add nodename label
-    #     relabelings:
-    #       - sourceLabels: [__meta_kubernetes_pod_node_name]
-    #         separator: ;
-    #         regex: ^(.*)$
-    #         targetLabel: nodename
-    #         replacement: $1
-    #         action: replace
-    #     # Remove pod label
-    #     metricRelabelings:
-    #       - action: labeldrop
-    #         regex: pod
+    kubeEtcd:
+      enabled: true
+      service:
+        selector:
+          # Fix selector for kube-etcd for Talos
+          # (set itentionally to kube-controller-manager because all master nodes has the same roles)
+          k8s-app: kube-controller-manager
+      serviceMonitor:
+        enabled: true
+        # Add nodename label
+        relabelings:
+          - sourceLabels: [__meta_kubernetes_pod_node_name]
+            separator: ;
+            regex: ^(.*)$
+            targetLabel: nodename
+            replacement: $1
+            action: replace
+        # Remove pod label
+        metricRelabelings:
+          - action: labeldrop
+            regex: pod
 
     kubeScheduler:
       enabled: true
@@ -111,7 +107,52 @@ spec:
         certManager:
           enabled: true
 
-    # prometheus:
-    #   prometheusSpec:
-    #     secrets:
-    #       - etcd-secrets
+    prometheus:
+      prometheusSpec:
+        replicas: 2
+        podAntiAffinity: "hard"
+        additionalScrapeConfigs:
+          # cilium
+          - job_name: 'kubernetes-pods'
+            kubernetes_sd_configs:
+              - role: pod
+            relabel_configs:
+              - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+                action: keep
+                regex: true
+              - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+                action: replace
+                regex: ([^:]+)(?::\d+)?;(\d+)
+                replacement: ${1}:${2}
+                target_label: __address__
+          # cilium hubble
+          - job_name: 'kubernetes-endpoints'
+            scrape_interval: 30s
+            kubernetes_sd_configs:
+              - role: endpoints
+            relabel_configs:
+              - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+                action: keep
+                regex: true
+              - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+                action: replace
+                target_label: __address__
+                regex: (.+)(?::\d+);(\d+)
+                replacement: $1:$2
+          # cnpg clusters
+          - job_name: 'cloudnativepg'
+            kubernetes_sd_configs:
+              - role: pod
+            relabel_configs:
+              - source_labels: [__meta_kubernetes_pod_label_cnpg_io_cluster]
+                action: keep
+                regex: .+
+              - source_labels: [__meta_kubernetes_pod_container_port_name]
+                action: keep
+                regex: metrics
+              - source_labels: [__meta_kubernetes_namespace]
+                target_label: namespace
+              - source_labels: [__meta_kubernetes_pod_label_cnpg_io_cluster]
+                target_label: cluster
+              - source_labels: [__meta_kubernetes_pod_name]
+                target_label: pod

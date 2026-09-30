@@ -22,6 +22,11 @@ spec:
     ipam:
       mode: kubernetes
     kubeProxyReplacement: true
+    operator:
+      prometheus:
+        enabled: true
+        serviceMonitor:
+          enabled: true
     securityContext:
       capabilities:
         ciliumAgent:
@@ -75,8 +80,9 @@ spec:
           - drop
           - tcp
           - flow
+          - port-distribution
           - icmp
-          - http
+          - httpV2:exemplars=true;labelsContext=source_ip,source_namespace,source_workload,destination_ip,destination_namespace,destination_workload,traffic_direction
         enableOpenMetrics: true
         serviceMonitor:
           enabled: true
@@ -109,8 +115,8 @@ spec:
     ipv6:
       enabled: true
     prometheus:
-      metricsService: true
       enabled: true
+      metricsService: true
       serviceMonitor:
         enabled: true
         trustCRDsExist: true
@@ -118,6 +124,9 @@ spec:
       enabled: true
     l7Proxy: true
     envoy:
+      prometheus:
+        serviceMonitor:
+          enabled: true
       securityContext:
         capabilities:
           keepCapNetBindService: true
