@@ -111,34 +111,78 @@ spec:
       prometheusSpec:
         replicas: 2
         podAntiAffinity: "hard"
+        ## If true, a nil or {} value for prometheus.prometheusSpec.serviceMonitorSelector will cause the
+        ## prometheus resource to be created with selectors based on values in the helm deployment,
+        ## which will also match the servicemonitors created
+        ##
+        serviceMonitorSelectorNilUsesHelmValues: false
+
+        ## ServiceMonitors to be selected for target discovery.
+        ## If {}, select all ServiceMonitors
+        ##
+        serviceMonitorSelector: {}
+        ## Example which selects ServiceMonitors with label "prometheus" set to "somelabel"
+        # serviceMonitorSelector:
+        #   matchLabels:
+        #     prometheus: somelabel
+
+        ## Namespaces to be selected for ServiceMonitor discovery.
+        ##
+        serviceMonitorNamespaceSelector: {}
+        ## Example which selects ServiceMonitors in namespaces with label "prometheus" set to "somelabel"
+        # serviceMonitorNamespaceSelector:
+        #   matchLabels:
+        #     prometheus: somelabel
+
+        ## If true, a nil or {} value for prometheus.prometheusSpec.podMonitorSelector will cause the
+        ## prometheus resource to be created with selectors based on values in the helm deployment,
+        ## which will also match the podmonitors created
+        ##
+        podMonitorSelectorNilUsesHelmValues: false
+
+        ## PodMonitors to be selected for target discovery.
+        ## If {}, select all PodMonitors
+        ##
+        podMonitorSelector: {}
+        ## Example which selects PodMonitors with label "prometheus" set to "somelabel"
+        # podMonitorSelector:
+        #   matchLabels:
+        #     prometheus: somelabel
+
+        ## If nil, select own namespace. Namespaces to be selected for PodMonitor discovery.
+        podMonitorNamespaceSelector: {}
+        ## Example which selects PodMonitor in namespaces with label "prometheus" set to "somelabel"
+        # podMonitorNamespaceSelector:
+        #   matchLabels:
+        #     prometheus: somelabel
         additionalScrapeConfigs:
           # cilium
-          - job_name: 'kubernetes-pods'
-            kubernetes_sd_configs:
-              - role: pod
-            relabel_configs:
-              - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
-                action: keep
-                regex: true
-              - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
-                action: replace
-                regex: ([^:]+)(?::\d+)?;(\d+)
-                replacement: ${1}:${2}
-                target_label: __address__
-          # cilium hubble
-          - job_name: 'kubernetes-endpoints'
-            scrape_interval: 30s
-            kubernetes_sd_configs:
-              - role: endpoints
-            relabel_configs:
-              - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
-                action: keep
-                regex: true
-              - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-                action: replace
-                target_label: __address__
-                regex: (.+)(?::\d+);(\d+)
-                replacement: $1:$2
+          # - job_name: 'kubernetes-pods'
+          #   kubernetes_sd_configs:
+          #     - role: pod
+          #   relabel_configs:
+          #     - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+          #       action: keep
+          #       regex: true
+          #     - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+          #       action: replace
+          #       regex: ([^:]+)(?::\d+)?;(\d+)
+          #       replacement: $${1}:$${2}
+          #       target_label: __address__
+          # # cilium hubble
+          # - job_name: 'kubernetes-endpoints'
+          #   scrape_interval: 30s
+          #   kubernetes_sd_configs:
+          #     - role: endpoints
+          #   relabel_configs:
+          #     - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+          #       action: keep
+          #       regex: true
+          #     - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+          #       action: replace
+          #       target_label: __address__
+          #       regex: (.+)(?::\d+);(\d+)
+          #       replacement: $$1:$$2
           # cnpg clusters
           - job_name: 'cloudnativepg'
             kubernetes_sd_configs:
