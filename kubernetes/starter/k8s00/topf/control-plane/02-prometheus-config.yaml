@@ -1,0 +1,18 @@
+---
+cluster:
+  etcd:
+    extraArgs:
+      # for prometheus
+      listen-metrics-urls: http://[::]:2381
+---
+apiVersion: v1alpha1
+kind: KubeControllerManagerConfig
+extraArgs:
+  # For prometheus
+  bind-address: "::"
+---
+apiVersion: v1alpha1
+kind: KubeSchedulerConfig
+extraArgs:
+  # For prometheus
+  bind-address: "::"

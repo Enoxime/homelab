@@ -105,11 +105,11 @@ spec:
       #       - hosts:
       #           - "web.s3.${serviceDomain}"
       #         secretName: garage-web-tls
-    # monitoring:
-    #   metrics:
-    #     enabled: true
-    #   serviceMonitor:
-    #     enabled: true
+    monitoring:
+      metrics:
+        enabled: true
+      serviceMonitor:
+        enabled: true
     persistence:
       enabled: false
     podSecurityContext:

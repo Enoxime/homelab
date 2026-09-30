@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: immich
-      version: ">= 1.0.1 < 1.1"
+      version: ">= 1.1.0 < 1.2"
       sourceRef:
         kind: HelmRepository
         name: homelab
@@ -85,6 +85,11 @@ spec:
         mountPath: /usr/src/app/library
 
     timezone: ${timezone}
+
+    monitoring:
+      enabled: true
+      serviceMonitor:
+        enabled: true
 
     ai:
       enabled: true
