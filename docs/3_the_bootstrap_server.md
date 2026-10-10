@@ -1,7 +1,7 @@
 # The bootstrap server
 
 The bootstrap server serves as a PXE server, Unifi Network Application, DNS and
-CA server with ACME. It is the main part of our infrastructure that manage the
+CA server with ACME. It is the main part of our infrastructure that manages the
 creation and maintenance of the infrastructure.
 
 > [!TIP]
