@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: immich
-      version: ">= 1.1.0 < 1.2"
+      version: "2.0.0"
       sourceRef:
         kind: HelmRepository
         name: homelab
@@ -17,7 +17,7 @@ spec:
       interval: 1m
   values:
     image:
-      tag: v3.2.4
+      tag: v3.3.1
 
     network:
       dualStack:
@@ -94,7 +94,7 @@ spec:
     ai:
       enabled: true
       image:
-        tag: v3.2.4-cuda
+        tag: v3.3.1-cuda
       persistence:
         storageClassName: rook-ceph-delete
         cacheSize: 50Gi
@@ -131,7 +131,7 @@ spec:
       image:
         repository: alangrainger/immich-public-proxy
         pullPolicy: IfNotPresent
-        tag: "3.4.0"
+        tag: "4.0.0"
       podSecurityContext:
         fsGroup: ${groupId}
       securityContext:
@@ -149,9 +149,11 @@ spec:
         url: https://photos.${mainDomainOld}
       config:
         enabled: true
-        singleImageGallery: true
-        downloadOriginalPhoto: true
-        allowDownloadAll: 1
+        ipp:
+          gallery:
+            singleImage: true
+          maxDownloadQuality: fullsize
+          allowDownload: 1
 
     postgresql:
       hostname: immich-pg-18-rw
