@@ -1,0 +1,154 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: two-times-a-day
+  namespace: database
+spec:
+  suspend: false
+  immediate: true
+  schedule: "0 0 0,12 * * *"
+  cluster:
+    name: pg00
+  backupOwnerReference: self
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
+---
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: garage-home-pg00
+  namespace: database
+spec:
+  configuration:
+    destinationPath: s3://k8s00-cnpg-backup/
+    s3Credentials:
+      accessKeyId:
+        name: cnpg-pg00-backup-creds
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: cnpg-pg00-backup-creds
+        key: ACCESS_SECRET_KEY
+      region:
+        name: cnpg-pg00-backup-creds
+        key: region
+    endpointURL: http://garage.garage:3900
+    wal:
+      compression: gzip
+      maxParallel: 8
+    data:
+      compression: gzip
+  retentionPolicy: 30d
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: pg00
+  namespace: database
+spec:
+  description: Main database for k8s00
+  # inheritedMetadata:
+  #   labels:
+  #   annotations:
+  imageCatalogRef:
+    apiGroup: postgresql.cnpg.io
+    kind: ClusterImageCatalog
+    name: postgresql-system-trixie
+    major: 18
+  postgresUID: 26
+  postgresGID: 26
+  instances: 3
+  superuserSecret:
+    name: cnpg-pg00-super-user-creds
+  enableSuperuserAccess: true
+  storage:
+    size: 10Gi
+    storageClass: rook-ceph-retain
+  walStorage:
+    size: 10Gi
+    storageClass: rook-ceph-retain
+  resources: {}
+  primaryUpdateStrategy: unsupervised
+  primaryUpdateMethod: switchover
+  monitoring:
+    disableDefaultQueries: false
+  managed:
+    roles:
+      - name: kaizoku
+        ensure: present
+        passwordSecret:
+          name: kaizoku-postgres-credentials
+        superuser: false
+        createdb: false
+        createrole: false
+        login: true
+      - name: linkwarden
+        ensure: present
+        passwordSecret:
+          name: linkwarden-postgres-credentials
+        superuser: false
+        createdb: false
+        createrole: false
+        login: true
+      - name: tranga
+        ensure: present
+        passwordSecret:
+          name: tranga-postgres-credentials
+        superuser: false
+        createdb: false
+        createrole: false
+        login: true
+  bootstrap:
+    recovery:
+      source: garage-home-pg00
+  externalClusters:
+    - name: garage-home-pg00
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: garage-home-pg00
+          serverName: pg00
+  enablePDB: true
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      enabled: true
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: garage-home-pg00
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: kaizoku-db
+  namespace: database
+spec:
+  cluster:
+    name: pg00
+  name: kaizoku
+  owner: kaizoku
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: linkwarden-db
+  namespace: database
+spec:
+  cluster:
+    name: pg00
+  name: linkwarden
+  owner: linkwarden
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: tranga-db
+  namespace: database
+spec:
+  cluster:
+    name: pg00
+  name: tranga
+  owner: tranga
+  databaseReclaimPolicy: retain
