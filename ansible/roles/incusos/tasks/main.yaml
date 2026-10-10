@@ -1,0 +1,31 @@
+- name: Ensure the destination path exists
+  ansible.builtin.file:
+    path: "{{ incusos_destination_path }}"
+    mode: "0750"
+    owner: "{{ incusos_file_owner }}"
+    group: "{{ incusos_file_group }}"
+    state: directory
+
+
+- name: Generate IncusOS seed files
+  ansible.builtin.template:
+    src: "{{ seed }}.yaml.j2"
+    dest: "{{ incusos_destination_path }}/{{ seed }}.yaml"
+    mode: "{{ incusos_file_mode | default('0664') }}"
+    owner: "{{ incusos_file_owner }}"
+    group: "{{ incusos_file_group }}"
+  loop:
+    - install
+    - applications
+    - incus
+    - kernel
+    - network
+    - provider
+    - security
+    - services
+    - storage
+    - update
+  loop_control:
+    loop_var: seed
+  when:
+    - lookup('vars', "incusos_" + seed) is defined

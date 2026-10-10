@@ -1,0 +1,12 @@
+version: "1"
+{% if incusos_incus.apply_defaults is defined %}
+apply_defaults: {{ incusos_incus.apply_defaults | bool }}
+{% endif %}
+preseed:
+    certificates:
+{% for cert in incusos_incus.preseed.certificates %}
+      - name: {{ cert.name }}
+        type: {{ cert.type | default('client') }}
+        certificate: |
+          {{ cert.certificate | indent(width=10) }}
+{% endfor %}
