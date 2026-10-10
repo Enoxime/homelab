@@ -14,9 +14,8 @@ ansible/secrets.yaml
 terraform.tfstate*
 .terraform
 
-# talos
-kubernetes/**/.secrets
-kubernetes/**/charts
+# incusos
+/incusos/
 
 # uv virtual environment
 .venv/

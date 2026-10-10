@@ -1,3 +1,0 @@
----
-init_dietpi_headless_device_path: /dev/mmcblk0
-init_dietpi_headless_temporary_folder_path: /tmp/init_dietpi_headless
