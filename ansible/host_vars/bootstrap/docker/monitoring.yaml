@@ -8,7 +8,7 @@ docker_monitoring_stack:
       - '--web.listen-address=[{{ k8s00_ipv6_network }}5]:9100'
       - '--web.listen-address=[{{ k8s00_ipv4_network }}5]:9100'
     labels:
-      com.centurylinklabs.traefik.enable: "true"
+      com.centurylinklabs.watchtower.enable: "true"
     network_mode: host
     pid_mode: host
     volumes:
@@ -21,7 +21,7 @@ docker_monitoring_stack:
       - '--listen_ip=[{{ k8s00_ipv6_network }}5]'
       - '--port=8888'
     labels:
-      com.centurylinklabs.traefik.enable: "true"
+      com.centurylinklabs.watchtower.enable: "true"
     network_mode: host
     privileged: true
     devices:

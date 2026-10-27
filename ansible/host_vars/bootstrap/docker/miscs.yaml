@@ -8,7 +8,7 @@ docker_misc_stack:
   - name: caddy
     image: docker.io/caddy:latest
     labels:
-      com.centurylinklabs.traefik.enable: "true"
+      com.centurylinklabs.watchtower.enable: "true"
     networks:
       - name: caddy
     ports:
@@ -43,7 +43,7 @@ docker_misc_stack:
       start_period: 3s
     image: ghcr.io/netbootxyz/netbootxyz:latest
     labels:
-      com.centurylinklabs.traefik.enable: "true"
+      com.centurylinklabs.watchtower.enable: "true"
     name: netbootxyz
     networks:
       - name: caddy
@@ -64,7 +64,7 @@ docker_misc_stack:
   - name: ca
     image: docker.io/smallstep/step-ca:latest
     labels:
-      com.centurylinklabs.traefik.enable: "true"
+      com.centurylinklabs.watchtower.enable: "true"
     networks:
       - name: caddy
     user: "{{ ansible_facts['user_uid'] }}:{{ ansible_facts['user_uid'] }}"
@@ -87,7 +87,7 @@ docker_misc_stack:
       IMAGES: "1"
       POST: "1"
     labels:
-      com.centurylinklabs.traefik.enable: "true"
+      com.centurylinklabs.watchtower.enable: "true"
     privileged: true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
