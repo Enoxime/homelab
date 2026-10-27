@@ -17,7 +17,7 @@ spec:
       interval: 1m
   values:
     image:
-      tag: v3.3.1
+      tag: v3.3.5
 
     network:
       dualStack:
@@ -94,7 +94,7 @@ spec:
     ai:
       enabled: true
       image:
-        tag: v3.3.1-cuda
+        tag: v3.3.5-cuda
       persistence:
         storageClassName: rook-ceph-delete
         cacheSize: 50Gi
@@ -131,7 +131,7 @@ spec:
       image:
         repository: alangrainger/immich-public-proxy
         pullPolicy: IfNotPresent
-        tag: "4.0.0"
+        tag: "4.1.2"
       podSecurityContext:
         fsGroup: ${groupId}
       securityContext:
