@@ -7,3 +7,7 @@ local:
 home:
   hosts:
     bootstrap:
+
+  vars:
+    ansible_user: ansible
+    ansible_host: "{{ inventory_hostname }}.mgmt.{{ home_domain }}"

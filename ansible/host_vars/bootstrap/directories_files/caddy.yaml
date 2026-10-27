@@ -1,0 +1,39 @@
+---
+directories_files_caddy:
+  directories:
+    - path: "/home/{{ ansible_user }}/caddy_config"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+  contents:
+    - dest: "/home/{{ ansible_user }}/caddy_config/Caddyfile"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      content: |
+        {
+          # admin :2019
+          metrics {
+            per_host
+          }
+          email admin@{{ domain }}
+          acme_ca https://ca.mgmt.{{ home_domain }}/acme/acme/directory
+          acme_ca_root /etc/caddy/homelab_root_ca.crt
+        }
+
+        unifi.mgmt.{{ home_domain }} {
+          reverse_proxy https://unifi-network-application:8443 {
+            transport http {
+              tls_insecure_skip_verify
+            }
+          }
+        }
+
+        netbootxyzmgmt.bootstrap.mgmt.{{ home_domain }} {
+          reverse_proxy netbootxyz:3000
+        }
+
+        http://netbootxyz.bootstrap.mgmt.{{ home_domain }},
+        http://netbootxyz.bootstrap.service.{{ home_domain }}:81,
+        http://netbootxyz.bootstrap.k8s00.{{ home_domain }}:82 ,
+        http://netbootxyz.bootstrap.casa.{{ home_domain }}:83 {
+          reverse_proxy netbootxyz:80
+        }

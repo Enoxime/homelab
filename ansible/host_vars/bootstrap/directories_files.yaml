@@ -1,0 +1,9 @@
+---
+directories_files:
+  directories: "{{
+    directories_files_ca.directories
+     + directories_files_caddy.directories }}"
+  contents: "{{
+    directories_files_homelab_cert.contents
+    + directories_files_ca.contents
+    + directories_files_caddy.contents }}"

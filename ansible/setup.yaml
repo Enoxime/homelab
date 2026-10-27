@@ -1,0 +1,9 @@
+---
+- name: Setup docker containers
+  hosts:
+    - bootstrap
+  gather_facts: true
+  become: false
+  roles:
+    - directories_files
+    - docker_mgmt

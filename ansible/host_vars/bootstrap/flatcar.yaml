@@ -1,0 +1,4 @@
+---
+flatcar:
+  name: bootstrap
+  file_path: "{{ playbook_dir }}/../flatcar"

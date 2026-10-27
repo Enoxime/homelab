@@ -14,8 +14,5 @@ ansible/secrets.yaml
 terraform.tfstate*
 .terraform
 
-# incusos
-/incusos/
-
 # uv virtual environment
 .venv/
