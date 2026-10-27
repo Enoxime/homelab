@@ -1,0 +1,14 @@
+---
+docker_mgmt:
+  debug: false
+  networks:
+    - name: caddy
+    - name: unifi
+    - name: proxy-net
+  volumes: "{{
+    docker_misc_volumes
+    + docker_unifi_volumes }}"
+  containers: "{{
+    docker_misc_stack
+    + docker_unifi_stack
+    + docker_monitoring_stack }}"

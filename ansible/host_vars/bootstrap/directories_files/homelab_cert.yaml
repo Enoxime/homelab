@@ -1,0 +1,8 @@
+---
+directories_files_homelab_cert:
+  contents:
+    - dest: "/home/{{ ansible_user }}/homelab_root_ca.crt"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: "400"
+      content: "{{ bootstrap.docker.ca['root_ca.crt'] }}"

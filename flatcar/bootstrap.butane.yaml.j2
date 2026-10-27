@@ -1,0 +1,413 @@
+---
+variant: flatcar
+version: 1.0.0
+storage:
+  files:
+    - path: /etc/hostname
+      contents:
+        inline: {{ inventory_hostname }}
+      mode: 0644
+      user:
+        name: root
+      group:
+        name: root
+    - path: /etc/hosts
+      append:
+        - inline: |
+            127.0.0.1 {{ inventory_hostname }}.mgmt.{{ home_domain }} {{ inventory_hostname }}
+            ::1 {{ inventory_hostname }}.mgmt.{{ home_domain }} {{ inventory_hostname }}
+      mode: 0644
+      user:
+        name: root
+      group:
+        name: root
+    - path: /etc/systemd/networkd.conf.d/ipv6-privacy-extensions.conf
+      contents:
+        inline: |
+          [Network]
+          IPv6PrivacyExtensions=yes
+    # mgmt
+    - path: /etc/systemd/network/5-eno1.network
+      contents:
+        inline: |
+          [Match]
+          Name=eno1*
+          Name=!eno1.*
+
+          [Network]
+          Address={{ mgmt_ipv6_network }}5/64
+          Address={{ mgmt_ipv6_network }}10/64
+          Address={{ mgmt_ipv6_network }}53/64
+          Address={{ mgmt_ipv4_network }}5/24
+          Address={{ mgmt_ipv4_network }}10/24
+          Address={{ mgmt_ipv4_network }}53/24
+          DNS={{ mgmt_ipv6_nameserver }}
+          DNS={{ mgmt_ipv4_nameserver }}
+          Domains=mgmt.{{ home_domain }} {{ home_domain }} mgmt.{{ home_domain_old }} {{ home_domain_old }}
+          VLAN=eno1.10
+          VLAN=eno1.20
+          VLAN=eno1.30
+          VLAN=eno1.40
+          VLAN=eno1.50
+          VLAN=eno1.60
+          VLAN=eno1.70
+
+          [Route]
+          Gateway={{ mgmt_ipv6_nameserver }}
+          Gateway={{ mgmt_ipv4_nameserver }}
+      mode: 0644
+      user:
+        name: root
+      group:
+        name: root
+    # dmz
+    - path: /etc/systemd/network/10-eno1.10.netdev
+      contents:
+        inline: |
+          [NetDev]
+          Name=eno1.10
+          Kind=vlan
+
+          [VLAN]
+          Id=10
+      mode: 0644
+      user:
+        name: root
+      group:
+        name: root
+    - path: /etc/systemd/network/10-eno1.10.network
+      contents:
+        inline: |
+          [Match]
+          Name=eno1.10
+
+          [Network]
+          Address={{ dmz_ipv6_network }}5/64
+          Address={{ dmz_ipv6_network }}53/64
+          Address={{ dmz_ipv4_network }}5/24
+          Address={{ dmz_ipv4_network }}53/24
+          DNS={{ gateway_ipv6 }}
+          DNS={{ dmz_ipv4_network }}1
+          Domains=dmz.{{ home_domain }} dmz.{{ home_domain_old }}
+
+          [Route]
+          Gateway={{ gateway_ipv6 }}
+          Gateway={{ dmz_ipv4_network }}1
+          Destination={{ dmz_ipv6_network }}/64
+          Destination={{ dmz_ipv4_network }}0/24
+      mode: 0644
+      user:
+        name: root
+      group:
+        name: root
+    # work
+    - path: /etc/systemd/network/20-eno1.20.netdev
+      contents:
+        inline: |
+          [NetDev]
+          Name=eno1.20
+          Kind=vlan
+
+          [VLAN]
+          Id=20
+      mode: 0644
+      user:
+        name: root
+      group:
+        name: root
+    - path: /etc/systemd/network/20-eno1.20.network
+      contents:
+        inline: |
+          [Match]
+          Name=eno1.20
+
+          [Network]
+          Address={{ work_ipv6_network }}5/64
+          Address={{ work_ipv6_network }}53/64
+          Address={{ work_ipv4_network }}5/24
+          Address={{ work_ipv4_network }}53/24
+          DNS={{ gateway_ipv6 }}
+          DNS={{ work_ipv4_network }}1
+          Domains=work.{{ home_domain }} work.{{ home_domain_old }}
+
+          [Route]
+          Gateway={{ gateway_ipv6 }}
+          Gateway={{ work_ipv4_network }}1
+          Destination={{ work_ipv6_network }}/64
+          Destination={{ work_ipv4_network }}0/24
+      mode: 0644
+      user:
+        name: root
+      group:
+        name: root
+    # service
+    - path: /etc/systemd/network/30-eno1.30.netdev
+      contents:
+        inline: |
+          [NetDev]
+          Name=eno1.30
+          Kind=vlan
+
+          [VLAN]
+          Id=30
+      mode: 0644
+      user:
+        name: root
+      group:
+        name: root
+    - path: /etc/systemd/network/30-eno1.30.network
+      contents:
+        inline: |
+          [Match]
+          Name=eno1.30
+
+          [Network]
+          Address={{ service_ipv6_network }}5/64
+          Address={{ service_ipv6_network }}10/64
+          Address={{ service_ipv6_network }}53/64
+          Address={{ service_ipv4_network }}5/24
+          Address={{ service_ipv4_network }}10/24
+          Address={{ service_ipv4_network }}53/24
+          DNS={{ gateway_ipv6 }}
+          DNS={{ service_ipv4_network }}1
+          Domains=service.{{ home_domain }} service.{{ home_domain_old }}
+
+          [Route]
+          Gateway={{ gateway_ipv6 }}
+          Gateway={{ service_ipv4_network }}1
+          Destination={{ service_ipv6_network }}/64
+          Destination={{ service_ipv4_network }}0/24
+      mode: 0644
+      user:
+        name: root
+      group:
+        name: root
+    # k8s00
+    - path: /etc/systemd/network/40-eno1.40.netdev
+      contents:
+        inline: |
+          [NetDev]
+          Name=eno1.40
+          Kind=vlan
+
+          [VLAN]
+          Id=40
+      mode: 0644
+      user:
+        name: root
+      group:
+        name: root
+    - path: /etc/systemd/network/40-eno1.40.network
+      contents:
+        inline: |
+          [Match]
+          Name=eno1.40
+
+          [Network]
+          Address={{ k8s00_ipv6_network }}5/64
+          Address={{ k8s00_ipv6_network }}10/64
+          Address={{ k8s00_ipv6_network }}53/64
+          Address={{ k8s00_ipv4_network }}5/24
+          Address={{ k8s00_ipv4_network }}10/24
+          Address={{ k8s00_ipv4_network }}53/24
+          DNS={{ gateway_ipv6 }}
+          DNS={{ k8s00_ipv4_network }}1
+          Domains=k8s00.{{ home_domain }} k8s00.{{ home_domain_old }}
+
+          [Route]
+          Gateway={{ gateway_ipv6 }}
+          Gateway={{ k8s00_ipv4_network }}1
+          Destination={{ k8s00_ipv6_network }}/64
+          Destination={{ k8s00_ipv4_network }}0/24
+      mode: 0644
+      user:
+        name: root
+      group:
+        name: root
+    # casa
+    - path: /etc/systemd/network/50-eno1.50.netdev
+      contents:
+        inline: |
+          [NetDev]
+          Name=eno1.50
+          Kind=vlan
+
+          [VLAN]
+          Id=50
+      mode: 0644
+      user:
+        name: root
+      group:
+        name: root
+    - path: /etc/systemd/network/50-eno1.50.network
+      contents:
+        inline: |
+          [Match]
+          Name=eno1.50
+
+          [Network]
+          Address={{ casa_ipv6_network }}5/64
+          Address={{ casa_ipv6_network }}10/64
+          Address={{ casa_ipv6_network }}53/64
+          Address={{ casa_ipv4_network }}5/24
+          Address={{ casa_ipv4_network }}10/24
+          Address={{ casa_ipv4_network }}53/24
+          DNS={{ gateway_ipv6 }}
+          DNS={{ casa_ipv4_network }}1
+          Domains=casa.{{ home_domain }} casa.{{ home_domain_old }}
+
+          [Route]
+          Gateway={{ gateway_ipv6 }}
+          Gateway={{ casa_ipv4_network }}1
+          Destination={{ casa_ipv6_network }}/64
+          Destination={{ casa_ipv4_network }}0/24
+      mode: 0644
+      user:
+        name: root
+      group:
+        name: root
+    # iot
+    - path: /etc/systemd/network/60-eno1.60.netdev
+      contents:
+        inline: |
+          [NetDev]
+          Name=eno1.60
+          Kind=vlan
+
+          [VLAN]
+          Id=60
+      mode: 0644
+      user:
+        name: root
+      group:
+        name: root
+    - path: /etc/systemd/network/60-eno1.60.network
+      contents:
+        inline: |
+          [Match]
+          Name=eno1.60
+
+          [Network]
+          Address={{ iot_ipv6_network }}5/64
+          Address={{ iot_ipv6_network }}53/64
+          Address={{ iot_ipv4_network }}5/24
+          Address={{ iot_ipv4_network }}53/24
+          DNS={{ gateway_ipv6 }}
+          DNS={{ iot_ipv4_network }}1
+          Domains=iot.{{ home_domain }} iot.{{ home_domain_old }}
+
+          [Route]
+          Gateway={{ gateway_ipv6 }}
+          Gateway={{ iot_ipv4_network }}1
+          Destination={{ iot_ipv6_network }}/64
+          Destination={{ iot_ipv4_network }}0/24
+      mode: 0644
+      user:
+        name: root
+      group:
+        name: root
+    # monitoring
+    - path: /etc/systemd/network/70-eno1.70.netdev
+      contents:
+        inline: |
+          [NetDev]
+          Name=eno1.70
+          Kind=vlan
+
+          [VLAN]
+          Id=70
+      mode: 0644
+      user:
+        name: root
+      group:
+        name: root
+    - path: /etc/systemd/network/70-eno1.70.network
+      contents:
+        inline: |
+          [Match]
+          Name=eno1.70
+
+          [Network]
+          Address={{ monitoring_ipv6_network }}5/64
+          Address={{ monitoring_ipv6_network }}53/64
+          Address={{ monitoring_ipv4_network }}5/24
+          Address={{ monitoring_ipv4_network }}53/24
+          DNS={{ gateway_ipv6 }}
+          DNS={{ monitoring_ipv4_network }}1
+          Domains=monitoring.{{ home_domain }} monitoring.{{ home_domain_old }}
+
+          [Route]
+          Gateway={{ gateway_ipv6 }}
+          Gateway={{ monitoring_ipv4_network }}1
+          Destination={{ monitoring_ipv6_network }}/64
+          Destination={{ monitoring_ipv4_network }}0/24
+      mode: 0644
+      user:
+        name: root
+      group:
+        name: root
+    # Install python
+    - path: /etc/flatcar/enabled-sysext.conf
+      contents:
+        inline: |
+          python
+      mode: 0644
+      user:
+        name: root
+      group:
+        name: root
+    # sudo config
+    - path: /etc/sudoers.d/{{ admin_username }}
+      contents:
+        inline: |
+          {{ admin_username }} ALL=(ALL) ALL
+    - path: /etc/sudoers.d/ansible
+      contents:
+        inline: |
+          ansible ALL=(ALL) NOPASSWD: ALL
+    # Add homelab root certificate
+    - path: /etc/ssh/sshd_config.d/custom.conf
+      overwrite: true
+      mode: 0600
+      contents:
+        inline: |
+          PermitRootLogin no
+          AllowUsers ansible {{ admin_username }}
+  links:
+    - path: /etc/localtime
+      target: ../usr/share/zoneinfo/{{ timezone }}
+
+
+systemd:
+  units:
+    # Ensure docker starts automatically instead of being only socket-activated
+    - name: docker.service
+      enabled: true
+
+
+passwd:
+  users:
+    - name: core
+      shell: /sbin/nologin
+    - name: {{ admin_username }}
+      ssh_authorized_keys:
+        - {{ admin_ssh_pub_key }}
+      primary_group: {{ admin_username }}
+      groups:
+        - sudo
+        - wheel
+        - docker
+      shell: /usr/bin/bash
+      password_hash: "{{ admin_password | password_hash('sha512') }}"
+    - name: ansible
+      ssh_authorized_keys:
+        - {{ ansible_ssh_pub_key }}
+      primary_group: ansible
+      groups:
+        - sudo
+        - wheel
+        - docker
+      shell: /usr/bin/bash
+  groups:
+    - name: {{ admin_username }}
+    - name: ansible

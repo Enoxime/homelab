@@ -1,0 +1,122 @@
+---
+directories_files_ca:
+  directories:
+    - path: "/home/{{ ansible_user }}/ca_config"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+    - path: "/home/{{ ansible_user }}/ca_config/config"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+    - path: "/home/{{ ansible_user }}/ca_config/certs"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+    - path: "/home/{{ ansible_user }}/ca_config/secrets"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+    - path: "/home/{{ ansible_user }}/ca_config/db"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: "777"
+  contents:
+    - dest: "/home/{{ ansible_user }}/ca_config/config/ca.json"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      content: |
+        {
+          "root": "/home/step/certs/root_ca.crt",
+          "federatedRoots": null,
+          "crt": "/home/step/certs/intermediate_ca.crt",
+          "key": "/home/step/secrets/intermediate_ca_key",
+          "address": ":443",
+          "insecureAddress": "",
+          "dnsNames": [
+            "ca",
+            "ca.mgmt.{{ home_domain }}",
+            "ca.service.{{ home_domain }}",
+            "ca.k8s00.{{ home_domain }}",
+            "{{ mgmt_ipv6_network }}10",
+            "{{ mgmt_ipv4_network }}10",
+            "{{ service_ipv6_network }}10",
+            "{{ service_ipv4_network }}10",
+            "{{ k8s00_ipv6_network }}10",
+            "{{ k8s00_ipv4_network }}10"
+          ],
+          "logger": {
+            "format": "text"
+          },
+          "db": {
+            "type": "badgerv2",
+            "dataSource": "/home/step/db",
+            "badgerFileLoadingMode": ""
+          },
+          "authority": {
+            "enableAdmin": true,
+            "claims": {
+              "maxTLSCertDuration": "720h"
+            },
+            "provisioners": [
+              {
+                "type": "JWK",
+                "name": "admin@{{ domain }}",
+                "key": {
+                  "use": "sig",
+                  "kty": "EC",
+                  "kid": "{{ bootstrap.docker.ca.kid }}",
+                  "crv": "P-256",
+                  "alg": "ES256",
+                  "x": "{{ bootstrap.docker.ca.x }}",
+                  "y": "{{ bootstrap.docker.ca.y }}"
+                },
+                "encryptedKey": "{{ bootstrap.docker.ca.encryptedKey }}"
+              },
+              {
+                "type": "ACME",
+                "name": "acme"
+              }
+            ]
+          },
+          "tls": {
+            "cipherSuites": [
+              "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256",
+              "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"
+            ],
+            "minVersion": 1.2,
+            "maxVersion": 1.3,
+            "renegotiation": false
+          }
+        }
+    - dest: "/home/{{ ansible_user }}/ca_config/config/defaults.json"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      content: |
+        {
+          "ca-url": "https://ca.mgmt.{{ home_domain }}",
+          "ca-config": "/home/step/config/ca.json",
+          "fingerprint": "{{ bootstrap.docker.ca.root_fingerprint }}",
+          "root": "/home/step/certs/root_ca.crt"
+        }
+    - dest: "/home/{{ ansible_user }}/ca_config/certs/root_ca.crt"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: "400"
+      content: "{{ bootstrap.docker.ca['root_ca.crt'] }}"
+    - dest: "/home/{{ ansible_user }}/ca_config/certs/intermediate_ca.crt"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: "400"
+      content: "{{ bootstrap.docker.ca['intermediate_ca.crt'] }}"
+    - dest: "/home/{{ ansible_user }}/ca_config/secrets/root_ca_key"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: "400"
+      content: "{{ bootstrap.docker.ca['root_ca_key'] }}"
+    - dest: "/home/{{ ansible_user }}/ca_config/secrets/intermediate_ca_key"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: "400"
+      content: "{{ bootstrap.docker.ca['intermediate_ca_key'] }}"
+    - dest: "/home/{{ ansible_user }}/ca_config/secrets/password"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: "400"
+      content: "{{ bootstrap.docker.ca.root_key_password }}"

@@ -1,11 +1,11 @@
 ---
-# Use --limit HOST and -e ansible_user=YOUR_USERNAME <- Your local username $(whoami)
-- name: Prepare IncusOS system
+# Use --extra-vars ansible_user=YOUR_USERNAME <- Your local username $(whoami)
+- name: Prepare flatcar ignition files
   hosts:
     - bootstrap
-  gather_facts: false
+  gather_facts: true
   connection: local
   tags:
-    - prepare_incusos
+    - flatcar_butane
   roles:
-    - incusos
+    - flatcar

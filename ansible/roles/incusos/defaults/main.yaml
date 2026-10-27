@@ -1,2 +1,0 @@
----
-project_full_path: "{{ playbook_dir | dirname }}"

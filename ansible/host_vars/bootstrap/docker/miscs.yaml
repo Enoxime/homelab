@@ -1,0 +1,110 @@
+---
+docker_misc_volumes:
+  - name: caddy_data
+  - name: caddy_config
+  - name: netbootxyz_config
+  - name: netbootxyz_assets
+docker_misc_stack:
+  - name: caddy
+    image: docker.io/caddy:latest
+    labels:
+      com.centurylinklabs.traefik.enable: "true"
+    networks:
+      - name: caddy
+    ports:
+      - "[{{ mgmt_ipv6_network }}5]:80:80"
+      - "{{ mgmt_ipv4_network }}5:80:80"
+      - "[{{ mgmt_ipv6_network }}5]:443:443"
+      - "{{ mgmt_ipv4_network }}5:443:443"
+      - "[{{ mgmt_ipv6_network }}5]:443:443/udp"
+      - "{{ mgmt_ipv4_network }}5:443:443/udp"
+      - "[{{ service_ipv6_network }}5]:80:81"
+      - "{{ service_ipv4_network }}5:80:81"
+      - "[{{ k8s00_ipv6_network }}5]:80:82"
+      - "{{ k8s00_ipv4_network }}5:80:82"
+      - "[{{ casa_ipv6_network }}5]:80:83"
+      - "{{ casa_ipv4_network }}5:80:83"
+    volumes:
+      - "/home/{{ ansible_user }}/caddy_config/Caddyfile:/etc/caddy/Caddyfile"
+      - "/home/{{ ansible_user }}/homelab_root_ca.crt:/etc/caddy/homelab_root_ca.crt:ro"
+      - caddy_data:/data
+      - caddy_config:/config
+
+  # netbootxyz
+  # https://github.com/netbootxyz/docker-netbootxyz
+  - env:
+      NGINX_PORT: "80"
+      WEB_APP_PORT: "3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+      start_period: 3s
+    image: ghcr.io/netbootxyz/netbootxyz:latest
+    labels:
+      com.centurylinklabs.traefik.enable: "true"
+    name: netbootxyz
+    networks:
+      - name: caddy
+    ports:
+      - "[{{ mgmt_ipv6_network }}5]:69:69/udp"
+      - "{{ mgmt_ipv4_network }}5:69:69/udp"
+      - "[{{ service_ipv6_network }}5]:69:69/udp"
+      - "{{ service_ipv4_network }}5:69:69/udp"
+      - "[{{ k8s00_ipv6_network }}5]:69:69/udp"
+      - "{{ k8s00_ipv4_network }}5:69:69/udp"
+      - "[{{ casa_ipv6_network }}5]:69:69/udp"
+      - "{{ casa_ipv4_network }}5:69:69/udp"
+    volumes:
+      - netbootxyz_config:/config
+      - netbootxyz_assets:/assets
+
+  # ca server
+  - name: ca
+    image: docker.io/smallstep/step-ca:latest
+    labels:
+      com.centurylinklabs.traefik.enable: "true"
+    networks:
+      - name: caddy
+    user: "{{ ansible_facts['user_uid'] }}:{{ ansible_facts['user_uid'] }}"
+    ports:
+      - "[{{ mgmt_ipv6_network }}10]:443:443"
+      - "{{ mgmt_ipv4_network }}10:443:443"
+      - "[{{ service_ipv6_network }}10]:443:443"
+      - "{{ service_ipv4_network }}10:443:443"
+      - "[{{ k8s00_ipv6_network }}10]:443:443"
+      - "{{ k8s00_ipv4_network }}10:443:443"
+    volumes:
+      - "/home/{{ ansible_user }}/ca_config:/home/step"
+
+  # TODO
+  # docker-socket-proxy
+  - name: socket-proxy
+    image: docker.io/tecnativa/docker-socket-proxy:latest
+    env:
+      CONTAINERS: "1"
+      IMAGES: "1"
+      POST: "1"
+    labels:
+      com.centurylinklabs.traefik.enable: "true"
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - name: proxy-net
+
+  # watchtower
+  - name: watchtower
+    image: docker.io/nickfedor/watchtower:latest
+    command:
+      - --cleanup
+      - --label-enable
+      - --rolling-restart
+      - --schedule=0 0 4 * * *
+    # env:
+    #   DOCKER_HOST: tcp://socket-proxy:2375
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
