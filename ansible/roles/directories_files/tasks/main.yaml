@@ -32,6 +32,7 @@
     owner: "{{ content.owner | default('root') }}"
     group: "{{ content.group | default('root') }}"
     content: "{{ content.content }}"
+  no_log: true
   loop: "{{ directories_files.contents | default([]) }}"
   loop_control:
     loop_var: content
