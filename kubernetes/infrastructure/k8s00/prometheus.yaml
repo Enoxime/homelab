@@ -100,6 +100,18 @@ spec:
       ## For dashboards downloaded via gnetId or url, the optional "title" key overrides
       ## the dashboard title in the downloaded JSON so the UI displays your custom title.
       ##
+      dashboardProviders:
+        dashboardproviders.yaml:
+          apiVersion: 1
+          providers:
+            - name: default
+              orgId: 1
+              folder: ''
+              type: file
+              disableDeletion: false
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/default
       dashboards:
         default:
           docker-dashboard:
