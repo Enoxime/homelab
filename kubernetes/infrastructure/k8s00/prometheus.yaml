@@ -255,16 +255,6 @@ spec:
             mountPath: /etc/prometheus/secrets/scrape-secrets
 
         additionalScrapeConfigs:
-          - job_name: incus
-            metrics_path: '/1.0/metrics'
-            scheme: 'https'
-            static_configs:
-              - targets: ['bootstrap.${k8s00Domain}:8443']
-            tls_config:
-              ca_file: '/etc/prometheus/secrets/scrape-secrets/bootstrap-client.crt'
-              cert_file: '/etc/prometheus/secrets/scrape-secrets/bootstrap-metrics.crt'
-              key_file: '/etc/prometheus/secrets/scrape-secrets/bootstrap-metrics.key'
-              server_name: 'bootstrap.${mgmtDomain}'
           - job_name: flatcar-node
             static_configs:
               - targets: ['bootstrap.${k8s00Domain}:9100']
