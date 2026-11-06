@@ -4,10 +4,7 @@ metadata:
   name: global-variables
   namespace: flux-system
 stringData:
-  routerIpMgmt: ENC[AES256_GCM,data:f8mGDDt690x4gjg=,iv:BdBfVIPGE72v/ZmBE4+LrtWCqPY4vVHmCcGGUbPBt/Q=,tag:XRjsaH/rR5FjZFC/ZQ6EoQ==,type:str]
-  routerIpService: ENC[AES256_GCM,data:tz3ZQoCR1rSpRYXI,iv:gxAarmWibolhhSodd9j7Thrcg3WmKyIvVl2FMHoxIB8=,tag:LYleRKzc595cyQVgetri3w==,type:str]
-  nasIp: ENC[AES256_GCM,data:VuWOIAMcrEx5+t8Pjg==,iv:+p34XqVQAdoTe1mRJvdmnZDcQNvhmqUzHdbJgE6TyXs=,tag:VqdLWXm2mnnA0F/2LEpKRg==,type:str]
-  nasIpmgmt: ENC[AES256_GCM,data:0gGpp1iNx0bs4ZyE,iv:4b/Rgl6OkcT/Gg/r5vYQnqotFc4aCVvU+cpqg5D6uL4=,tag:igIPSAmxZY29QP+XPIHlGw==,type:str]
+  nasIp: ENC[AES256_GCM,data:aOYwMZS+wwYEJa59NQ==,iv:CbQ0FL97KGW7TVrVAoEQZttJ7M4rZJxgDquE91wzhcY=,tag:pLgrvI+dkKtSFxx83v0CFw==,type:str]
   nasNfsPath: ENC[AES256_GCM,data:pO+GlccozO8=,iv:fwszXZWuLvISUD4dJlmLTodiNpCyGRNRtnSUsJ5oJqY=,tag:OMXE2jMrNPAWO+5o3NecYQ==,type:str]
   userId: ENC[AES256_GCM,data:ZmXon14=,iv:3ESrO1TGZfQSoOf0UJpDMpjyKpVqtizbxbQsOquTDNE=,tag:v18gjcAjOE+Ms6SapImXSQ==,type:str]
   groupId: ENC[AES256_GCM,data:MO0HNIc=,iv:74WMzmcmKbY596xNddBGcGBATVfOfnONq3g/+SXIyNY=,tag:SBGSvHX19vYLL1UsQIV3gA==,type:str]
@@ -34,6 +31,6 @@ sops:
         -----END AGE ENCRYPTED FILE-----
       recipient: age195m7v6w6lce8knleuc9juqwklj56vjflng64q60eh90yrfpsfyjs222pls
   encrypted_regex: ^(data|stringData)$
-  lastmodified: "2026-09-29T18:47:38Z"
-  mac: ENC[AES256_GCM,data:Aye8oV5Jm4VG9UVJ9QKohZ99A77/it/F9YakkkAkabLYm5ib61pVEq9Z+LbEbwpcTNp2ILxkNWz2JzH0ha3/uLhDIWSs81wj6BZNjBjkeStEBH8ByLpNdTtJLZuACjroPflYjPyVQD9jp2VhE0XE2JkBh3DGL6XoYZBHeCpLPM8=,iv:ukc//5pddLT7j5oMCQ3ww6Y4GTFt/wih3WVbdBGHKEA=,tag:rVnQ9loriO2mAHySNoTCXg==,type:str]
+  lastmodified: "2026-11-06T00:20:00Z"
+  mac: ENC[AES256_GCM,data:DtpezvCCb0ouNoWApDyIepGEfT4lA61R+LzrYgHcGfdmp8v8VNXb0z23Q9W/nfC4lGVt4G9ij1ztjcEQR8yHzCd3/ALAi0Sfr+Tv18OnWPrR44fEy27XVe27ANqei7y+O3pgA1nrsAE1ecagqhtItdSPEznzSEiv5eoxuTIoqLM=,iv:sgrMWUrOhduJF0Fh+ZUIi5YkWF3WSQBXJ1KqJt1zlxg=,tag:yEKFEKI+6RQ3Rm29f40T2g==,type:str]
   version: 3.13.3
