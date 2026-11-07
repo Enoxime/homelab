@@ -10,9 +10,9 @@ Name | Default value | Description
 docker_mgmt.networks | `[]` | List of docker networks.
 docker_mgmt.networks[].driver | `"bridge"` | The network driver.
 docker_mgmt.networks[].name | `""` | The network name.
-docker_mgmt.networks[].ipv4 | `true` | The network name.
-docker_mgmt.networks[].ipv6 | `false` | The network name.
-docker_mgmt.networks[].ipam_config | `` | The network name.
+docker_mgmt.networks[].ipv4 | `true` | Whether to enable IPv4 on the network.
+docker_mgmt.networks[].ipv6 | `false` | Whether to enable IPv6 on the network.
+docker_mgmt.networks[].ipam_config | omitted | List of IPAM configuration dictionaries, with keys such as `subnet`, `gateway`, and `iprange`.
 docker_mgmt.volumes | `[]` | List of volumes to declare.
 docker_mgmt.volumes[].driver_options | `{}` | Dictionary of driver options.
 docker_mgmt.volumes[].name | `""` | Volume name.
