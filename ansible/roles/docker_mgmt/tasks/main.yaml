@@ -10,7 +10,7 @@
   community.docker.docker_network:
     driver: "{{ net.driver | default('bridge') }}"
     name: "{{ net.name }}"
-    enable_ipv4: "{{ net.ipv4 | default(true) | bool }}"
+    enable_ipv4: "{{ (net.ipv4 | bool) if net.ipv4 is defined else omit }}"
     enable_ipv6: "{{ net.ipv6 | default(false) | bool }}"
     ipam_config: "{{ net.ipam_config | default(omit) }}"
   loop: "{{ docker_mgmt.networks | default([]) }}"
