@@ -10,6 +10,9 @@ Name | Default value | Description
 docker_mgmt.networks | `[]` | List of docker networks.
 docker_mgmt.networks[].driver | `"bridge"` | The network driver.
 docker_mgmt.networks[].name | `""` | The network name.
+docker_mgmt.networks[].ipv4 | `true` | The network name.
+docker_mgmt.networks[].ipv6 | `false` | The network name.
+docker_mgmt.networks[].ipam_config | `` | The network name.
 docker_mgmt.volumes | `[]` | List of volumes to declare.
 docker_mgmt.volumes[].driver_options | `{}` | Dictionary of driver options.
 docker_mgmt.volumes[].name | `""` | Volume name.
@@ -17,6 +20,7 @@ docker_mgmt.containers | `[]` | List of containers declaration.
 docker_mgmt.containers[].capabilities | `[]` | List of capabilities.
 docker_mgmt.containers[].command | `"" OR []` | Command to execute. Could be a string or a list.
 docker_mgmt.containers[].devices | `[]` | List of device bindings to add to the container.
+docker_mgmt.containers[].dns_servers | `[]` | List of custom DNS servers.
 docker_mgmt.containers[].env | `{}` | Dictionary of environment variables.
 docker_mgmt.containers[].exposed_ports | `[]` | List of exposed ports.
 docker_mgmt.containers[].groups | `[]` | List of groups the container will run as.

@@ -10,6 +10,9 @@
   community.docker.docker_network:
     driver: "{{ net.driver | default('bridge') }}"
     name: "{{ net.name }}"
+    enable_ipv4: "{{ net.ipv4 | default(true) | bool }}"
+    enable_ipv6: "{{ net.ipv6 | default(false) | bool }}"
+    ipam_config: "{{ net.ipam_config | default(omit) }}"
   loop: "{{ docker_mgmt.networks | default([]) }}"
   loop_control:
     loop_var: net
@@ -30,6 +33,7 @@
     capabilities: "{{ container.capabilities | default(omit) }}"
     command: "{{ container.command | default(omit) }}"
     devices: "{{ container.devices | default(omit) }}"
+    dns_servers: "{{ container.dns_servers | default(omit) }}"
     env: "{{ container.env | default(omit) }}"
     exposed_ports: "{{ container.exposed_ports | default(omit) }}"
     groups: "{{ container.groups | default(omit) }}"
