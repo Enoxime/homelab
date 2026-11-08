@@ -22,6 +22,8 @@ docker_misc_stack:
       - "{{ service_ipv4_network }}5:80:81"
       - "[{{ k8s00_ipv6_network }}5]:80:82"
       - "{{ k8s00_ipv4_network }}5:80:82"
+      - "[{{ k8s00_ipv6_network }}5]:2019:2019"
+      - "{{ k8s00_ipv4_network }}5:2019:2019"
       - "[{{ casa_ipv6_network }}5]:80:83"
       - "{{ casa_ipv4_network }}5:80:83"
     volumes:
@@ -67,6 +69,9 @@ docker_misc_stack:
       com.centurylinklabs.watchtower.enable: "true"
     networks:
       - name: caddy
+    dns_servers:
+      - "{{ mgmt_ipv6_network }}53"
+      - "{{ mgmt_ipv4_network }}53"
     user: "{{ ansible_facts['user_uid'] }}:{{ ansible_facts['user_uid'] }}"
     ports:
       - "[{{ mgmt_ipv6_network }}10]:443:443"

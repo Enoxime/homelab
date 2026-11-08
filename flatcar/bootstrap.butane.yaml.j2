@@ -373,6 +373,15 @@ storage:
         inline: |
           PermitRootLogin no
           AllowUsers ansible {{ admin_username }}
+    # Docker dual stack configuration
+    - path: /etc/docker/daemon.json
+      mode: 0644
+      contents:
+        inline: |
+          {
+            "ipv6": true,
+            "ip6tables": true
+          }
   links:
     - path: /etc/localtime
       target: ../usr/share/zoneinfo/{{ timezone }}

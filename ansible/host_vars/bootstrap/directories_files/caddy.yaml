@@ -10,7 +10,7 @@ directories_files_caddy:
       group: "{{ ansible_user }}"
       content: |
         {
-          # admin :2019
+          admin :2019
           metrics {
             per_host
           }
@@ -36,4 +36,36 @@ directories_files_caddy:
         http://netbootxyz.bootstrap.k8s00.{{ home_domain }}:82 ,
         http://netbootxyz.bootstrap.casa.{{ home_domain }}:83 {
           reverse_proxy netbootxyz:80
+        }
+
+        dns.bootstrap.mgmt.{{ home_domain }} {
+          reverse_proxy technitium-mgmt:5380
+        }
+
+        dns.bootstrap.dmz.{{ home_domain }} {
+          reverse_proxy technitium-dmz:5380
+        }
+
+        dns.bootstrap.work.{{ home_domain }} {
+          reverse_proxy technitium-work:5380
+        }
+
+        dns.bootstrap.service.{{ home_domain }} {
+          reverse_proxy technitium-service:5380
+        }
+
+        dns.bootstrap.k8s00.{{ home_domain }} {
+          reverse_proxy technitium-k8s00:5380
+        }
+
+        dns.bootstrap.casa.{{ home_domain }} {
+          reverse_proxy technitium-casa:5380
+        }
+
+        dns.bootstrap.iot.{{ home_domain }} {
+          reverse_proxy technitium-iot:5380
+        }
+
+        dns.bootstrap.monitoring.{{ home_domain }} {
+          reverse_proxy technitium-monitoring:5380
         }

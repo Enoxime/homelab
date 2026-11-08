@@ -3,12 +3,16 @@ docker_mgmt:
   debug: false
   networks:
     - name: caddy
+      ipv6: true
     - name: unifi
+      ipv6: true
     - name: proxy-net
+      ipv6: true
   volumes: "{{
     docker_misc_volumes
     + docker_unifi_volumes }}"
   containers: "{{
     docker_misc_stack
     + docker_unifi_stack
-    + docker_monitoring_stack }}"
+    + docker_monitoring_stack
+    + docker_technitium_stack }}"
