@@ -4,3 +4,4 @@ customization:
       - siderolabs/amd-ucode
       - siderolabs/nvidia-open-gpu-kernel-modules
       - siderolabs/nvidia-container-toolkit
+      - siderolabs/nut-client

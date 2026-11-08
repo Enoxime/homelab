@@ -9,3 +9,4 @@ customization:
       - siderolabs/amdgpu
       - siderolabs/amd-ucode
       {{- end }}
+      - siderolabs/nut-client
