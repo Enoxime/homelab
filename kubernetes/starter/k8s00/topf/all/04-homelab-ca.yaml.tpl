@@ -1,8 +1,8 @@
 ---
 apiVersion: v1alpha1
-kind: RegistryTLSConfig
-name: "{{ .Data.subDomain }}"
-ca: |-
+kind: TrustedRootsConfig
+name: homelab
+certificates: |-
   -----BEGIN CERTIFICATE-----
   MIIBmzCCAUKgAwIBAgIRAI0B2KCqdAvy0xu72BZ/jOEwCgYIKoZIzj0EAwIwLDEQ
   MA4GA1UEChMHaG9tZWxhYjEYMBYGA1UEAxMPaG9tZWxhYiBSb290IENBMB4XDTI2
