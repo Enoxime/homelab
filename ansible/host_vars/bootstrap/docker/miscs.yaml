@@ -123,6 +123,7 @@ docker_misc_stack:
   - name: docker-volume-backup
     image: ghcr.io/offen/docker-volume-backup:v2
     env:
+      EXEC_LABEL: "no-hooks"
     labels:
       com.centurylinklabs.watchtower.enable: "true"
     volumes:
