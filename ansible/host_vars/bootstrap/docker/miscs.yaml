@@ -130,11 +130,11 @@ docker_misc_stack:
       - "/home/{{ ansible_user }}/docker_volume_backup_config:/etc/dockervolumebackup/conf.d"
       - "docker_volume_backup_directory:/archive"
       - unifi_mongo_backup:/custom_backup/unifi_mongo:ro
-      - technitium_mgmt_config:/custom_bakup/technitium_mgmt:ro
-      - technitium_dmz_config:/custom_bakup/technitium_dmz:ro
-      - technitium_work_config:/custom_bakup/technitium_work:ro
-      - technitium_service_config:/custom_bakup/technitium_service:ro
-      - technitium_k8s00_config:/custom_bakup/technitium_k8s00:ro
-      - technitium_casa_config:/custom_bakup/technitium_casa:ro
-      - technitium_iot_config:/custom_bakup/technitium_iot:ro
-      - technitium_monitoring_config:/custom_bakup/technitium_monitoring:ro
+      - technitium_mgmt_config:/custom_backup/technitium_mgmt:ro
+      - technitium_dmz_config:/custom_backup/technitium_dmz:ro
+      - technitium_work_config:/custom_backup/technitium_work:ro
+      - technitium_service_config:/custom_backup/technitium_service:ro
+      - technitium_k8s00_config:/custom_backup/technitium_k8s00:ro
+      - technitium_casa_config:/custom_backup/technitium_casa:ro
+      - technitium_iot_config:/custom_backup/technitium_iot:ro
+      - technitium_monitoring_config:/custom_backup/technitium_monitoring:ro
