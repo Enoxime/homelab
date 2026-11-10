@@ -25,7 +25,7 @@ spec:
   chart:
     spec:
       chart: cert-manager
-      version: ">= v1.21.2 < v1.22.0"
+      version: ">= v1.21.3 < v1.22.0"
       sourceRef:
         kind: HelmRepository
         name: jetstack
