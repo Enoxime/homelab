@@ -4,6 +4,11 @@ docker_misc_volumes:
   - name: caddy_config
   - name: netbootxyz_config
   - name: netbootxyz_assets
+  - name: docker_volume_backup_directory
+    driver_options:
+      type: nfs
+      device: :{{ nas00.nfs_path }}/backups/nodes/bootstrap
+      o: "addr={{ nas00.mgmt_ipv6 }},rw,nfsvers=4"
 docker_misc_stack:
   - name: caddy
     image: docker.io/caddy:latest
@@ -113,3 +118,24 @@ docker_misc_stack:
       com.centurylinklabs.watchtower.enable: "true"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+
+  # docker volume backup
+  - name: docker-volume-backup
+    image: ghcr.io/offen/docker-volume-backup:v2
+    env:
+      EXEC_LABEL: "no-hooks"
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - "/home/{{ ansible_user }}/docker_volume_backup_config:/etc/dockervolumebackup/conf.d"
+      - "docker_volume_backup_directory:/archive"
+      - unifi_mongo_backup:/custom_backup/unifi_mongo:ro
+      - technitium_mgmt_config:/custom_backup/technitium_mgmt:ro
+      - technitium_dmz_config:/custom_backup/technitium_dmz:ro
+      - technitium_work_config:/custom_backup/technitium_work:ro
+      - technitium_service_config:/custom_backup/technitium_service:ro
+      - technitium_k8s00_config:/custom_backup/technitium_k8s00:ro
+      - technitium_casa_config:/custom_backup/technitium_casa:ro
+      - technitium_iot_config:/custom_backup/technitium_iot:ro
+      - technitium_monitoring_config:/custom_backup/technitium_monitoring:ro

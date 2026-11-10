@@ -1,0 +1,80 @@
+---
+directories_files_docker_volume_backup:
+  directories:
+    - path: "/home/{{ ansible_user }}/docker_volume_backup_config"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+  contents:
+    - dest: "/home/{{ ansible_user }}/docker_volume_backup_config/unifi_mongo.env"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      content: |
+        BACKUP_CRON_EXPRESSION='@daily'
+        BACKUP_SOURCES="/custom_backup/unifi_mongo"
+        BACKUP_RETENTION_DAYS="30"
+        EXEC_LABEL="database-mongodb"
+        BACKUP_ARCHIVE="/archive/unifi/mongo"
+    - dest: "/home/{{ ansible_user }}/docker_volume_backup_config/technitium_mgmt.env"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      content: |
+        BACKUP_CRON_EXPRESSION='@daily'
+        BACKUP_SOURCES="/custom_backup/technitium_mgmt"
+        BACKUP_RETENTION_DAYS="30"
+        BACKUP_ARCHIVE="/archive/technitium/mgmt"
+    - dest: "/home/{{ ansible_user }}/docker_volume_backup_config/technitium_dmz.env"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      content: |
+        BACKUP_CRON_EXPRESSION='@daily'
+        BACKUP_SOURCES="/custom_backup/technitium_dmz"
+        BACKUP_RETENTION_DAYS="30"
+        BACKUP_ARCHIVE="/archive/technitium/dmz"
+    - dest: "/home/{{ ansible_user }}/docker_volume_backup_config/technitium_work.env"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      content: |
+        BACKUP_CRON_EXPRESSION='@daily'
+        BACKUP_SOURCES="/custom_backup/technitium_work"
+        BACKUP_RETENTION_DAYS="30"
+        BACKUP_ARCHIVE="/archive/technitium/work"
+    - dest: "/home/{{ ansible_user }}/docker_volume_backup_config/technitium_service.env"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      content: |
+        BACKUP_CRON_EXPRESSION='@daily'
+        BACKUP_SOURCES="/custom_backup/technitium_service"
+        BACKUP_RETENTION_DAYS="30"
+        BACKUP_ARCHIVE="/archive/technitium/service"
+    - dest: "/home/{{ ansible_user }}/docker_volume_backup_config/technitium_k8s00.env"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      content: |
+        BACKUP_CRON_EXPRESSION='@daily'
+        BACKUP_SOURCES="/custom_backup/technitium_k8s00"
+        BACKUP_RETENTION_DAYS="30"
+        BACKUP_ARCHIVE="/archive/technitium/k8s00"
+    - dest: "/home/{{ ansible_user }}/docker_volume_backup_config/technitium_casa.env"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      content: |
+        BACKUP_CRON_EXPRESSION='@daily'
+        BACKUP_SOURCES="/custom_backup/technitium_casa"
+        BACKUP_RETENTION_DAYS="30"
+        BACKUP_ARCHIVE="/archive/technitium/casa"
+    - dest: "/home/{{ ansible_user }}/docker_volume_backup_config/technitium_iot.env"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      content: |
+        BACKUP_CRON_EXPRESSION='@daily'
+        BACKUP_SOURCES="/custom_backup/technitium_iot"
+        BACKUP_RETENTION_DAYS="30"
+        BACKUP_ARCHIVE="/archive/technitium/iot"
+    - dest: "/home/{{ ansible_user }}/docker_volume_backup_config/technitium_monitoring.env"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      content: |
+        BACKUP_CRON_EXPRESSION='@daily'
+        BACKUP_SOURCES="/custom_backup/technitium_monitoring"
+        BACKUP_RETENTION_DAYS="30"
+        BACKUP_ARCHIVE="/archive/technitium/monitoring"
