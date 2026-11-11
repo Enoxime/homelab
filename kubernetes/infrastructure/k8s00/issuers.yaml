@@ -1,0 +1,23 @@
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: homelab-internal
+  namespace: cert-manager
+spec:
+  acme:
+    email: "admin@${mainDomain}"
+    server: "https://ca.${k8s00Domain}/acme/acme/directory"
+    # curl --silent --insecure ${url}/roots.pem | base64 -w0
+    caBundle: "${homelabCa}"
+    privateKeySecretRef:
+      name: homelab-internal-account-private-key
+    solvers:
+      - dns01:
+          rfc2136:
+            nameserver: dns1.${k8s00Domain}:53
+            tsigKeyName: k8s00-cert-manager
+            tsigAlgorithm: HMACSHA512
+            tsigSecretSecretRef:
+              name: homelab-k8s00-tsig
+              key: tsig-secret
