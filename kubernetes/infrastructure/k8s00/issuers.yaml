@@ -9,7 +9,7 @@ spec:
     email: "admin@${mainDomain}"
     server: "https://ca.${k8s00Domain}/acme/acme/directory"
     # curl --silent --insecure ${url}/roots.pem | base64 -w0
-    caBundle: "${caBundle}"
+    caBundle: "${homelabCa}"
     privateKeySecretRef:
       name: homelab-internal-account-private-key
     solvers:
