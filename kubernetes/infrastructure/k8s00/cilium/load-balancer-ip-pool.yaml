@@ -1,0 +1,15 @@
+---
+apiVersion: "cilium.io/v2"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: service-pool
+spec:
+  allowFirstLastIPs: "No"
+  blocks:
+    - cidr: ${bgpIpv6Cidr}
+    - cidr: ${bgpIpv4Cidr}
+  disabled: false
+  serviceSelector:
+    matchExpressions:
+      - key: never-used-value
+        operator: DoesNotExist
