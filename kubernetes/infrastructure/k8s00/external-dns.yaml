@@ -59,7 +59,7 @@ spec:
       ipFamilies:
         - IPv6
         - IPv4
-      ipFamilyPolicy: null
+      ipFamilyPolicy: RequireDualStack
     serviceMonitor:
       enabled: true
     sources:
