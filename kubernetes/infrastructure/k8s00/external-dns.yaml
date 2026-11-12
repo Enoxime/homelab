@@ -35,8 +35,6 @@ spec:
             key: tsig-secret
             name: homelab-k8s00-tsig
     extraArgs:
-      - --pihole-api-version=6
-      - --pihole-server=${piholeUrlMgmtBootstrap00Internal}
       - --rfc2136-host=dns1.${k8s00Domain}
       - --rfc2136-port=53
       - --rfc2136-zone=${k8s00Domain}
