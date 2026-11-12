@@ -47,7 +47,7 @@ spec:
       - --managed-record-types=AAAA
       - --managed-record-types=CNAME
       # - --managed-record-types=PTR
-    policy: sync
+    policy: upsert-only
     interval: 1m
     namespaced: false
     provider:
