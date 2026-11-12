@@ -47,6 +47,7 @@ spec:
       - --managed-record-types=AAAA
       - --managed-record-types=CNAME
       - --managed-record-types=PTR
+    policy: sync
     interval: 1m
     namespaced: false
     provider:
@@ -63,3 +64,13 @@ spec:
     sources:
       - service
       - gateway-httproute
+    rbac:
+      create: true
+
+    resources:
+      requests:
+        cpu: 100m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 128Mi
