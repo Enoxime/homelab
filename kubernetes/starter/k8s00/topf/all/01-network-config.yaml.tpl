@@ -7,8 +7,8 @@ hostname: {{ .Node.Host }}
 apiVersion: v1alpha1
 kind: ResolverConfig
 nameservers:
-  - address: {{ .Data.gatewayIpv4 }}
-  - address: {{ .Data.gatewayIpv6 }}
+  - address: {{ .Data.networkIpv6 }}53
+  - address: {{ .Data.networkIpv4 }}53
 searchDomains:
   domains:
     - {{ .Data.subDomain }}
