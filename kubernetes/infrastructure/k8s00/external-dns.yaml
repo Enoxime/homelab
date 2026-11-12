@@ -27,6 +27,7 @@ spec:
   values:
     domainFilters:
       - ${k8s00Domain}
+      - ${k8s00PtrIpv6}
     env:
       - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET
         valueFrom:
