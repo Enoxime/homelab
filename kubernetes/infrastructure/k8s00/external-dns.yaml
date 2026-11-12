@@ -27,7 +27,7 @@ spec:
   values:
     domainFilters:
       - ${k8s00Domain}
-      - ${k8s00PtrIpv6}
+      # - ${k8s00PtrIpv6}
     env:
       - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET
         valueFrom:
@@ -38,16 +38,16 @@ spec:
       - --rfc2136-host=dns1.${k8s00Domain}
       - --rfc2136-port=53
       - --rfc2136-zone=${k8s00Domain}
-      - --rfc2136-zone=${k8s00PtrIpv6}
+      # - --rfc2136-zone=${k8s00PtrIpv6}
       - --rfc2136-tsig-keyname=k8s00-cert-manager
       - --rfc2136-tsig-secret-alg=hmac-sha512
-      - --rfc2136-axfr
-      - --create-ptr
+      # - --rfc2136-axfr
+      # - --create-ptr
       - --managed-record-types=A
       - --managed-record-types=AAAA
       - --managed-record-types=CNAME
-      - --managed-record-types=PTR
-    policy: sync
+      # - --managed-record-types=PTR
+    policy: upsert-only
     interval: 1m
     namespaced: false
     provider:
@@ -66,7 +66,6 @@ spec:
       - gateway-httproute
     rbac:
       create: true
-
     resources:
       requests:
         cpu: 100m
