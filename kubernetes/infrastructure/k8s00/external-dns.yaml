@@ -50,7 +50,6 @@ spec:
       - --managed-record-types=CNAME
       # - --managed-record-types=PTR
       - --txt-wildcard-replacement=wildcard
-      - --registry=txt
       - --txt-owner-id=k8s00
     policy: sync
     interval: 1m
