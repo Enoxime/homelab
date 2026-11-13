@@ -124,6 +124,7 @@ spec:
       enabled: true
     l7Proxy: true
     envoy:
+      xdsMode: ads
       prometheus:
         serviceMonitor:
           enabled: true

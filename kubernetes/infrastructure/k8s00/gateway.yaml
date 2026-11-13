@@ -1,0 +1,77 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gateway
+---
+apiVersion: cilium.io/v2alpha1
+kind: CiliumGatewayClassConfig
+metadata:
+  name: ipv6-first
+  namespace: gateway
+spec:
+  service:
+    ipFamilyPolicy: PreferDualStack
+    ipFamilies:
+      - IPv6
+      - IPv4
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: cilium-ipv6-first
+spec:
+  controllerName: io.cilium/gateway-controller
+  parametersRef:
+    group: cilium.io
+    kind: CiliumGatewayClassConfig
+    name: ipv6-first
+    namespace: gateway
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: homelab-k8s00-wildcard
+  namespace: gateway
+  annotations:
+    cert-manager.io/cluster-issuer: homelab-internal
+spec:
+  gatewayClassName: cilium-ipv6-first
+  listeners:
+    - hostname: "*.service.${k8s00Domain}"
+      protocol: HTTP
+      port: 80
+      name: http
+      allowedRoutes:
+        namespaces:
+          from: Same
+    - hostname: "*.service.${k8s00Domain}"
+      protocol: HTTPS
+      port: 443
+      name: https
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              gateway-access: "true"
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: wildcard-service-k8s00-tls
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: https-redirect
+  namespace: gateway
+spec:
+  parentRefs:
+    - name: homelab-k8s00-wildcard
+      sectionName: http
+  rules:
+    - filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+            statusCode: 301
