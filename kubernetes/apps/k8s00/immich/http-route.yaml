@@ -1,0 +1,17 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: immich
+  namespace: immich
+spec:
+  parentRefs:
+    - name: homelab-k8s00-wildcard
+      namespace: gateway
+      sectionName: https
+  hostnames:
+    - "immich.service.${k8s00Domain}"
+  rules:
+    - backendRefs:
+        - name: immich-server
+          port: 2283
