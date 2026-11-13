@@ -10,7 +10,7 @@ spec:
       namespace: gateway
       sectionName: https
   hostnames:
-    - "pgadmin.service.k8s00.home.enox.im"
+    - "pgadmin.service.${k8s00Domain}"
   rules:
     - backendRefs:
         - name: pgadmin-http
