@@ -26,6 +26,7 @@ stringData:
   bgpIpv6Cidr: ENC[AES256_GCM,data:qgEj8KMLALnwqTXFT/3E8kJtbnSgRBSD,iv:FU1XzQK1tj9zhlOj+yxtLfADTK8e+SDK9POiEmEZMNs=,tag:dAaWkA6y4182FEe4uveajg==,type:str]
   bgpIpv4Cidr: ENC[AES256_GCM,data:drvY1g2dPvu3RGdxnDI8,iv:MXTOwHK/RkZMORZ/W6UES/g0iJHGPt5lCwX0epwvL/4=,tag:ZA3U7SPdY5e7H25BHcPMNQ==,type:str]
   k8s00PtrIpv6: ENC[AES256_GCM,data:3c5IRtXOs2zM2LUdOSV4DyiEdM1CeWpOk8t4IFkkoqaI40yQw7CnJA==,iv:KmrqAs6LT/KGZDSn6U8IyfnSOQVyucjHbUtQbAyGT24=,tag:Fal6SxcOxQzDa8BZ6fBCVQ==,type:str]
+  k8s00PtrIpv4: ENC[AES256_GCM,data:2KOSRMagShPBu0gL11wZ7gJfDn14GvM=,iv:JQ4kLt3xDyI3nkrj/sS+pH3s8uugqKz1bLLE+RN6SZQ=,tag:RI1XhW+qyFD49FjsBeH/Sw==,type:str]
 sops:
   age:
     - enc: |
@@ -38,6 +39,6 @@ sops:
         -----END AGE ENCRYPTED FILE-----
       recipient: age195m7v6w6lce8knleuc9juqwklj56vjflng64q60eh90yrfpsfyjs222pls
   encrypted_regex: ^(data|stringData)$
-  lastmodified: "2026-11-13T15:49:13Z"
-  mac: ENC[AES256_GCM,data:K85pes+nj0KqoUGJ2QhS4xWEAvqfss9H3z0Tu7sk4chZOyNYS9gMDi2TdP5t1kUuLoI0osd7PMWERCaOwr4eWbD4OKWgXUocHthcbxxYOSehIok/Pav1dWuVRvHgv9xUWkC50QYz0R1mXoyx09kOO0Ov5/yGXnejX+Qc3SPLPJY=,iv:ij7z/QajrjoBNMEgDTo9YS2RKp7TtRK4eRAbnmhEr8c=,tag:B3AC8xns7JRRwtXG9dVLiw==,type:str]
+  lastmodified: "2026-11-13T18:39:23Z"
+  mac: ENC[AES256_GCM,data:r7SpdPIZDA4a04J3qJxPWXcH9xkANcGZsPrAr8zfHvIjBYRca839Kry0ufHUjj0SSgAaNogglhwsOfRhpcWgiAH2YIccPAnZZ8J9t6cY70AwRGwPNFJ64x0Nkqv3hXCeGiylwAyFWsdp3aF0ATYvMsibU+5W30o7lLAskoI680Q=,iv:B1TPRfdhWvd2n+ElXIy8hUxEr8r3/h/xm9nlrgNEU4Q=,tag:xYXyVun4hxUV14VML68fkw==,type:str]
   version: 3.13.3
