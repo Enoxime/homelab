@@ -9,7 +9,7 @@ data:
   networkIpv4: ENC[AES256_GCM,data:eCcitg/e7wv9u2A=,iv:n+hHemLTTUO576LCTI/pHaMYXRblxaFRU/g1iJw6XjI=,tag:+HEFrf8nDuK5eKTJZIi4vg==,type:str]
   gatewayIpv4: ENC[AES256_GCM,data:jmqOhEVbuwZYZFAo,iv:pwcqGBUAbjV4x04Iqf33oAEOZjkzAOhPXp/+4qHpL+I=,tag:d5RoH8PS88p/MGbzxqImcw==,type:str]
   networkIpv6: ENC[AES256_GCM,data:TaxV3OzlYM0EINbrtN5JvbnSInQi,iv:qcYV/L6GBGR1FAdoPFMNj7Sd9hBufzICF6EhvU0gvUY=,tag:EMUt0sC01/5Pcx4Pv23+fg==,type:str]
-  gatewayIpv6: ENC[AES256_GCM,data:TQjWkMMlUocBK8kTtG+3PQE3PTEX5uwJKw==,iv:3pdYXNx0I1quSjDxjuQDfHmWvko/u/ZMAKsSS9zd8IA=,tag:2BcXhDW1TEaMvaPmoHSSSg==,type:str]
+  gatewayIpv6: ENC[AES256_GCM,data:witTvM/OtYsTaDMC/r515PS4sp9SM2qW7EyEw0ePML+ZGuXyB54e,iv:vWSEp/rNrxRfEj9qhodFwtpmfOjN3IAH2+ZHRPvuVYk=,tag:V01o8I6jDa1be8lQkSDOKw==,type:str]
   upsmonHost: ENC[AES256_GCM,data:F+5fOdP5FhHz6j3naqgWTJQ=,iv:H3jdsCA8uR9RWcHS6FYcUf7Uyzb0wUBm0qe7eRJpXlc=,tag:d4JRqvGSvOMUmc8uqdMUmA==,type:str]
   upsmonUser: ENC[AES256_GCM,data:ykv38r3urA==,iv:bJpqhxdX+K+PUhAuL7Qlw4sz4EX72A5SwXh78i2Dkec=,tag:/TBU5F0KxLKnTIaSwURanw==,type:str]
   upsmonPass: ENC[AES256_GCM,data:GeBlGYmieBou,iv:PIfrhpkHi14TfVquOk7fiZRa1mvT68MYDsdf6XHpEoc=,tag:DE7ihe9skSS+gjCY43Vlfw==,type:str]
@@ -97,6 +97,6 @@ sops:
         -----END AGE ENCRYPTED FILE-----
       recipient: age195m7v6w6lce8knleuc9juqwklj56vjflng64q60eh90yrfpsfyjs222pls
   encrypted_regex: ^(data|clusterEndpoint|host)$
-  lastmodified: "2026-11-08T13:57:29Z"
-  mac: ENC[AES256_GCM,data:ROopbRxopCCljMXaSf6a3zoPm0huD01Y6je8JsfHBB46WCuq06Ilrd+E0OP9RJgYgr4eG/RjfFU3g2vm8LKiEOQ6uQK6xap38NeOTRp5hY4y3YM7gjia5czYqWhIpsIT3DtO6a4zv3AngE6WpE+n2FAfIKmo6SBwDaB7BeUbDcQ=,iv:VAT2YbZMFEop/WxsLygGdogDQPHcrxJvS8KM0owv+hA=,tag:PXsltWIiY3aun0Z5Ul/8GA==,type:str]
+  lastmodified: "2026-11-18T03:20:06Z"
+  mac: ENC[AES256_GCM,data:DLAlCoEMomTrum95mILl7NJ83P//0JytfQRtADx+lXokiTDrbtuYJYhtwRq7qdUAy968AIVk465561TetHJ1z6s80ROe3+6fNdUAk91Tj+awJN76j1nEBulNbtQkjtDEei7rAJ446fa+bV4j2DGWEQnUH+VkalPJpqOYujcoxPs=,iv:/QNsQ3KjuLUSq/I9rUv1kI5POustRbKbvG6o7j5dCEc=,tag:v2RmW/g0K657o5S3wcRv7Q==,type:str]
   version: 3.13.3

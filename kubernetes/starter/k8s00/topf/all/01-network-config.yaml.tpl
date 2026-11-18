@@ -17,8 +17,8 @@ apiVersion: v1alpha1
 kind: TimeSyncConfig
 ntp:
   servers:
-    - {{ .Data.gatewayIpv4 }}
     - {{ .Data.gatewayIpv6 }}
+    - {{ .Data.gatewayIpv4 }}
 ---
 apiVersion: v1alpha1
 kind: BridgeConfig
@@ -32,8 +32,6 @@ addresses:
   - address: "{{ .Data.networkIpv6 }}{{ .Node.Data.hostSubnetIpv6 }}/{{ .Node.Data.hostSubnetMaskIpv6 }}"
   - address: "{{ .Data.networkIpv4 }}{{ .Node.Data.hostSubnetIpv4 }}/{{ .Node.Data.hostSubnetMaskIpv4 }}"
 routes:
-  - gateway: "{{ .Data.gatewayIpv6 }}"
-    source: "{{ .Data.networkIpv6 }}{{ .Node.Data.hostSubnetIpv6 }}"
   - gateway: "{{ .Data.gatewayIpv4 }}"
     source: "{{ .Data.networkIpv4 }}{{ .Node.Data.hostSubnetIpv4 }}"
 ---
