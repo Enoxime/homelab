@@ -1,0 +1,207 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: ai
+  name: llama-cache
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: rook-ceph-delete
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: models-preset
+  namespace: ai
+data:
+  preset.ini: |
+    ; [Ministral-Reasoning]
+    ; hf = ggml-org/Ministral-3-8B-Reasoning-2512-GGUF
+
+    ; [Ministral-3I-8B-Instruct]
+    ; hf = ggml-org/Ministral-3-8B-Instruct-2512-GGUF
+
+    ; [gemma-4-E4B-it]
+    ; hf = ggml-org/gemma-4-E4B-it-GGUF
+
+    [qwen3.8-27b]
+    hf-repo = ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S
+    hf-file = Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf
+    no-mmproj = true
+    ; ctx-size = 16384
+    ctx-size = 65536
+    spec-type = draft-mtp
+    cache-type-k = q8_0
+    cache-type-v = q8_0
+    temp = 1.0
+    top-p = 0.95
+    top-k = 20
+    load-on-startup = true
+    min-p = 0
+
+    [qwen3.8-27b-vision]
+    hf-repo = ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S
+    hf-file = Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf
+    ctx-size = 16384
+    spec-type = draft-mtp
+    cache-type-k = q8_0
+    cache-type-v = q8_0
+    temp = 1.0
+    top-p = 0.95
+    top-k = 20
+    min-p = 0
+
+    [qwen3.6-35b-a3b]
+    ; Fast MoE with thinking off; Home Assistant, agents, quick answers.
+    hf = unsloth/Qwen3.6-35B-A3B-GGUF:UD-IQ3_S
+    no-mmproj = true
+    reasoning = off
+    temp = 0.7
+    top-p = 0.8
+    top-k = 20
+    min-p = 0
+    presence-penalty = 1.5
+
+    [gemma-4-26b-a4b]
+    hf = unsloth/gemma-4-26B-A4B-it-GGUF:UD-IQ4_XS
+    no-mmproj = true
+    temp = 1.0
+    top-p = 0.95
+    top-k = 64
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llama-deployment
+  namespace: ai
+  labels:
+    app: llama
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: llama
+  template:
+    metadata:
+      labels:
+        app: llama
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: llama
+          image: ghcr.io/ggml-org/llama.cpp:full-cuda13
+          args:
+            - --server
+            - --host
+            - "::"
+            - --models-max
+            - "4"
+            - --models-autoload
+            - --models-preset
+            - /preset/preset.ini
+          env:
+            - name: LLAMA_CACHE
+              value: /models
+          securityContext:
+            capabilities:
+              drop: [ "ALL" ]
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+            readOnlyRootFilesystem: true
+            privileged: false
+            runAsUser: 1000
+            runAsGroup: 1000
+          ports:
+            - name: api
+              containerPort: 9931
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /health
+              port: api
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 5
+          readinessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /health
+              port: api
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
+          resources:
+            # claims:
+            #   - name: shared-gpu
+            limits:
+              nvidia.com/gpu: "30"
+            requests:
+              nvidia.com/gpu: "30"
+          volumeMounts:
+            - name: llama-cache
+              mountPath: /models
+            - name: models-preset
+              mountPath: /preset/preset.ini
+              subPath: preset.ini
+              readOnly: true
+      runtimeClassName: nvidia
+      volumes:
+        - name: llama-cache
+          persistentVolumeClaim:
+            claimName: llama-cache
+        - name: models-preset
+          configMap:
+            name: models-preset
+            defaultMode: 444
+            items:
+              - key: preset.ini
+                path: preset.ini
+      # resourceClaims:
+      #   - name: shared-gpu
+      #     resourceClaimName: rtx5060ti
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: llama-api
+  namespace: ai
+spec:
+  ports:
+    - protocol: TCP
+      port: 9931
+      targetPort: api
+  selector:
+    app: llama
+  type: ClusterIP
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: ai-llama
+  namespace: ai
+spec:
+  parentRefs:
+    - name: homelab-k8s00-wildcard
+      namespace: gateway
+      sectionName: https
+  hostnames:
+    - "llama.service.${k8s00Domain}"
+  rules:
+    - backendRefs:
+        - name: llama-api
+          port: 9931
