@@ -21,9 +21,7 @@ spec:
 
     network:
       dualStack:
-        enabled: true
-        ipFamilyPolicy: RequireDualStack
-        ipv6First: true
+        enabled: false
 
     securityContext:
       capabilities:
@@ -36,27 +34,14 @@ spec:
       seccompProfile:
         type: RuntimeDefault
 
-    # ingress:
+    # httpRoute:
     #   enabled: true
-    #   className: nginx
-    #   annotations:
-    #     cert-manager.io/cluster-issuer: homelab-internal
-    #   hosts:
-    #     - host: immich.${serviceDomainOld}
-    #       paths:
-    #         - path: /
-    #           pathType: Prefix
-    #     - host: photos.${mainDomainOld}
-    #       paths:
-    #         - path: /
-    #           pathType: Prefix
-    #   tls:
-    #     - secretName: immich-tls-int
-    #       hosts:
-    #         - immich.${serviceDomainOld}
-    #     - secretName: immich-tls-ext
-    #       hosts:
-    #         - photos.${mainDomainOld}
+    #   parentRefs:
+    #     - name: homelab-k8s00-wildcard
+    #       namespace: gateway
+    #       sectionName: https
+    #   hostnames:
+    #     - "immich.service.${k8s00Domain}"
 
     persistence:
       enabled: true

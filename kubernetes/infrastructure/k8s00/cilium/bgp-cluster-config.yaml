@@ -16,11 +16,3 @@ spec:
           peerAddress: "${bgpIpv6Router}"
           peerConfigRef:
             name: "cilium-peer"
-    - name: "k8s00-ipv4-64513"
-      localASN: 64513
-      peers:
-        - name: "opnsense"
-          peerASN: 64512
-          peerAddress: "${bgpIpv4Router}"
-          peerConfigRef:
-            name: "cilium-peer"

@@ -86,26 +86,26 @@ spec:
       runAsGroup: ${groupId}
       runAsUser: ${userId}
 
-  postRenderers:
-    - kustomize:
-        patches:
-          - patch: |-
-              apiVersion: v1
-              kind: Service
-              metadata:
-                name: garage
-              spec:
-                ipFamilyPolicy: PreferDualStack
-                ipFamilies:
-                  - IPv6
-                  - IPv4
-          - patch: |-
-              apiVersion: v1
-              kind: Service
-              metadata:
-                name: garage-headless
-              spec:
-                ipFamilyPolicy: PreferDualStack
-                ipFamilies:
-                  - IPv6
-                  - IPv4
+  # postRenderers:
+  #   - kustomize:
+  #       patches:
+  #         - patch: |-
+  #             apiVersion: v1
+  #             kind: Service
+  #             metadata:
+  #               name: garage
+  #             spec:
+  #               ipFamilyPolicy: PreferDualStack
+  #               ipFamilies:
+  #                 - IPv6
+  #                 - IPv4
+  #         - patch: |-
+  #             apiVersion: v1
+  #             kind: Service
+  #             metadata:
+  #               name: garage-headless
+  #             spec:
+  #               ipFamilyPolicy: PreferDualStack
+  #               ipFamilies:
+  #                 - IPv6
+  #                 - IPv4
