@@ -9,9 +9,6 @@ helmCharts:
     valuesInline:
       ipam:
         mode: kubernetes
-        operator:
-          clusterPoolIPv6PodCIDRList:
-            - "fdff::/104"
       kubeProxyReplacement: true
       securityContext:
         capabilities:
