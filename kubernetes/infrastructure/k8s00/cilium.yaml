@@ -12,7 +12,7 @@ spec:
   chart:
     spec:
       chart: cilium
-      version: ">=1.20.4 <1.21.0"
+      version: ">=1.20.5 <1.21.0"
       sourceRef:
         kind: HelmRepository
         name: cilium
@@ -21,12 +21,17 @@ spec:
   values:
     ipam:
       mode: kubernetes
+      operator:
+        clusterPoolIPv6PodCIDRList:
+          - "fdff::/104"
     kubeProxyReplacement: true
     operator:
+      rollOutPods: true
       prometheus:
         enabled: true
         serviceMonitor:
           enabled: true
+    rollOutCiliumPods: true
     securityContext:
       capabilities:
         ciliumAgent:
@@ -41,6 +46,7 @@ spec:
           - FOWNER
           - SETGID
           - SETUID
+          - SYSLOG
         cleanCiliumState:
           - NET_ADMIN
           - SYS_ADMIN
@@ -53,6 +59,8 @@ spec:
       hostRoot: /sys/fs/cgroup
     k8sServiceHost: localhost
     k8sServicePort: 7445
+    k8s:
+      requireIPv6PodCIDR: true
     cni:
       exclusive: false
     devices: br0
@@ -110,6 +118,7 @@ spec:
     l7Proxy: true
     envoy:
       xdsMode: ads
+      rollOutPods: true
       prometheus:
         serviceMonitor:
           enabled: true

@@ -5,10 +5,13 @@ helmCharts:
     repo: https://helm.cilium.io/
     releaseName: cilium
     namespace: kube-system
-    version: 1.20.4
+    version: 1.20.5
     valuesInline:
       ipam:
         mode: kubernetes
+        operator:
+          clusterPoolIPv6PodCIDRList:
+            - "fdff::/104"
       kubeProxyReplacement: true
       securityContext:
         capabilities:
@@ -24,6 +27,7 @@ helmCharts:
             - FOWNER
             - SETGID
             - SETUID
+            - SYSLOG
           cleanCiliumState:
             - NET_ADMIN
             - SYS_ADMIN
@@ -34,11 +38,13 @@ helmCharts:
         hostRoot: /sys/fs/cgroup
       k8sServiceHost: localhost
       k8sServicePort: 7445
+      k8s:
+        requireIPv6PodCIDR: true
       cni:
         exclusive: false
       devices: br0
       ipv4:
-        enabled: true
+        enabled: false
       ipv6:
         enabled: true
       bgpControlPlane:
