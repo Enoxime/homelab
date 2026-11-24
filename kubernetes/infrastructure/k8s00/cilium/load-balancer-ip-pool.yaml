@@ -7,7 +7,6 @@ spec:
   allowFirstLastIPs: "No"
   blocks:
     - cidr: ${bgpIpv6Cidr}
-    - cidr: ${bgpIpv4Cidr}
   disabled: false
   serviceSelector:
     matchExpressions:

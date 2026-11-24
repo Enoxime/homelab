@@ -27,7 +27,7 @@ spec:
   values:
     domainFilters:
       - ${k8s00Domain}
-      # - ${k8s00PtrIpv6}
+      - ${k8s00PtrIpv6}
       # - ${k8s00PtrIpv4}
     env:
       - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET
@@ -45,7 +45,7 @@ spec:
       - --rfc2136-tsig-secret-alg=hmac-sha512
       - --rfc2136-axfr
       # - --create-ptr
-      - --managed-record-types=A
+      # - --managed-record-types=A
       - --managed-record-types=AAAA
       - --managed-record-types=CNAME
       # - --managed-record-types=PTR
@@ -59,10 +59,10 @@ spec:
     replicaCount: 1
     service:
       enabled: true
-      ipFamilies:
-        - IPv6
-        - IPv4
-      ipFamilyPolicy: RequireDualStack
+      # ipFamilies:
+      #   - IPv6
+      #   - IPv4
+      # ipFamilyPolicy: RequireDualStack
     serviceMonitor:
       enabled: true
     sources:
