@@ -21,9 +21,6 @@ spec:
   values:
     ipam:
       mode: kubernetes
-      operator:
-        clusterPoolIPv6PodCIDRList:
-          - "fdff::/104"
     kubeProxyReplacement: true
     operator:
       rollOutPods: true
