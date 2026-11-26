@@ -24,3 +24,12 @@ encryption:
     - slot: 0
       tpm: {}
 ---
+apiVersion: v1alpha1
+kind: DiscoveryServiceConfig
+name: default
+$patch: delete
+---
+apiVersion: v1alpha1
+kind: DiscoveryIdentityConfig
+$patch: delete
+---

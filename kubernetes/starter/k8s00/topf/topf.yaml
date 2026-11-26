@@ -1,102 +1,85 @@
-kubernetesVersion: 1.36.5
-talosVersion: 1.14.5
-clusterEndpoint: ENC[AES256_GCM,data:kzbR6UvVUsQcXRlea/82anfgrv88MLNRBJ+iczeWIR4mmso9UW0vOw==,iv:zWjjDdlpkXL9j4OQZJbyfuP3exJAxSZ23LUtZSgJ/wA=,tag:RK8woCtkIHHlaH1qqbBfRg==,type:str]
+kubernetesVersion: 1.36.6
+talosVersion: 1.14.7
+clusterEndpoint: ENC[AES256_GCM,data:CUJcLIP7tEeZDmFWSUpcq3f0i2gF3PWieqIPLqrHPK7KNHo4wf4udg==,iv:9Qgf4/D1qe8qYUcL5wP8JstYqMdJi30UFalHOx+bxQU=,tag:TaFCsP8q4xmUDUM+J7Eglw==,type:str]
 clusterName: k8s00
-schematicId: '@schematic.yaml.tpl'
+schematicId: '@schematic.yaml'
 secureboot: true
 data:
-  subDomain: ENC[AES256_GCM,data:DRZVJad/aWAIt7+L9bTn2USu,iv:bbtt7lPVQGf+QOta6/4xoYc8u3xjcu/8xpWca2AapIY=,tag:MqXrtJcdWwv/YDhg9frKUw==,type:str]
-  networkIpv4: ENC[AES256_GCM,data:eCcitg/e7wv9u2A=,iv:n+hHemLTTUO576LCTI/pHaMYXRblxaFRU/g1iJw6XjI=,tag:+HEFrf8nDuK5eKTJZIi4vg==,type:str]
-  gatewayIpv4: ENC[AES256_GCM,data:jmqOhEVbuwZYZFAo,iv:pwcqGBUAbjV4x04Iqf33oAEOZjkzAOhPXp/+4qHpL+I=,tag:d5RoH8PS88p/MGbzxqImcw==,type:str]
-  networkIpv6: ENC[AES256_GCM,data:TaxV3OzlYM0EINbrtN5JvbnSInQi,iv:qcYV/L6GBGR1FAdoPFMNj7Sd9hBufzICF6EhvU0gvUY=,tag:EMUt0sC01/5Pcx4Pv23+fg==,type:str]
-  gatewayIpv6: ENC[AES256_GCM,data:witTvM/OtYsTaDMC/r515PS4sp9SM2qW7EyEw0ePML+ZGuXyB54e,iv:vWSEp/rNrxRfEj9qhodFwtpmfOjN3IAH2+ZHRPvuVYk=,tag:V01o8I6jDa1be8lQkSDOKw==,type:str]
-  upsmonHost: ENC[AES256_GCM,data:F+5fOdP5FhHz6j3naqgWTJQ=,iv:H3jdsCA8uR9RWcHS6FYcUf7Uyzb0wUBm0qe7eRJpXlc=,tag:d4JRqvGSvOMUmc8uqdMUmA==,type:str]
-  upsmonUser: ENC[AES256_GCM,data:ykv38r3urA==,iv:bJpqhxdX+K+PUhAuL7Qlw4sz4EX72A5SwXh78i2Dkec=,tag:/TBU5F0KxLKnTIaSwURanw==,type:str]
-  upsmonPass: ENC[AES256_GCM,data:GeBlGYmieBou,iv:PIfrhpkHi14TfVquOk7fiZRa1mvT68MYDsdf6XHpEoc=,tag:DE7ihe9skSS+gjCY43Vlfw==,type:str]
+  subDomain: ENC[AES256_GCM,data:sfW41rUW6qxUk3Dxu8MeZo6D,iv:HJhMivqXLmPmGidIDTCWZzs9QJDieI7cV96x9ZiCqTM=,tag:mT9qkcyP/TdqZmwMO2nF0g==,type:str]
+  networkIpv6: ENC[AES256_GCM,data:sVJjaLryLLTZnfY34w==,iv:dvd4j086jpLS2zC4K6FZqufKQp1PFKy0RQff4hTqUwc=,tag:OR+f2CctejvLdLdiVbcOtg==,type:str]
+  gatewayIpv6: ENC[AES256_GCM,data:l9xgYwCg/7qk9y8qWkc=,iv:c6xqirjtBjvmqJxSOT3ck/AC0uU+zMmqlNNOBe4Bgrg=,tag:o5sdugPEZVARd2MKWSSajg==,type:str]
+  upsmonHost: ENC[AES256_GCM,data:vwQ6mCbX8t71IyGVwEeIER7gLFxrRE6F,iv:UGRs5P1Ukf+0GiwJisHNivmP5rgc/e7t1H+is9pDvGE=,tag:JzuhZnpz5zeGNpCuaeBA4g==,type:str]
+  upsmonUser: ENC[AES256_GCM,data:6I6tD9rmyA==,iv:3mSa8L8EU6QKirkuUrwrvHc5lllK/7N3pWHTN/f0FOg=,tag:MydlnXW84pfuKQOmim7PJg==,type:str]
+  upsmonPass: ENC[AES256_GCM,data:ujKUG/2FPxFp,iv:1iRr18ZgDATNOryS9lfuZE7liVcx3oqzPeFXfbOPevM=,tag:W1e7sxMkWKndVmhEGScbEg==,type:str]
 nodes:
-  - host: ENC[AES256_GCM,data:mPJFN/SnHA0G6HXlxmguxx+GlBZbT5w=,iv:Ws/KngcGkBl2SSdslb19g4Lza5brLs8zatBVF/WiGMY=,tag:2tKFCVzCEBmyqjYc3E9Iog==,type:str]
+  - host: cp00
+    ip: ENC[AES256_GCM,data:9F+fTUtSXcRv7tvFbRUbDg==,iv:rjGUbepholRttaIhGA673O2LdBp4Tc6S8JsLiA2xDWo=,tag:DeOuUN7NCl5Af+xhIaOzNg==,type:str]
     role: control-plane
+    schematicId: '@schematic-intel.yaml'
     data:
-      cpuType: ENC[AES256_GCM,data:bNuFTIU=,iv:a6sIV/gJc/cU/bw2M1OpxGPfOQPoeLC4AkhaiSENy+8=,tag:c4uw7Zh9ewUSnaDN2AVsPQ==,type:str]
-      installDiskPath: ENC[AES256_GCM,data:oP5K/hiUJOA=,iv:r2W08XEA1GXRE8711YPP7O+wlMWigyfOYWBFzwayDRw=,tag:n9uhjeqqkFA6Nz4FAzud3w==,type:str]
-      interfaceName: ENC[AES256_GCM,data:ro70MXLR,iv:rWEWWMxaE2I9pW6RohlN51Qs5qnyZQL8BkgnGhHfkxY=,tag:FAdkOzmbEY6o6C5fX2l3xw==,type:str]
-      hostSubnetIpv4: ENC[AES256_GCM,data:bg+u,iv:zY3w7xVFtldDbwg2C0K30dYy/FuM4ZIoGbDuxRaAwrY=,tag:jnsarrhAhux/S52Ps6hILg==,type:int]
-      hostSubnetMaskIpv4: ENC[AES256_GCM,data:lLU=,iv:Dyn/+u4ev9fFlYrV8mRyQzGA1kk4Mvq7gvcPFL36a7s=,tag:pY8WIm4YqMkNSHKziRejdg==,type:int]
-      hostSubnetIpv6: ENC[AES256_GCM,data:AXp+dQ==,iv:+53oQdl5cco0z6iLPWe9ALTbVYkKhh3+vxXPA2DqVfI=,tag:Np7QQIWgmmgtfuiFw3zDiA==,type:int]
-      hostSubnetMaskIpv6: ENC[AES256_GCM,data:GbM=,iv:R9UdOJ/CAH3qlXZjcXORZlsp2hRckYp87cdxf9yv+2I=,tag:+DJkOFgYkPkz67ktPrMyow==,type:int]
-  - host: ENC[AES256_GCM,data:SQ4hS8LN5q43MQyBDk+jFKwrTiKYL70=,iv:yG6Kehl0Mr3O/noyWedO8/U+sJ1mdq/kEQdURahz+/U=,tag:S3kdULaCkSaqb2XZmUpiiA==,type:str]
+      installDiskPath: ENC[AES256_GCM,data:O58oCd/tDq4=,iv:AdbYSVk++pqKrMwYz0TVBJATi01Ew2JnALIjVDAcOdI=,tag:Tmglvwi/W0zXiK/jESlQEA==,type:str]
+      interfaceName: ENC[AES256_GCM,data:2efwFHA7,iv:rPNJx8z6bnO9pI4A2uAeXyfoK/dQKOvc4e8UtubwUf8=,tag:LBsme6MDv05zikdDf/eeeg==,type:str]
+      subnet: ENC[AES256_GCM,data:M396,iv:G0rCW4viS56BRZ7ifMKCVNzLLfxJ+ND1estoYtrtBdA=,tag:tNiAqssb2vMChd/ahXFV1w==,type:int]
+  - host: cp01
+    ip: ENC[AES256_GCM,data:6dOuJAAypjcMCE62qlvIRQ==,iv:WGO9I7dY//KUxcSGYR2AvJIAK8uDBdj2lEB+Q/5wRgE=,tag:0zODHhi9gLED7Y9iK5ep2Q==,type:str]
     role: control-plane
+    schematicId: '@schematic-intel.yaml'
     data:
-      cpuType: ENC[AES256_GCM,data:bNuFTIU=,iv:a6sIV/gJc/cU/bw2M1OpxGPfOQPoeLC4AkhaiSENy+8=,tag:c4uw7Zh9ewUSnaDN2AVsPQ==,type:str]
-      installDiskPath: ENC[AES256_GCM,data:oP5K/hiUJOA=,iv:r2W08XEA1GXRE8711YPP7O+wlMWigyfOYWBFzwayDRw=,tag:n9uhjeqqkFA6Nz4FAzud3w==,type:str]
-      interfaceName: ENC[AES256_GCM,data:ro70MXLR,iv:rWEWWMxaE2I9pW6RohlN51Qs5qnyZQL8BkgnGhHfkxY=,tag:FAdkOzmbEY6o6C5fX2l3xw==,type:str]
-      hostSubnetIpv4: ENC[AES256_GCM,data:qWiC,iv:kMK9VSmVTXpuPxufD5iIs1ZVtXdfz9cFMkKMzMFgt7M=,tag:MtQaMlLlnkyo54iTPA7hdA==,type:int]
-      hostSubnetMaskIpv4: ENC[AES256_GCM,data:lLU=,iv:Dyn/+u4ev9fFlYrV8mRyQzGA1kk4Mvq7gvcPFL36a7s=,tag:pY8WIm4YqMkNSHKziRejdg==,type:int]
-      hostSubnetIpv6: ENC[AES256_GCM,data:Ak9Dcw==,iv:pmucGnGV7ShFuR1+eiiTO8d4oAfHupDctPKUTx+nGhg=,tag:h9mpfkLTOqPOnil4UUfFhg==,type:int]
-      hostSubnetMaskIpv6: ENC[AES256_GCM,data:GbM=,iv:R9UdOJ/CAH3qlXZjcXORZlsp2hRckYp87cdxf9yv+2I=,tag:+DJkOFgYkPkz67ktPrMyow==,type:int]
-  - host: ENC[AES256_GCM,data:SuogaUqpCLfhvLXRGEBlShU8CF36mhI=,iv:I479M0eOsHxT9QxL50F/ocCnVySQkmfhrV2Y5SpN/os=,tag:oh/sGDvq4fB3ZzTirQNxhA==,type:str]
+      installDiskPath: ENC[AES256_GCM,data:O58oCd/tDq4=,iv:AdbYSVk++pqKrMwYz0TVBJATi01Ew2JnALIjVDAcOdI=,tag:Tmglvwi/W0zXiK/jESlQEA==,type:str]
+      interfaceName: ENC[AES256_GCM,data:2efwFHA7,iv:rPNJx8z6bnO9pI4A2uAeXyfoK/dQKOvc4e8UtubwUf8=,tag:LBsme6MDv05zikdDf/eeeg==,type:str]
+      subnet: ENC[AES256_GCM,data:W02K,iv:Wia8gLQJ3HUZ/0za3tiEb4LTumQHf+wlw0VwRTwOOPE=,tag:DlkpfKPwxkFAor+ZfSa9JQ==,type:int]
+  - host: cp02
+    ip: ENC[AES256_GCM,data:IptrIT13ZrkAwH/eYifQWQ==,iv:OAS+JHI0WjkAlLqsZooo9vTXTOwPtaq8XR2FIopHUCk=,tag:e0yURP0Vz0TtpbrRGWEgmw==,type:str]
     role: control-plane
+    schematicId: '@schematic-intel.yaml'
     data:
-      cpuType: ENC[AES256_GCM,data:bNuFTIU=,iv:a6sIV/gJc/cU/bw2M1OpxGPfOQPoeLC4AkhaiSENy+8=,tag:c4uw7Zh9ewUSnaDN2AVsPQ==,type:str]
-      installDiskPath: ENC[AES256_GCM,data:oP5K/hiUJOA=,iv:r2W08XEA1GXRE8711YPP7O+wlMWigyfOYWBFzwayDRw=,tag:n9uhjeqqkFA6Nz4FAzud3w==,type:str]
-      interfaceName: ENC[AES256_GCM,data:ro70MXLR,iv:rWEWWMxaE2I9pW6RohlN51Qs5qnyZQL8BkgnGhHfkxY=,tag:FAdkOzmbEY6o6C5fX2l3xw==,type:str]
-      hostSubnetIpv4: ENC[AES256_GCM,data:s/lt,iv:JzzMf+q9k52JVeWw+YCTXJ4F7FfC8hLtkL4y1IxDW08=,tag:Rpdaezvx83x6qDDCS8l7vw==,type:int]
-      hostSubnetMaskIpv4: ENC[AES256_GCM,data:lLU=,iv:Dyn/+u4ev9fFlYrV8mRyQzGA1kk4Mvq7gvcPFL36a7s=,tag:pY8WIm4YqMkNSHKziRejdg==,type:int]
-      hostSubnetIpv6: ENC[AES256_GCM,data:pB5Aqg==,iv:gY9+57mpdTNyoEo74JOUI6CA+BrEbrhdJwb9e4DhqSA=,tag:QofQYscTR7zrhGU2HIGVLg==,type:int]
-      hostSubnetMaskIpv6: ENC[AES256_GCM,data:GbM=,iv:R9UdOJ/CAH3qlXZjcXORZlsp2hRckYp87cdxf9yv+2I=,tag:+DJkOFgYkPkz67ktPrMyow==,type:int]
-  - host: ENC[AES256_GCM,data:X4KC55ie638r5KZ267PAwnwIBwWC+wY=,iv:Q7sCZnJpbKwgeBqoRqzjT4173/NfSqRlOICdrwPxQyg=,tag:ioRUv/wVmzxBwwXdRNYp+g==,type:str]
+      installDiskPath: ENC[AES256_GCM,data:O58oCd/tDq4=,iv:AdbYSVk++pqKrMwYz0TVBJATi01Ew2JnALIjVDAcOdI=,tag:Tmglvwi/W0zXiK/jESlQEA==,type:str]
+      interfaceName: ENC[AES256_GCM,data:2efwFHA7,iv:rPNJx8z6bnO9pI4A2uAeXyfoK/dQKOvc4e8UtubwUf8=,tag:LBsme6MDv05zikdDf/eeeg==,type:str]
+      subnet: ENC[AES256_GCM,data:9pyQ,iv:PiOg91PYMwuWFgGWSVFylMtpM3ENJx0IlCZHD9g7Ba0=,tag:QrJXndzNIR1OFEMtO+2I/A==,type:int]
+  - host: wk00
+    ip: ENC[AES256_GCM,data:BqVNmyvbJxr7nbpYnK/9XA==,iv:e7ru3rJI1YD8gKhsZmoHl3zYJziI3IZXtySvUql5e/I=,tag:b94yLNyogGzGUkVjGsP+ow==,type:str]
     role: worker
+    schematicId: '@schematic-intel.yaml'
     data:
-      cpuType: ENC[AES256_GCM,data:bNuFTIU=,iv:a6sIV/gJc/cU/bw2M1OpxGPfOQPoeLC4AkhaiSENy+8=,tag:c4uw7Zh9ewUSnaDN2AVsPQ==,type:str]
-      installDiskPath: ENC[AES256_GCM,data:qbhYVmax+VLSE+yv,iv:KCqRBnoKznNcrL0RrMCNbXyfh+j3jSgQ8bYvpfyYNjI=,tag:nfl01pgeUI8RB9zrFr+d3w==,type:str]
-      interfaceName: ENC[AES256_GCM,data:8TMARg==,iv:c2BiMHMS29UkHUPQ3Z6Co1NMTZesyaBCGl8JWqaolaQ=,tag:Uhsz0H+NfDEr2LMbg2ypVA==,type:str]
-      hostSubnetIpv4: ENC[AES256_GCM,data:Ykg0,iv:6TBwn5XUXQ60bMekBbhMgZ8NPr36nF3rsfzu7Si7dEE=,tag:awgP6voIPzdd6p57DdgCXg==,type:int]
-      hostSubnetMaskIpv4: ENC[AES256_GCM,data:lLU=,iv:Dyn/+u4ev9fFlYrV8mRyQzGA1kk4Mvq7gvcPFL36a7s=,tag:pY8WIm4YqMkNSHKziRejdg==,type:int]
-      hostSubnetIpv6: ENC[AES256_GCM,data:LlekiQ==,iv:HA26hTC49k2QlNmWnjEd0a5yKnqMSQkVa7afKGN6ROY=,tag:nk4NrGVJdhalO/cEbsDiaQ==,type:int]
-      hostSubnetMaskIpv6: ENC[AES256_GCM,data:GbM=,iv:R9UdOJ/CAH3qlXZjcXORZlsp2hRckYp87cdxf9yv+2I=,tag:+DJkOFgYkPkz67ktPrMyow==,type:int]
-  - host: ENC[AES256_GCM,data:aTn2yWIn663XjYBYp1HHCNFMzkJ1IaQ=,iv:Bfu290CFc0YGa7xb4mz6w1yF0rCng98YsGfin9BToB4=,tag:5hPDshBzDnpfE/WR2Zz12g==,type:str]
+      installDiskPath: ENC[AES256_GCM,data:4DcrjhsCgH3fNfeD,iv:a+4dTd8Xt28abun4JR1RHXOCpt/yeFsWfWhL02MD9Yw=,tag:WR270hYbSt63q6TRqWmtaw==,type:str]
+      interfaceName: ENC[AES256_GCM,data:jNpK4g==,iv:tRwk6x/jxSwo2sNhF86cVGmLuTJUdMJOIhHd/6XhcLs=,tag:ddft35TaWu2lcxpHGGEirw==,type:str]
+      subnet: ENC[AES256_GCM,data:87nY,iv:+8kAdtbI3tr9hvtGBBljQnyi09jjwWGezM/e8EXwMws=,tag:h/pld3y+qqTeubmNNXqKBg==,type:int]
+  - host: wk01
+    ip: ENC[AES256_GCM,data:RvF9MCVrzB54nquiIyfDWw==,iv:3PoWlg6tP47Nl5krAJkn0Ta3y7T5w8Hai37QrkW99W8=,tag:TjTNIVf6rouieybBuYRtew==,type:str]
     role: worker
+    schematicId: '@schematic-amd.yaml'
     data:
-      cpuType: ENC[AES256_GCM,data:sF4w,iv:Ke+cJgVhqxliuXzHJ53y4DjR0T0Im0bnbcXQeDsvONo=,tag:WdIGdii+/ENMlVALnaLRwQ==,type:str]
-      installDiskPath: ENC[AES256_GCM,data:qbhYVmax+VLSE+yv,iv:KCqRBnoKznNcrL0RrMCNbXyfh+j3jSgQ8bYvpfyYNjI=,tag:nfl01pgeUI8RB9zrFr+d3w==,type:str]
-      interfaceName: ENC[AES256_GCM,data:ro70MXLR,iv:rWEWWMxaE2I9pW6RohlN51Qs5qnyZQL8BkgnGhHfkxY=,tag:FAdkOzmbEY6o6C5fX2l3xw==,type:str]
-      hostSubnetIpv4: ENC[AES256_GCM,data:xglq,iv:zvdLe/E5FQc4e1M2b/gObwapeylibjeUAU/kBVVEHN8=,tag:ldmN27bEOSZkzySQfKmiTg==,type:int]
-      hostSubnetMaskIpv4: ENC[AES256_GCM,data:lLU=,iv:Dyn/+u4ev9fFlYrV8mRyQzGA1kk4Mvq7gvcPFL36a7s=,tag:pY8WIm4YqMkNSHKziRejdg==,type:int]
-      hostSubnetIpv6: ENC[AES256_GCM,data:+UcAIg==,iv:9UFSmlW7y0MF2uisXDxpCvmlYZs4WFnDnww8iFBbqg0=,tag:GuiR4IAdHGytPxP/SuXi/g==,type:int]
-      hostSubnetMaskIpv6: ENC[AES256_GCM,data:GbM=,iv:R9UdOJ/CAH3qlXZjcXORZlsp2hRckYp87cdxf9yv+2I=,tag:+DJkOFgYkPkz67ktPrMyow==,type:int]
-  - host: ENC[AES256_GCM,data:85ThUhXvKubRnDAaaAxA7mKwyFCptac=,iv:qCJcJDopw9IyGymJEYPUVkGc9o0yEJC3f5BmkqCBsuI=,tag:cWkI7sbOIo1B4ck6wJTEbQ==,type:str]
+      installDiskPath: ENC[AES256_GCM,data:4DcrjhsCgH3fNfeD,iv:a+4dTd8Xt28abun4JR1RHXOCpt/yeFsWfWhL02MD9Yw=,tag:WR270hYbSt63q6TRqWmtaw==,type:str]
+      interfaceName: ENC[AES256_GCM,data:2efwFHA7,iv:rPNJx8z6bnO9pI4A2uAeXyfoK/dQKOvc4e8UtubwUf8=,tag:LBsme6MDv05zikdDf/eeeg==,type:str]
+      subnet: ENC[AES256_GCM,data:egu/,iv:q0BCAEIC49YQlOPZFmW7mjNJAzqZhXOy36C8k16h4dc=,tag:ny4HOWbAmkelClFKUCmOUg==,type:int]
+  - host: wk02
+    ip: ENC[AES256_GCM,data:1JqbpOF3dGcuEUKof3Tfjg==,iv:cIRROdFzLtwZQPEgIl2e70hJ042fbLsebV3Po5NtXcE=,tag:CzU4uPn6saKWE9USo/w0Ow==,type:str]
     role: worker
+    schematicId: '@schematic-amd.yaml'
     data:
-      cpuType: ENC[AES256_GCM,data:sF4w,iv:Ke+cJgVhqxliuXzHJ53y4DjR0T0Im0bnbcXQeDsvONo=,tag:WdIGdii+/ENMlVALnaLRwQ==,type:str]
-      installDiskPath: ENC[AES256_GCM,data:qbhYVmax+VLSE+yv,iv:KCqRBnoKznNcrL0RrMCNbXyfh+j3jSgQ8bYvpfyYNjI=,tag:nfl01pgeUI8RB9zrFr+d3w==,type:str]
-      interfaceName: ENC[AES256_GCM,data:ro70MXLR,iv:rWEWWMxaE2I9pW6RohlN51Qs5qnyZQL8BkgnGhHfkxY=,tag:FAdkOzmbEY6o6C5fX2l3xw==,type:str]
-      hostSubnetIpv4: ENC[AES256_GCM,data:uiBV,iv:eZQrEg4XZRUVyGZEMa9Gz0bJVpYaoDZxyUTAQijUcUk=,tag:J8npEmBo8kwsKkXBgSM7lg==,type:int]
-      hostSubnetMaskIpv4: ENC[AES256_GCM,data:lLU=,iv:Dyn/+u4ev9fFlYrV8mRyQzGA1kk4Mvq7gvcPFL36a7s=,tag:pY8WIm4YqMkNSHKziRejdg==,type:int]
-      hostSubnetIpv6: ENC[AES256_GCM,data:A6R4iQ==,iv:0DTJG6/ODddRObXKTG1DPcvEdJ+0kYAD9t0ctxHoVpc=,tag:z/08TrSOr2eGwg5EJozQ9w==,type:int]
-      hostSubnetMaskIpv6: ENC[AES256_GCM,data:GbM=,iv:R9UdOJ/CAH3qlXZjcXORZlsp2hRckYp87cdxf9yv+2I=,tag:+DJkOFgYkPkz67ktPrMyow==,type:int]
-  - host: ENC[AES256_GCM,data:gcuBDfMZjXyaoICxOvMSZMCqIpHhZP8=,iv:PHOIjZvgSj1WlygSwuj0j+qj3FX+gx8tWZ5sUmwLpd8=,tag:MK9H5AHK5afMvgt4R4CnJg==,type:str]
+      installDiskPath: ENC[AES256_GCM,data:4DcrjhsCgH3fNfeD,iv:a+4dTd8Xt28abun4JR1RHXOCpt/yeFsWfWhL02MD9Yw=,tag:WR270hYbSt63q6TRqWmtaw==,type:str]
+      interfaceName: ENC[AES256_GCM,data:2efwFHA7,iv:rPNJx8z6bnO9pI4A2uAeXyfoK/dQKOvc4e8UtubwUf8=,tag:LBsme6MDv05zikdDf/eeeg==,type:str]
+      subnet: ENC[AES256_GCM,data:8PgE,iv:DhiUSEMVvsra6VrhSUHssOD17vhg5xhaIvii22Czyag=,tag:5j6vdu/htqXI/+fFQdCpgQ==,type:int]
+  - host: wk03
+    ip: ENC[AES256_GCM,data:jnqFJtF2xK2hjDWFcf5ZWg==,iv:r0LwF9k8ig2t8dEoYJxWcK+X+FtE0JXzUmB+3sgaPbs=,tag:DfTtUFb9Q9LAzfCn2yo9xA==,type:str]
     role: worker
     schematicId: '@schematic-nvidia.yaml'
     data:
-      cpuType: ENC[AES256_GCM,data:sF4w,iv:Ke+cJgVhqxliuXzHJ53y4DjR0T0Im0bnbcXQeDsvONo=,tag:WdIGdii+/ENMlVALnaLRwQ==,type:str]
-      installDiskPath: ENC[AES256_GCM,data:4g/gyUfj/MX+KpZH,iv:OEHMbPZ0dKCE6sH8elaYhexWSui66eP72hJvlX8Q9ds=,tag:1w2Cp6y/1d4rvMpomkJBAA==,type:str]
-      interfaceName: ENC[AES256_GCM,data:Rk0gQWWz,iv:RJoIhLqy8m1DiFvF99zVRTOxzvDEB7O/17C+PDIzeXY=,tag:ipQWuclZ35pNuog/Qhjn3Q==,type:str]
-      hostSubnetIpv4: ENC[AES256_GCM,data:70f9,iv:Lrriz0A5Bwgz259wQnOGwu5vTef3Q6NFIBhUrcW/xGs=,tag:Igg6fnsyi3+TC6DHIQqDmA==,type:int]
-      hostSubnetMaskIpv4: ENC[AES256_GCM,data:lLU=,iv:Dyn/+u4ev9fFlYrV8mRyQzGA1kk4Mvq7gvcPFL36a7s=,tag:pY8WIm4YqMkNSHKziRejdg==,type:int]
-      hostSubnetIpv6: ENC[AES256_GCM,data:kHJKEA==,iv:0FGo9VPDyM4TDeIE2xpMzoH1vdBs3FYc5jWwuW4fTnY=,tag:EEEoZsKseeiFFMQfRRIBrg==,type:int]
-      hostSubnetMaskIpv6: ENC[AES256_GCM,data:GbM=,iv:R9UdOJ/CAH3qlXZjcXORZlsp2hRckYp87cdxf9yv+2I=,tag:+DJkOFgYkPkz67ktPrMyow==,type:int]
+      installDiskPath: ENC[AES256_GCM,data:rtzO2l8yFJXIKH/J,iv:IbUVx799h5Sk2q7L6Jit/qJq8os2OiCTgjsl4lJXU6c=,tag:znZRvDFK5fSCCKPD4ruBYQ==,type:str]
+      interfaceName: ENC[AES256_GCM,data:P3HRLxj4,iv:9iuPJahOCPU/fQWtaLC5v3JXtYfemVvOO5xTU7hjZVs=,tag:cT6ut3DiyGHsY9yX9UUO3A==,type:str]
+      subnet: ENC[AES256_GCM,data:Uqu5,iv:sKrNrOKoC/BbCO5Ck2qJgZ8Ax3RZVCx/nsaAu44zB3E=,tag:P+NrLvXkrhJow9wqc89J8w==,type:int]
 sops:
   age:
     - enc: |
         -----BEGIN AGE ENCRYPTED FILE-----
-        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBNSUVkRFhEejFzQXFHWjNI
-        OGkwVFp6M25ia0lHOE9VOW5IMVVySzBDZ0c0CjViRHFCZURrbXNHMlBEc3E2ZVh0
-        R0xqKzAvRm1RK09ibEFySmxPV3ZOSXcKLS0tIGd5OEVhb3dxblVVMG9paThrNTIr
-        eUJneWpFTlVOb08xN3Ryc1JyQTNEU28KtRBmavDnmYgscuInla/XNiToe8tf69Pe
-        g3kbhUZbt7ws70+RHtNZVJ2cMR34TNwTY4f33JQANvtDzz+/u4kd5Q==
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSArcWVIbTFacmZtT0wyWWZ0
+        OFZsaktRbE5EdVlmYnZzbVhPT2hhOTc2Ym5zCkdZczZDYU0yc0wxNmk4Umc4V2Q0
+        TjFYMjNrYzM1TUxiOWZld3p2aU1xT0EKLS0tIE8xR2d2ekVkSm1SeGQzOE55R3Ay
+        MjM5S0UwRHM0b1hjVEVlZEZXb29mcFkKP8Bcr3j0pZWwko+gfBieGKL2Eo1p68Q4
+        uyGQM59RfOdindjcjruA/wbTKLon7c/hvoPbFcSOVwR9B3QzWDaqsg==
         -----END AGE ENCRYPTED FILE-----
       recipient: age195m7v6w6lce8knleuc9juqwklj56vjflng64q60eh90yrfpsfyjs222pls
-  encrypted_regex: ^(data|clusterEndpoint|host)$
-  lastmodified: "2026-11-18T03:20:06Z"
-  mac: ENC[AES256_GCM,data:DLAlCoEMomTrum95mILl7NJ83P//0JytfQRtADx+lXokiTDrbtuYJYhtwRq7qdUAy968AIVk465561TetHJ1z6s80ROe3+6fNdUAk91Tj+awJN76j1nEBulNbtQkjtDEei7rAJ446fa+bV4j2DGWEQnUH+VkalPJpqOYujcoxPs=,iv:/QNsQ3KjuLUSq/I9rUv1kI5POustRbKbvG6o7j5dCEc=,tag:v2RmW/g0K657o5S3wcRv7Q==,type:str]
+  encrypted_regex: ^(data|clusterEndpoint|ip)$
+  lastmodified: "2026-11-26T17:21:41Z"
+  mac: ENC[AES256_GCM,data:ttMxP7x6l5FDqPIIat+2jrD4U6jJGot0V/6VLpbk2L22Jj64m9Sg1U0XqlwfRjr3YWuC30kg1Zo0rTEkCm6cbjysCjM6Q4RtZDL1PaYzcLsc7BeWw0GZLZQ7EHp3PpRMwCrJtnGEOwi2LZEZD8FZO5sCa2TOPrUmJbR7EIV//yY=,iv:dRTKZ2SuJlb03ACjw8GqLMrNBaaKu1pOJXL+yvhMA4k=,tag:ftBlLNc7XWqrOCt6MI3d/g==,type:str]
   version: 3.13.3
