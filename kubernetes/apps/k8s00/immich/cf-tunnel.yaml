@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cloudflared-deployment
+  name: immich-cloudflared
   namespace: immich
 spec:
   replicas: 2
@@ -22,16 +22,15 @@ spec:
               pod: cloudflared
       securityContext:
         fsGroup: 1000
-        sysctls:
-        # Allows ICMP traffic (ping, traceroute) to resources behind cloudflared.
-          - name: net.ipv4.ping_group_range
-            value: "${groupId} ${groupId}"
       containers:
         - image: cloudflare/cloudflared:latest
           name: cloudflared
           envFrom:
             - secretRef:
                 name: cf-tunnel-token
+          env:
+            - name: TUNNEL_EDGE_IP_VERSION
+              value: "6"
           command:
             # Configures tunnel run parameters
             - cloudflared
@@ -42,14 +41,21 @@ spec:
             - --metrics
             - "[::]:2000"
             - run
+          ports:
+            - name: metrics
+              containerPort: 2000
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: metrics
+            initialDelaySeconds: 5
+            periodSeconds: 10
           livenessProbe:
             httpGet:
-              # Cloudflared has a /ready endpoint which returns 200 if and only if
-              # it has an active connection to Cloudflare's network.
               path: /ready
-              port: 2000
-            failureThreshold: 1
-            initialDelaySeconds: 10
+              port: metrics
+            failureThreshold: 6
+            initialDelaySeconds: 30
             periodSeconds: 10
           securityContext:
             capabilities:
@@ -61,3 +67,14 @@ spec:
             allowPrivilegeEscalation: false
             seccompProfile:
               type: RuntimeDefault
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: immich-cloudflared
+  namespace: immich
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      pod: cloudflared
