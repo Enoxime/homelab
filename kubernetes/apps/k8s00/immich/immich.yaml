@@ -17,7 +17,7 @@ spec:
       interval: 1m
   values:
     image:
-      tag: v3.4.1
+      tag: v3.4.2
 
     network:
       dualStack:
@@ -79,7 +79,7 @@ spec:
     ai:
       enabled: true
       image:
-        tag: v3.4.1-cuda
+        tag: v3.4.2-cuda
       persistence:
         storageClassName: rook-ceph-delete
         cacheSize: 50Gi
