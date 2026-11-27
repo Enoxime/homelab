@@ -33,4 +33,5 @@ spec:
     name: external-snapshotter
   path: "./deploy/kubernetes/snapshot-controller"
   prune: true
-  timeout: 1m
+  timeout: 5m
+  wait: true
