@@ -15,6 +15,7 @@ docker_technitium_stack:
       DNS_SERVER_DOMAIN: "dns1.mgmt.{{ home_domain }}"
       DNS_SERVER_ADMIN_PASSWORD: "{{ admin_password }}"
       DNS_SERVER_PREFER_IPV6: "true"
+      DNS_SERVER_RECURSION: "Allow"
       # DNS_SERVER_WEB_SERVICE_LOCAL_ADDRESSES: "[{{ mgmt_ipv6_network }}53],{{ mgmt_ipv4_network }}53"
       DNS_SERVER_ENABLE_BLOCKING: "true"
       DNS_SERVER_BLOCK_LIST_URLS: "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
@@ -36,9 +37,10 @@ docker_technitium_stack:
       DNS_SERVER_DOMAIN: "dns1.dmz.{{ home_domain }}"
       DNS_SERVER_ADMIN_PASSWORD: "{{ admin_password }}"
       DNS_SERVER_PREFER_IPV6: "true"
+      DNS_SERVER_RECURSION: "Allow"
       DNS_SERVER_ENABLE_BLOCKING: "true"
       DNS_SERVER_BLOCK_LIST_URLS: "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews-gambling-porn-social/hosts"
-      DNS_SERVER_FORWARDERS: "[{{ gateway_ipv6 }}],{{ dmz_ipv4_network }}1"
+      DNS_SERVER_FORWARDERS: "[{{ dmz_ipv6_network }}1],{{ dmz_ipv4_network }}1"
       DNS_SERVER_FORWARDER_PROTOCOL: "Udp"
     networks:
       - name: caddy
@@ -55,9 +57,10 @@ docker_technitium_stack:
       DNS_SERVER_DOMAIN: "dns1.work.{{ home_domain }}"
       DNS_SERVER_ADMIN_PASSWORD: "{{ admin_password }}"
       DNS_SERVER_PREFER_IPV6: "true"
+      DNS_SERVER_RECURSION: "Allow"
       DNS_SERVER_ENABLE_BLOCKING: "true"
       DNS_SERVER_BLOCK_LIST_URLS: "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
-      DNS_SERVER_FORWARDERS: "[{{ gateway_ipv6 }}],{{ work_ipv4_network }}1"
+      DNS_SERVER_FORWARDERS: "[{{ work_ipv6_network }}1],{{ work_ipv4_network }}1"
       DNS_SERVER_FORWARDER_PROTOCOL: "Udp"
     networks:
       - name: caddy
@@ -74,9 +77,10 @@ docker_technitium_stack:
       DNS_SERVER_DOMAIN: "dns1.service.{{ home_domain }}"
       DNS_SERVER_ADMIN_PASSWORD: "{{ admin_password }}"
       DNS_SERVER_PREFER_IPV6: "true"
+      DNS_SERVER_RECURSION: "Allow"
       DNS_SERVER_ENABLE_BLOCKING: "true"
       DNS_SERVER_BLOCK_LIST_URLS: "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
-      DNS_SERVER_FORWARDERS: "[{{ gateway_ipv6 }}],{{ service_ipv4_network }}1"
+      DNS_SERVER_FORWARDERS: "[{{ service_ipv6_network }}1],{{ service_ipv4_network }}1"
       DNS_SERVER_FORWARDER_PROTOCOL: "Udp"
     networks:
       - name: caddy
@@ -93,17 +97,16 @@ docker_technitium_stack:
       DNS_SERVER_DOMAIN: "dns1.k8s00.{{ home_domain }}"
       DNS_SERVER_ADMIN_PASSWORD: "{{ admin_password }}"
       DNS_SERVER_PREFER_IPV6: "true"
+      DNS_SERVER_RECURSION: "Allow" # cilium masquerading use GUA
       DNS_SERVER_ENABLE_BLOCKING: "true"
       DNS_SERVER_BLOCK_LIST_URLS: "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
-      DNS_SERVER_FORWARDERS: "[{{ gateway_ipv6 }}],{{ k8s00_ipv4_network }}1"
+      DNS_SERVER_FORWARDERS: "[{{ k8s00_ipv6_network }}1]"
       DNS_SERVER_FORWARDER_PROTOCOL: "Udp"
     networks:
       - name: caddy
     ports:
       - "[{{ k8s00_ipv6_network }}53]:53:53"
       - "[{{ k8s00_ipv6_network }}53]:53:53/udp"
-      - "{{ k8s00_ipv4_network }}53:53:53"
-      - "{{ k8s00_ipv4_network }}53:53:53/udp"
     volumes:
       - technitium_k8s00_config:/etc/dns
   - name: technitium-casa
@@ -112,9 +115,10 @@ docker_technitium_stack:
       DNS_SERVER_DOMAIN: "dns1.casa.{{ home_domain }}"
       DNS_SERVER_ADMIN_PASSWORD: "{{ admin_password }}"
       DNS_SERVER_PREFER_IPV6: "true"
+      DNS_SERVER_RECURSION: "Allow"
       DNS_SERVER_ENABLE_BLOCKING: "true"
       DNS_SERVER_BLOCK_LIST_URLS: "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
-      DNS_SERVER_FORWARDERS: "[{{ gateway_ipv6 }}],{{ casa_ipv4_network }}1"
+      DNS_SERVER_FORWARDERS: "[{{ casa_ipv6_network }}1],{{ casa_ipv4_network }}1"
       DNS_SERVER_FORWARDER_PROTOCOL: "Udp"
     networks:
       - name: caddy
@@ -131,9 +135,10 @@ docker_technitium_stack:
       DNS_SERVER_DOMAIN: "dns1.iot.{{ home_domain }}"
       DNS_SERVER_ADMIN_PASSWORD: "{{ admin_password }}"
       DNS_SERVER_PREFER_IPV6: "true"
+      DNS_SERVER_RECURSION: "Allow"
       DNS_SERVER_ENABLE_BLOCKING: "true"
       DNS_SERVER_BLOCK_LIST_URLS: "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews-gambling-porn-social/hosts"
-      DNS_SERVER_FORWARDERS: "[{{ gateway_ipv6 }}],{{ iot_ipv4_network }}1"
+      DNS_SERVER_FORWARDERS: "[{{ iot_ipv6_network }}1],{{ iot_ipv4_network }}1"
       DNS_SERVER_FORWARDER_PROTOCOL: "Udp"
     networks:
       - name: caddy
@@ -150,9 +155,10 @@ docker_technitium_stack:
       DNS_SERVER_DOMAIN: "dns1.monitoring.{{ home_domain }}"
       DNS_SERVER_ADMIN_PASSWORD: "{{ admin_password }}"
       DNS_SERVER_PREFER_IPV6: "true"
+      DNS_SERVER_RECURSION: "Allow"
       DNS_SERVER_ENABLE_BLOCKING: "true"
       DNS_SERVER_BLOCK_LIST_URLS: "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
-      DNS_SERVER_FORWARDERS: "[{{ gateway_ipv6 }}],{{ monitoring_ipv4_network }}1"
+      DNS_SERVER_FORWARDERS: "[{{ monitoring_ipv6_network }}1],{{ monitoring_ipv4_network }}1"
       DNS_SERVER_FORWARDER_PROTOCOL: "Udp"
     networks:
       - name: caddy
