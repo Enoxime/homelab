@@ -59,11 +59,11 @@ storage:
           UseNTP=yes
 
           [Route]
-          Gateway={{ mgmt_ipv6_nameserver }}1
+          Gateway={{ mgmt_ipv6_network }}1
           Destination=::/0
 
           [Route]
-          Gateway={{ mgmt_ipv6_nameserver }}1
+          Gateway={{ mgmt_ipv6_network }}1
           Destination={{ k8s00_bgp_90_ipv6_network }}/112
 
           [Route]
