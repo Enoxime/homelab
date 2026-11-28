@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: immich
-      version: "2.0.0"
+      version: "2.1.0"
       sourceRef:
         kind: HelmRepository
         name: homelab
@@ -34,14 +34,14 @@ spec:
       seccompProfile:
         type: RuntimeDefault
 
-    # httpRoute:
-    #   enabled: true
-    #   parentRefs:
-    #     - name: homelab-k8s00-wildcard
-    #       namespace: gateway
-    #       sectionName: https
-    #   hostnames:
-    #     - "immich.service.${k8s00Domain}"
+    httpRoute:
+      enabled: true
+      parentRefs:
+        - name: homelab-k8s00-wildcard
+          namespace: gateway
+          sectionName: https
+      hostnames:
+        - "immich.service.${k8s00Domain}"
 
     persistence:
       enabled: true
