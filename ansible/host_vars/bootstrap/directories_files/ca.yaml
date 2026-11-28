@@ -37,8 +37,7 @@ directories_files_ca:
             "{{ mgmt_ipv4_network }}10",
             "{{ service_ipv6_network }}10",
             "{{ service_ipv4_network }}10",
-            "{{ k8s00_ipv6_network }}10",
-            "{{ k8s00_ipv4_network }}10"
+            "{{ k8s00_ipv6_network }}10"
           ],
           "logger": {
             "format": "text"

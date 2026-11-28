@@ -6,7 +6,6 @@ docker_monitoring_stack:
     command:
       - '--path.rootfs=/host'
       - '--web.listen-address=[{{ k8s00_ipv6_network }}5]:9100'
-      - '--web.listen-address=[{{ k8s00_ipv4_network }}5]:9100'
     labels:
       com.centurylinklabs.watchtower.enable: "true"
     network_mode: host

@@ -21,11 +21,11 @@ storage:
         name: root
       group:
         name: root
-    - path: /etc/systemd/networkd.conf.d/ipv6-privacy-extensions.conf
-      contents:
-        inline: |
-          [Network]
-          IPv6PrivacyExtensions=yes
+    # - path: /etc/systemd/networkd.conf.d/ipv6-privacy-extensions.conf
+    #   contents:
+    #     inline: |
+    #       [Network]
+    #       IPv6PrivacyExtensions=yes
     # mgmt
     - path: /etc/systemd/network/5-eno1.network
       contents:
@@ -35,15 +35,17 @@ storage:
           Name=!eno1.*
 
           [Network]
-          Address={{ mgmt_ipv6_network }}5/64
-          Address={{ mgmt_ipv6_network }}10/64
-          Address={{ mgmt_ipv6_network }}53/64
+          Address={{ mgmt_ipv6_network }}5/128
+          Address={{ mgmt_ipv6_network }}10/128
+          Address={{ mgmt_ipv6_network }}53/128
           Address={{ mgmt_ipv4_network }}5/24
           Address={{ mgmt_ipv4_network }}10/24
           Address={{ mgmt_ipv4_network }}53/24
           DNS={{ mgmt_ipv6_nameserver }}
           DNS={{ mgmt_ipv4_nameserver }}
-          Domains=mgmt.{{ home_domain }} {{ home_domain }} mgmt.{{ home_domain_old }} {{ home_domain_old }}
+          Domains=mgmt.{{ home_domain }} {{ home_domain }}
+          DHCP=ipv6
+          IPv6AcceptRA=yes
           VLAN=eno1.10
           VLAN=eno1.20
           VLAN=eno1.30
@@ -52,9 +54,21 @@ storage:
           VLAN=eno1.60
           VLAN=eno1.70
 
+          [DHCPv6]
+          UseAddress=no
+          UseNTP=yes
+
           [Route]
-          Gateway={{ mgmt_ipv6_nameserver }}
+          Gateway={{ mgmt_ipv6_network }}1
+          Destination=::/0
+
+          [Route]
+          Gateway={{ mgmt_ipv6_network }}1
+          Destination={{ k8s00_bgp_90_ipv6_network }}/112
+
+          [Route]
           Gateway={{ mgmt_ipv4_nameserver }}
+          Destination=0.0.0.0/0
       mode: 0644
       user:
         name: root
@@ -82,18 +96,26 @@ storage:
           Name=eno1.10
 
           [Network]
-          Address={{ dmz_ipv6_network }}5/64
-          Address={{ dmz_ipv6_network }}53/64
+          Address={{ dmz_ipv6_network }}5/128
+          Address={{ dmz_ipv6_network }}53/128
           Address={{ dmz_ipv4_network }}5/24
           Address={{ dmz_ipv4_network }}53/24
-          DNS={{ gateway_ipv6 }}
+          DNS={{ dmz_ipv6_network }}1
           DNS={{ dmz_ipv4_network }}1
-          Domains=dmz.{{ home_domain }} dmz.{{ home_domain_old }}
+          Domains=dmz.{{ home_domain }}
+          DHCP=ipv6
+          IPv6AcceptRA=yes
+
+          [DHCPv6]
+          UseAddress=no
+          UseNTP=yes
 
           [Route]
-          Gateway={{ gateway_ipv6 }}
-          Gateway={{ dmz_ipv4_network }}1
+          Gateway={{ dmz_ipv6_network }}1
           Destination={{ dmz_ipv6_network }}/64
+
+          [Route]
+          Gateway={{ dmz_ipv4_network }}1
           Destination={{ dmz_ipv4_network }}0/24
       mode: 0644
       user:
@@ -122,18 +144,26 @@ storage:
           Name=eno1.20
 
           [Network]
-          Address={{ work_ipv6_network }}5/64
-          Address={{ work_ipv6_network }}53/64
+          Address={{ work_ipv6_network }}5/128
+          Address={{ work_ipv6_network }}53/128
           Address={{ work_ipv4_network }}5/24
           Address={{ work_ipv4_network }}53/24
-          DNS={{ gateway_ipv6 }}
+          DNS={{ work_ipv6_network }}1
           DNS={{ work_ipv4_network }}1
-          Domains=work.{{ home_domain }} work.{{ home_domain_old }}
+          Domains=work.{{ home_domain }}
+          DHCP=ipv6
+          IPv6AcceptRA=yes
+
+          [DHCPv6]
+          UseAddress=no
+          UseNTP=yes
 
           [Route]
-          Gateway={{ gateway_ipv6 }}
-          Gateway={{ work_ipv4_network }}1
+          Gateway={{ work_ipv6_network }}1
           Destination={{ work_ipv6_network }}/64
+
+          [Route]
+          Gateway={{ work_ipv4_network }}1
           Destination={{ work_ipv4_network }}0/24
       mode: 0644
       user:
@@ -162,20 +192,28 @@ storage:
           Name=eno1.30
 
           [Network]
-          Address={{ service_ipv6_network }}5/64
-          Address={{ service_ipv6_network }}10/64
-          Address={{ service_ipv6_network }}53/64
+          Address={{ service_ipv6_network }}5/128
+          Address={{ service_ipv6_network }}10/128
+          Address={{ service_ipv6_network }}53/128
           Address={{ service_ipv4_network }}5/24
           Address={{ service_ipv4_network }}10/24
           Address={{ service_ipv4_network }}53/24
-          DNS={{ gateway_ipv6 }}
+          DNS={{ service_ipv6_network }}1
           DNS={{ service_ipv4_network }}1
-          Domains=service.{{ home_domain }} service.{{ home_domain_old }}
+          Domains=service.{{ home_domain }}
+          DHCP=ipv6
+          IPv6AcceptRA=yes
+
+          [DHCPv6]
+          UseAddress=no
+          UseNTP=yes
 
           [Route]
-          Gateway={{ gateway_ipv6 }}
-          Gateway={{ service_ipv4_network }}1
+          Gateway={{ service_ipv6_network }}1
           Destination={{ service_ipv6_network }}/64
+
+          [Route]
+          Gateway={{ service_ipv4_network }}1
           Destination={{ service_ipv4_network }}0/24
       mode: 0644
       user:
@@ -204,20 +242,28 @@ storage:
           Name=eno1.40
 
           [Network]
-          Address={{ k8s00_ipv6_network }}5/64
-          Address={{ k8s00_ipv6_network }}10/64
-          Address={{ k8s00_ipv6_network }}53/64
+          Address={{ k8s00_ipv6_network }}5/128
+          Address={{ k8s00_ipv6_network }}10/128
+          Address={{ k8s00_ipv6_network }}53/128
           Address={{ k8s00_ipv4_network }}5/24
           Address={{ k8s00_ipv4_network }}10/24
           Address={{ k8s00_ipv4_network }}53/24
-          DNS={{ gateway_ipv6 }}
+          DNS={{ k8s00_ipv6_network }}1
           DNS={{ k8s00_ipv4_network }}1
-          Domains=k8s00.{{ home_domain }} k8s00.{{ home_domain_old }}
+          Domains=k8s00.{{ home_domain }}
+          DHCP=ipv6
+          IPv6AcceptRA=yes
+
+          [DHCPv6]
+          UseAddress=no
+          UseNTP=yes
 
           [Route]
-          Gateway={{ gateway_ipv6 }}
-          Gateway={{ k8s00_ipv4_network }}1
+          Gateway={{ k8s00_ipv6_network }}1
           Destination={{ k8s00_ipv6_network }}/64
+
+          [Route]
+          Gateway={{ k8s00_ipv4_network }}1
           Destination={{ k8s00_ipv4_network }}0/24
       mode: 0644
       user:
@@ -246,20 +292,28 @@ storage:
           Name=eno1.50
 
           [Network]
-          Address={{ casa_ipv6_network }}5/64
-          Address={{ casa_ipv6_network }}10/64
-          Address={{ casa_ipv6_network }}53/64
+          Address={{ casa_ipv6_network }}5/128
+          Address={{ casa_ipv6_network }}10/128
+          Address={{ casa_ipv6_network }}53/128
           Address={{ casa_ipv4_network }}5/24
           Address={{ casa_ipv4_network }}10/24
           Address={{ casa_ipv4_network }}53/24
-          DNS={{ gateway_ipv6 }}
+          DNS={{ casa_ipv6_network }}1
           DNS={{ casa_ipv4_network }}1
-          Domains=casa.{{ home_domain }} casa.{{ home_domain_old }}
+          Domains=casa.{{ home_domain }}
+          DHCP=ipv6
+          IPv6AcceptRA=yes
+
+          [DHCPv6]
+          UseAddress=no
+          UseNTP=yes
 
           [Route]
-          Gateway={{ gateway_ipv6 }}
-          Gateway={{ casa_ipv4_network }}1
+          Gateway={{ casa_ipv6_network }}1
           Destination={{ casa_ipv6_network }}/64
+
+          [Route]
+          Gateway={{ casa_ipv4_network }}1
           Destination={{ casa_ipv4_network }}0/24
       mode: 0644
       user:
@@ -288,18 +342,26 @@ storage:
           Name=eno1.60
 
           [Network]
-          Address={{ iot_ipv6_network }}5/64
-          Address={{ iot_ipv6_network }}53/64
+          Address={{ iot_ipv6_network }}5/128
+          Address={{ iot_ipv6_network }}53/128
           Address={{ iot_ipv4_network }}5/24
           Address={{ iot_ipv4_network }}53/24
-          DNS={{ gateway_ipv6 }}
+          DNS={{ iot_ipv6_network }}1
           DNS={{ iot_ipv4_network }}1
-          Domains=iot.{{ home_domain }} iot.{{ home_domain_old }}
+          Domains=iot.{{ home_domain }}
+          DHCP=ipv6
+          IPv6AcceptRA=yes
+
+          [DHCPv6]
+          UseAddress=no
+          UseNTP=yes
 
           [Route]
-          Gateway={{ gateway_ipv6 }}
-          Gateway={{ iot_ipv4_network }}1
+          Gateway={{ iot_ipv6_network }}1
           Destination={{ iot_ipv6_network }}/64
+
+          [Route]
+          Gateway={{ iot_ipv4_network }}1
           Destination={{ iot_ipv4_network }}0/24
       mode: 0644
       user:
@@ -328,18 +390,26 @@ storage:
           Name=eno1.70
 
           [Network]
-          Address={{ monitoring_ipv6_network }}5/64
-          Address={{ monitoring_ipv6_network }}53/64
+          Address={{ monitoring_ipv6_network }}5/128
+          Address={{ monitoring_ipv6_network }}53/128
           Address={{ monitoring_ipv4_network }}5/24
           Address={{ monitoring_ipv4_network }}53/24
-          DNS={{ gateway_ipv6 }}
+          DNS={{ monitoring_ipv6_network }}1
           DNS={{ monitoring_ipv4_network }}1
-          Domains=monitoring.{{ home_domain }} monitoring.{{ home_domain_old }}
+          Domains=monitoring.{{ home_domain }}
+          DHCP=ipv6
+          IPv6AcceptRA=yes
+
+          [DHCPv6]
+          UseAddress=no
+          UseNTP=yes
 
           [Route]
-          Gateway={{ gateway_ipv6 }}
-          Gateway={{ monitoring_ipv4_network }}1
+          Gateway={{ monitoring_ipv6_network }}1
           Destination={{ monitoring_ipv6_network }}/64
+
+          [Route]
+          Gateway={{ monitoring_ipv4_network }}1
           Destination={{ monitoring_ipv4_network }}0/24
       mode: 0644
       user:

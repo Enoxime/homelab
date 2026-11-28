@@ -16,6 +16,9 @@ docker_misc_stack:
       com.centurylinklabs.watchtower.enable: "true"
     networks:
       - name: caddy
+    dns_servers:
+      - "{{ service_ipv6_network }}53"
+      - "{{ service_ipv4_network }}53"
     ports:
       - "[{{ mgmt_ipv6_network }}5]:80:80"
       - "{{ mgmt_ipv4_network }}5:80:80"
@@ -25,10 +28,12 @@ docker_misc_stack:
       - "{{ mgmt_ipv4_network }}5:443:443/udp"
       - "[{{ service_ipv6_network }}5]:80:81"
       - "{{ service_ipv4_network }}5:80:81"
+      - "[{{ service_ipv6_network }}5]:443:444"
+      - "{{ service_ipv4_network }}5:443:444"
+      - "[{{ service_ipv6_network }}5]:443:444/udp"
+      - "{{ service_ipv4_network }}5:443:444/udp"
       - "[{{ k8s00_ipv6_network }}5]:80:82"
-      - "{{ k8s00_ipv4_network }}5:80:82"
       - "[{{ k8s00_ipv6_network }}5]:2019:2019"
-      - "{{ k8s00_ipv4_network }}5:2019:2019"
       - "[{{ casa_ipv6_network }}5]:80:83"
       - "{{ casa_ipv4_network }}5:80:83"
     volumes:
@@ -60,7 +65,6 @@ docker_misc_stack:
       - "[{{ service_ipv6_network }}5]:69:69/udp"
       - "{{ service_ipv4_network }}5:69:69/udp"
       - "[{{ k8s00_ipv6_network }}5]:69:69/udp"
-      - "{{ k8s00_ipv4_network }}5:69:69/udp"
       - "[{{ casa_ipv6_network }}5]:69:69/udp"
       - "{{ casa_ipv4_network }}5:69:69/udp"
     volumes:
@@ -75,8 +79,8 @@ docker_misc_stack:
     networks:
       - name: caddy
     dns_servers:
-      - "{{ mgmt_ipv6_network }}53"
-      - "{{ mgmt_ipv4_network }}53"
+      - "{{ service_ipv6_network }}53"
+      - "{{ service_ipv4_network }}53"
     user: "{{ ansible_facts['user_uid'] }}:{{ ansible_facts['user_uid'] }}"
     ports:
       - "[{{ mgmt_ipv6_network }}10]:443:443"
@@ -84,7 +88,6 @@ docker_misc_stack:
       - "[{{ service_ipv6_network }}10]:443:443"
       - "{{ service_ipv4_network }}10:443:443"
       - "[{{ k8s00_ipv6_network }}10]:443:443"
-      - "{{ k8s00_ipv4_network }}10:443:443"
     volumes:
       - "/home/{{ ansible_user }}/ca_config:/home/step"
 
