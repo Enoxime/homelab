@@ -11,6 +11,9 @@ nameservers:
 searchDomains:
   domains:
     - {{ .Data.subDomain }}
+hostDNS:
+    enabled: true
+    forwardKubeDNSToHost: false
 ---
 apiVersion: v1alpha1
 kind: TimeSyncConfig

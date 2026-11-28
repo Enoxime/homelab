@@ -40,6 +40,8 @@ helmCharts:
       cni:
         exclusive: false
       devices: br0
+      bpf:
+        masquerade: true
       ipv4:
         enabled: false
       ipv6:
